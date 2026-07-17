@@ -259,6 +259,42 @@ const PLEx=(()=>{
     }
   };
 
+  /* Unit 5.1 — HARMONIC minor (the demo form per spec; natural and melodic
+     become separate masters when enabled). Same design as 4.1:
+     ABCD | EFG#A | AG#FE | DCBA, top tonic repeated, 16 quarters.
+     Fingering comes from MINOR_SCALE_FINGERINGS (never transposed). */
+  MASTERS["scale-minor-1oct"]={
+    id:"scale-minor-1oct", category:"scale", mode:"minor", masterTonic:"A",
+    titleKey:"ex.scaleMinor1", time:[4,4], octaves:1, difficulty:2, enabled:true,
+    scaleFingering:"1oct", minorForm:"harmonic",
+    tempo:{default:72,min:40,max:120},
+    register:{rh:{shiftDownFrom:12},lh:{shiftDownFrom:12}},
+    steps:(function(){
+      const up=["A3","B3","C4","D4","E4","F4","G#4","A4"];
+      return up.concat(up.slice().reverse()).map(sp=>({
+        d:"q", rh:[sp], lh:[sp.replace(/\d/,n=>n-1)], fr:[1], fl:[1], roman:null
+      }));
+    })()
+  };
+  /* Unit 5.2 — harmonic minor, two octaves (same shape as 4.2) */
+  (function(){
+    const up=["A3","B3","C4","D4","E4","F4","G#4","A4",
+              "B4","C5","D5","E5","F5","G#5","A5"];
+    const seq=up.concat(up.slice().reverse());
+    MASTERS["scale-minor-2oct"]={
+      id:"scale-minor-2oct", category:"scale", mode:"minor", masterTonic:"A",
+      titleKey:"ex.scaleMinor2", time:[4,4], octaves:2, difficulty:3, enabled:true,
+      scaleFingering:"2oct", minorForm:"harmonic",
+      tempo:{default:72,min:40,max:120},
+      register:{rh:{shiftDownFrom:12},lh:{shiftDownFrom:12}},
+      steps:seq.map((sp,i)=>({
+        d:(i===14||i===seq.length-1)?"h":"q",
+        rh:[sp], lh:[sp.replace(/\d/,n=>n-1)],
+        fr:[1], fl:[1], roman:null
+      }))
+    };
+  })();
+
   /* Unit 4.2 master (instructor 2026-07-17): two octaves in quarters,
      4/4 × 8 bars, top tonic REPEATED and held a half note at each peak:
      CDEF | GABC | DEFG | AB C(h) | CBAG | FEDC | BAGF | ED C(h).
@@ -385,7 +421,9 @@ const PLEx=(()=>{
     "triad-qualities":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "seventh-qualities":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "scale-major-1oct":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
-    "scale-major-2oct":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"]
+    "scale-major-2oct":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "scale-minor-1oct":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
+    "scale-minor-2oct":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"]
   };
 
   /* teacher key enable/disable (per exercise), stored on this device.
@@ -453,8 +491,9 @@ const PLEx=(()=>{
       fr:(s.fr||[]).slice(), fl:(s.fl||[]).slice()
     }));
     /* scales: per-key STANDARD fingering from the table (never transposed) */
-    if(M.scaleFingering&&SCALE_FINGERINGS[tonic]){
-      const T=SCALE_FINGERINGS[tonic];
+    const FTBL=M.mode==="minor"?MINOR_SCALE_FINGERINGS:SCALE_FINGERINGS;
+    if(M.scaleFingering&&FTBL[tonic]){
+      const T=FTBL[tonic];
       const fr=scaleFingerSeq(M.scaleFingering,T.rh,"rh");
       const fl=scaleFingerSeq(M.scaleFingering,T.lh,"lh");
       steps.forEach((s,i)=>{ if(s.rh.length) s.fr=[fr[i]]; if(s.lh.length) s.fl=[fl[i]]; });

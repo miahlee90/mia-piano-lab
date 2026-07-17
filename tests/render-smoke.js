@@ -124,6 +124,17 @@ ok("broken study: 15 dots on the 5 blocked chords",count(bb,/class="dot"/g)===15
     })));
 }
 
+/* ---- Unit 5: harmonic minor scales ---- */
+{
+  const hm=svgFor("A","rh",null,"scale-minor-1oct");
+  ok("A harm minor: raised 7th sharped in both measures",count(hm,/♯/g)===2);
+  ok("A harm minor: 16 steps",count(hm,/class="nstep"/g)===16);
+  ["scale-minor-1oct","scale-minor-2oct"].forEach(ex=>
+    PLEx.allKeys(ex).forEach(k=>["rh","lh","ht"].forEach(h=>{
+      ok("no clipped coords "+ex+" "+k+" "+h,!/="-/.test(svgFor(k,h,null,ex)));
+    })));
+}
+
 /* ---- Unit 3: triad qualities — accidentals incl. double sharps/flats ---- */
 {
   const tq=svgFor("C","rh",null,"triad-qualities");

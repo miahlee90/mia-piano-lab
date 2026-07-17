@@ -199,9 +199,10 @@ eq("demo transposes with ties intact",PLEx.expand("engine-demo","D").steps[9].rh
 
 /* ---- curriculum structure (Unit.Lesson labels, Fundamentals style) ---- */
 const PLLessons=require("../js/lessons.js");
-eq("lesson labels",PLLessons.list().map(l=>l.label),["1.1","1.2","2.1","2.2","2.3","3.1","3.2","4.1","4.2"]);
-eq("lesson units",PLLessons.list().map(l=>l.unit),[1,1,2,2,2,3,3,4,4]);
-eq("units defined",PLLessons.units().map(u=>u.unit),[1,2,3,4]);
+eq("lesson labels",PLLessons.list().map(l=>l.label),
+   ["1.1","1.2","2.1","2.2","2.3","3.1","3.2","4.1","4.2","5.1","5.2"]);
+eq("lesson units",PLLessons.list().map(l=>l.unit),[1,1,2,2,2,3,3,4,4,5,5]);
+eq("units defined",PLLessons.units().map(u=>u.unit),[1,2,3,4,5]);
 ok("every lesson's exercises exist",
    PLLessons.list().every(l=>l.exercises.every(id=>PLEx.MASTERS[id])));
 
@@ -303,6 +304,35 @@ eq("2-oct LH fingering (4 crosses at the octave)",
 eq("2-oct ends on the tonic, held, with the start finger",
    [S2.steps[29].rh[0],S2.steps[29].d,S2.steps[29].fr[0],S2.steps[29].fl[0]],["C4","h",1,5]);
 for(const k of PLEx.allKeys("scale-major-2oct")) PLEx.expand("scale-major-2oct",k);
+
+/* ---- Unit 5: harmonic minor scales ---- */
+const HM=PLEx.expand("scale-minor-1oct","A");
+eq("A harmonic minor notes (top repeated)",HM.steps.map(s=>s.rh[0]),
+   ["A3","B3","C4","D4","E4","F4","G#4","A4","A4","G#4","F4","E4","D4","C4","B3","A3"]);
+eq("A harm RH fingering",HM.steps.map(s=>s.fr[0]),
+   [1,2,3,1,2,3,4,5,5,4,3,2,1,3,2,1]);
+eq("A harm LH fingering",HM.steps.map(s=>s.fl[0]),
+   [5,4,3,2,1,3,2,1,1,2,3,1,2,3,4,5]);
+eq("D minor raises C to C#",PLEx.expand("scale-minor-1oct","D").steps[6].rh[0],"C#5");
+eq("D# minor raises to C-double-sharp",
+   PLEx.expand("scale-minor-1oct","D#").steps[6].rh[0],"C##5");
+eq("Eb minor raises to D natural",
+   PLEx.expand("scale-minor-1oct","Eb").steps[6].rh[0],"D5");
+eq("F# harm RH fingering (341 pattern)",
+   PLEx.expand("scale-minor-1oct","F#").steps.slice(0,8).map(s=>s.fr[0]),
+   [3,4,1,2,3,1,2,3]);
+eq("Bb harm LH fingering",
+   PLEx.expand("scale-minor-1oct","Bb").steps.slice(0,8).map(s=>s.fl[0]),
+   [2,1,3,2,1,4,3,2]);
+const HM2=PLEx.expand("scale-minor-2oct","A");
+eq("2-oct harm: 30 steps, peak held",[HM2.steps.length,HM2.steps[14].d,HM2.steps[14].rh[0]],
+   [30,"h","A5"]);
+eq("2-oct harm RH fingering restarts",HM2.steps.map(s=>s.fr[0]).slice(0,15),
+   [1,2,3,1,2,3,4,1,2,3,1,2,3,4,5]);
+["scale-minor-1oct","scale-minor-2oct"].forEach(ex=>{
+  ok(ex+" enabled for 13 minors",PLEx.allKeys(ex).length===13);
+  for(const k of PLEx.allKeys(ex)) PLEx.expand(ex,k);
+});
 
 /* ---- reference tables from the instructor's chart (future units) ---- */
 ok("harmonic-minor fingering: 13 minor keys",

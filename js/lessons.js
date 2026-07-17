@@ -10,8 +10,8 @@ const PLLessons=(()=>{
     {unit:1, nameKey:"unit.1"},         /* Five-Finger Patterns */
     {unit:2, nameKey:"unit.2"},         /* Chord Progressions */
     {unit:3, nameKey:"unit.3"},         /* Triad Qualities (before scales) */
-    {unit:4, nameKey:"unit.4"}          /* Major Scales (seventh-quality
-                                           pattern becomes Unit 5, after) */
+    {unit:4, nameKey:"unit.4"},         /* Major Scales */
+    {unit:5, nameKey:"unit.5"}          /* Minor Scales (harmonic demo form) */
   ];
   const LESSONS=[
     {
@@ -94,6 +94,24 @@ const PLLessons=(()=>{
       descKey:"lesson.l4n2.desc",
       formula:["W","W","H","W","W","W","H"], showDegrees:false,
       formulaNoteKey:"lesson.l4n1.halfstep"
+    },
+    {
+      id:"l5-1", unit:5, label:"5.1",
+      exercises:["scale-minor-1oct"],
+      titleKey:"lesson.l5n1.title",
+      goalKey:"lesson.l5n1.goal",
+      descKey:"lesson.l5n1.desc",
+      formula:["W","H","W","W","H","A2","H"], showDegrees:false,
+      formulaNoteKey:"lesson.l5n1.raised"
+    },
+    {
+      id:"l5-2", unit:5, label:"5.2",
+      exercises:["scale-minor-2oct"],
+      titleKey:"lesson.l5n2.title",
+      goalKey:"lesson.l5n2.goal",
+      descKey:"lesson.l5n2.desc",
+      formula:["W","H","W","W","H","A2","H"], showDegrees:false,
+      formulaNoteKey:"lesson.l5n1.raised"
     }
   ];
   return { list:()=>LESSONS,

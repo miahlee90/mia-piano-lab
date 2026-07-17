@@ -166,6 +166,19 @@ eq("F# diminished spelled F#-A-C",PLEx.expand("triad-qualities","F#").steps[4].r
 ok("triad qualities enabled for 13 keys",PLEx.allKeys("triad-qualities").length===13);
 for(const k of PLEx.allKeys("triad-qualities")) PLEx.expand("triad-qualities",k);
 
+/* ---- Lesson 3.2: seventh-chord qualities ---- */
+const SQ=PLEx.expand("seventh-qualities","C");
+eq("7th qualities in C",SQ.steps.map(s=>s.rh),
+   [["C4","E4","G4"],["C4","E4","G4","B4"],["C4","Eb4","G4","Bb4"],
+    ["C4","Eb4","Gb4","Bb4"],["C4","Eb4","Gb4","Bbb4"]]);
+eq("7th quality labels",SQ.steps.map(s=>s.roman),["M","maj7","m7","m7♭5","°7"]);
+eq("7th chord fingering RH/LH",[SQ.steps[1].fr,SQ.steps[1].fl],[[1,2,3,5],[5,3,2,1]]);
+eq("F# dim7 spells Eb (dim 7th above F#)",
+   PLEx.expand("seventh-qualities","F#").steps[4].rh,["F#4","A4","C5","Eb5"]);
+eq("Gb dim7 spells Fbb",
+   PLEx.expand("seventh-qualities","Gb").steps[4].rh,["Gb4","Bbb4","Dbb5","Fbb5"]);
+for(const k of PLEx.allKeys("seventh-qualities")) PLEx.expand("seventh-qualities",k);
+
 /* ---- rhythm-element data layer (engine-demo) ---- */
 const PLNot=require("../js/notation.js"); global.PLNotation=PLNot;
 const D=PLEx.expand("engine-demo","C");
@@ -181,8 +194,8 @@ eq("demo transposes with ties intact",PLEx.expand("engine-demo","D").steps[9].rh
 
 /* ---- curriculum structure (Unit.Lesson labels, Fundamentals style) ---- */
 const PLLessons=require("../js/lessons.js");
-eq("lesson labels",PLLessons.list().map(l=>l.label),["1.1","1.2","2.1","2.2","2.3","3.1","4.1","4.2"]);
-eq("lesson units",PLLessons.list().map(l=>l.unit),[1,1,2,2,2,3,4,4]);
+eq("lesson labels",PLLessons.list().map(l=>l.label),["1.1","1.2","2.1","2.2","2.3","3.1","3.2","4.1","4.2"]);
+eq("lesson units",PLLessons.list().map(l=>l.unit),[1,1,2,2,2,3,3,4,4]);
 eq("units defined",PLLessons.units().map(u=>u.unit),[1,2,3,4]);
 ok("every lesson's exercises exist",
    PLLessons.list().every(l=>l.exercises.every(id=>PLEx.MASTERS[id])));

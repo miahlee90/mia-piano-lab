@@ -69,6 +69,15 @@ const PLLessons=(()=>{
       formulaNoteKey:"lesson.l3n1.motion"
     },
     {
+      id:"l3-2", unit:3, label:"3.2",
+      exercises:["seventh-qualities"],
+      titleKey:"lesson.l3n2.title",
+      goalKey:"lesson.l3n2.goal",
+      descKey:"lesson.l3n2.desc",
+      formula:["M","maj7","m7","m7♭5","°7"], showDegrees:false,
+      formulaNoteKey:"lesson.l3n2.motion"
+    },
+    {
       id:"l4-1", unit:4, label:"4.1",
       exercises:["scale-major-1oct"],
       titleKey:"lesson.l4n1.title",

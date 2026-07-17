@@ -133,6 +133,13 @@ ok("broken study: 15 dots on the 5 blocked chords",count(bb,/class="dot"/g)===15
   PLEx.allKeys("triad-qualities").forEach(k=>["rh","lh","ht"].forEach(h=>{
     ok("no clipped coords tq "+k+" "+h,!/="-/.test(svgFor(k,h,null,"triad-qualities")));
   }));
+  /* 3.2 seventh chords: 4-note stacks must never clip (fingering incl.) */
+  PLEx.allKeys("seventh-qualities").forEach(k=>["rh","lh","ht"].forEach(h=>{
+    const svg=svgFor(k,h,null,"seventh-qualities");
+    ok("no clipped coords 7q "+k+" "+h,!/="-/.test(svg));
+    const fy=[...svg.matchAll(/class="fing[^"]*"[^>]*y="([\d.]+)"/g)].map(m=>+m[1]);
+    ok("7q fingering inside canvas "+k+" "+h,!fy.length||Math.min(...fy)>=12);
+  }));
 }
 
 /* ---- rhythm elements (hidden engine-demo exercise) ---- */

@@ -183,6 +183,22 @@ const PLEx=(()=>{
         {d:"w", rh:["C4","Eb4","Gb4"], lh:["C3","Eb3","Gb3"], fr:[1,3,5], fl:[5,3,1], roman:"°"}
       ]
     },
+    "seventh-qualities":{
+      /* Lesson 3.2 (instructor): C - Cmaj7 - Cm7 - Cm7b5 - Cdim7.
+         Four-note chords, RH 1-2-3-5 / LH 5-3-2-1 (opening triad 1-3-5).
+         Transposition stays theoretically exact — e.g. Gb dim7 spells Fbb. */
+      id:"seventh-qualities", category:"chord-quality", mode:"major", masterTonic:"C",
+      titleKey:"ex.seventhQual", time:[4,4], octaves:1, difficulty:3, enabled:true,
+      tempo:{default:80,min:40,max:112},
+      register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
+      steps:[
+        {d:"w", rh:["C4","E4","G4"],          lh:["C3","E3","G3"],          fr:[1,3,5],   fl:[5,3,1],   roman:"M"},
+        {d:"w", rh:["C4","E4","G4","B4"],     lh:["C3","E3","G3","B3"],     fr:[1,2,3,5], fl:[5,3,2,1], roman:"maj7"},
+        {d:"w", rh:["C4","Eb4","G4","Bb4"],   lh:["C3","Eb3","G3","Bb3"],   fr:[1,2,3,5], fl:[5,3,2,1], roman:"m7"},
+        {d:"w", rh:["C4","Eb4","Gb4","Bb4"],  lh:["C3","Eb3","Gb3","Bb3"],  fr:[1,2,3,5], fl:[5,3,2,1], roman:"m7♭5"},
+        {d:"w", rh:["C4","Eb4","Gb4","Bbb4"], lh:["C3","Eb3","Gb3","Bbb3"], fr:[1,2,3,5], fl:[5,3,2,1], roman:"°7"}
+      ]
+    },
     "engine-demo":{
       /* NOT a lesson — hidden reference exercise that exercises every rhythm
          element the renderer/player supports (8th/16th + beams, dotted
@@ -359,6 +375,7 @@ const PLEx=(()=>{
     "prog-1-4-1":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "prog-1-4-5-1":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "triad-qualities":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "seventh-qualities":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "scale-major-1oct":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "scale-major-2oct":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"]
   };

@@ -16,7 +16,7 @@ const PLPiano=(()=>{
     const whites=[]; for(let m=lo;m<=hi;m++) if(WHITE_PC.includes(m%12)) whites.push(m);
     /* FIXED key size — every exercise and hand shows keys at the same scale
        (wider ranges scroll horizontally instead of shrinking the keys) */
-    const KW=52, BW=Math.round(KW*.6);
+    const KW=60, BW=Math.round(KW*.6);
     const frag=[];
     whites.forEach((m,i)=>{
       const label=(m%12===0)?("C"+(Math.floor(m/12)-1)):"";

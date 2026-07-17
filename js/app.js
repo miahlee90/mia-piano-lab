@@ -148,15 +148,16 @@
       const cells=["rh","lh","ht"].map(h=>{
         const s=PLProgress.status(st.ex,k,h);
         const b=PLProgress.best(st.ex,k,h);
-        const icon=s==="completed"?"✓":s==="progress"?"●":"–";
-        const tip=b?`${t("prog.best")}: ♩=${b.tempo} · ${b.pitchAcc}%`:t("status."+s);
-        return `<td class="ps-${s}" title="${tip}">${icon}</td>`;
+        const label=s==="completed"?`✓ ♩=${b.tempo} · ${b.pitchAcc}%`
+                   :s==="progress"?`● ${t("status.progress")}`:"–";
+        const tip=t("status."+s)+(b?` · ${t("prog.best")}: ♩=${b.tempo} · ${b.pitchAcc}%`:"");
+        return `<td><span class="pill pill-${s}" title="${tip}">${label}</span></td>`;
       }).join("");
-      return `<tr><td>${keyName(k,score.mode)}</td>${cells}</tr>`;
+      const active=k===st.key?' class="ps-active"':"";
+      return `<tr${active}><td class="ps-key">${keyName(k,score.mode)}</td>${cells}</tr>`;
     });
     $("#progList").innerHTML=
-      `<table class="ps"><tr><th>${t("ui.key")}</th><th>${t("hand.rh.short")}</th><th>${t("hand.lh.short")}</th><th>${t("hand.ht.short")}</th></tr>${rows.join("")}</table>`+
-      `<p class="ps-legend">✓ ${t("status.completed")} · ● ${t("status.progress")} · – ${t("status.none")}</p>`;
+      `<table class="ps"><tr><th>${t("ui.key")}</th><th>${t("hand.rh")}</th><th>${t("hand.lh")}</th><th>${t("hand.ht")}</th></tr>${rows.join("")}</table>`;
   }
 
   /* ---------- controls ---------- */
@@ -211,7 +212,10 @@
     $("#lessonTitle").textContent=t(lesson.titleKey);
     $("#lessonGoal").textContent=t(lesson.goalKey);
     $("#lessonDesc").textContent=t(lesson.descKey);
-    $("#formulaChip").innerHTML=`<b>${lesson.formula.join("–")}</b> · ${t("formula.degrees")} · ${t(lesson.formulaNoteKey)}`;
+    $("#formulaChip").innerHTML=
+      `${t("formula.pattern")} <b>${lesson.formula.join("–")}</b> `+
+      `<span class="pattern-long">(${t("formula.long")})</span> · `+
+      `${t("formula.degrees")} · ${t(lesson.formulaNoteKey)}`;
 
     const exSel=$("#selEx");
     exSel.innerHTML=PLEx.list().map(m=>`<option value="${m.id}">${t(m.titleKey)}</option>`).join("");

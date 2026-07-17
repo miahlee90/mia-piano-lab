@@ -27,7 +27,11 @@ b,strong{font-weight:600}
 .pl-header .inner{max-width:1180px;margin:0 auto;padding:18px 20px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
 .pl-header h1{margin:0;font-size:1.45rem;font-weight:800;letter-spacing:-.4px}
 .pl-header .sub{color:rgba(255,255,255,.82);font-size:13.5px}
-.midi-chip{margin-left:auto;font-size:12.5px;background:rgba(255,255,255,.14);color:#fff;
+.hdr-piano{margin-left:auto;height:44px;width:auto;opacity:.95;border-radius:4px;overflow:hidden;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.25))}
+.hdr-piano rect{fill:#fdfaf2;stroke:#c9c2ae;stroke-width:.6}
+.hdr-piano rect.bk{fill:#10122e;stroke:#000}
+.midi-chip{font-size:12.5px;background:rgba(255,255,255,.14);color:#fff;
   padding:5px 14px;border-radius:9999px;font-feature-settings:"tnum"}
 .pl-main{max-width:1180px;margin:0 auto;padding:14px 20px 60px}
 
@@ -41,6 +45,10 @@ b,strong{font-weight:600}
 .lesson-head h2{margin:0 0 6px;font-size:1.45rem;font-weight:800;letter-spacing:-.3px;color:var(--brand-dark)}
 .lesson-head .goal{margin:0;font-weight:600}
 .lesson-head .desc{margin:3px 0 0;color:var(--muted);font-size:13.5px}
+.lesson-head .pattern-line{margin:10px 0 0;padding:9px 14px;background:var(--cream);
+  border-radius:9px;font-size:13.5px;color:var(--ink-2)}
+.lesson-head .pattern-line b{color:var(--brand-dark);font-size:15px;letter-spacing:1.5px}
+.lesson-head .pattern-long{color:var(--muted)}
 
 /* controls */
 .pl-controls{display:flex;flex-direction:column;gap:12px}
@@ -73,10 +81,7 @@ b,strong{font-weight:600}
   box-shadow:0 4px 14px rgba(83,58,253,.35)}
 .transport button:disabled{opacity:.4;cursor:default;box-shadow:none;transform:none}
 
-.formula-row{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
 .ex-title{margin:18px 2px 8px;font-size:1.2rem;font-weight:800;letter-spacing:-.2px;color:var(--brand-dark)}
-.formula{font-size:13.5px;color:var(--muted)}
-.formula b{color:var(--ink);font-size:15px;letter-spacing:1.5px}
 
 /* score */
 .score-wrap{overflow-x:auto;padding:12px 16px}
@@ -142,22 +147,24 @@ b,strong{font-weight:600}
 .pk-w.k-pressed.k-target-rh{background:#d6d0ff}
 .pk-w.k-pressed.k-target-lh{background:#f8e2b8}
 
-/* panels */
-.pl-panels{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;margin-top:16px}
-.pl-panels .card{margin-top:0}
-.pl-panels h3{margin:0 0 8px;font-size:1.05rem;font-weight:800;color:var(--brand-dark)}
-#fbText{margin:4px 0;min-height:40px;color:var(--muted)}
-#fbText b{color:var(--ink)}
+/* feedback line (between score and keyboard) */
+.fb-line{margin:12px 2px 0;min-height:22px;font-size:14px;color:var(--muted);text-align:center}
+.fb-line b{color:var(--ink)}
+.fb-line:empty{display:none}
 
-/* progress status grid */
-.ps{width:100%;border-collapse:collapse;font-size:13px;font-feature-settings:"tnum"}
-.ps th,.ps td{border-bottom:1px solid #f0ead8;padding:4px 8px;text-align:center;color:var(--muted)}
-.ps th{color:var(--ink)}
+/* progress card — full width */
+.prog-card h3{margin:0 0 10px;font-size:1.05rem;font-weight:800;color:var(--brand-dark)}
+.ps{width:100%;border-collapse:collapse;font-size:13.5px;font-feature-settings:"tnum"}
+.ps th,.ps td{border-bottom:1px solid #f0ead8;padding:8px 10px;text-align:center;color:var(--muted)}
+.ps th{color:var(--ink);font-size:12.5px;text-transform:uppercase;letter-spacing:.06em}
 .ps td:first-child,.ps th:first-child{text-align:left}
-.ps-completed{color:var(--correct);font-weight:800}
-.ps-progress{color:var(--accent-dark);font-weight:800}
-.ps-none{color:#c8bfa5}
-.ps-legend{font-size:12px;color:var(--muted);margin:6px 0 0}
+.ps-key{font-weight:600;color:var(--ink)}
+.ps tr.ps-active td{background:rgba(185,185,249,.14)}
+.ps tr:last-child td{border-bottom:0}
+.pill{display:inline-block;min-width:34px;padding:4px 12px;border-radius:9999px;font-weight:700;font-size:12.5px}
+.pill-completed{background:#d9efe2;color:#1d6b42}
+.pill-progress{background:#fdeed3;color:var(--accent-dark)}
+.pill-none{background:#f3eedd;color:#b6ac8e}
 
 /* teacher & setup */
 .pl-setup{margin-top:16px;color:var(--muted);font-size:13.5px}
@@ -169,6 +176,5 @@ b,strong{font-weight:600}
 .local-note{font-weight:700;color:var(--ink)}
 
 @media(max-width:900px){
-  .pl-panels{grid-template-columns:1fr}
   .pl-kbd-inner{height:160px}
 }

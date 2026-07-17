@@ -11,6 +11,10 @@
   <div class="inner">
     <h1 id="appName"></h1>
     <span class="sub" data-i18n="app.subtitle"></span>
+    <svg class="hdr-piano" viewBox="0 0 200 52" aria-hidden="true">
+      <rect x="0" y="0" width="19" height="52" rx="2"/><rect x="20" y="0" width="19" height="52" rx="2"/><rect x="40" y="0" width="19" height="52" rx="2"/><rect x="60" y="0" width="19" height="52" rx="2"/><rect x="80" y="0" width="19" height="52" rx="2"/><rect x="100" y="0" width="19" height="52" rx="2"/><rect x="120" y="0" width="19" height="52" rx="2"/><rect x="140" y="0" width="19" height="52" rx="2"/><rect x="160" y="0" width="19" height="52" rx="2"/><rect x="180" y="0" width="19" height="52" rx="2"/>
+      <rect class="bk" x="14" y="0" width="12" height="32" rx="1.5"/><rect class="bk" x="34" y="0" width="12" height="32" rx="1.5"/><rect class="bk" x="74" y="0" width="12" height="32" rx="1.5"/><rect class="bk" x="94" y="0" width="12" height="32" rx="1.5"/><rect class="bk" x="114" y="0" width="12" height="32" rx="1.5"/><rect class="bk" x="154" y="0" width="12" height="32" rx="1.5"/><rect class="bk" x="174" y="0" width="12" height="32" rx="1.5"/>
+    </svg>
     <span class="midi-chip" id="midiChip" data-i18n="midi.init"></span>
   </div>
 </header>
@@ -20,6 +24,7 @@
     <h2 id="lessonTitle"></h2>
     <p class="goal" id="lessonGoal"></p>
     <p class="desc" id="lessonDesc"></p>
+    <p class="pattern-line" id="formulaChip"></p>
   </section>
   <section class="pl-controls card">
     <div class="ctl-row">
@@ -51,16 +56,14 @@
     </div>
   </section>
 
-  <div class="formula-row">
-    <h2 id="exTitle" class="ex-title"></h2>
-    <div class="formula" id="formulaChip"></div>
-  </div>
+  <h2 id="exTitle" class="ex-title"></h2>
   <section id="score" class="score-wrap card" aria-label="Musical score"></section>
+  <div id="fbText" class="fb-line" aria-live="polite"></div>
   <section id="kbd" class="kbd-wrap" aria-label="Piano keyboard"></section>
 
-  <section class="pl-panels">
-    <div class="card"><h3 data-i18n="fb.title"></h3><p id="fbText"></p></div>
-    <div class="card"><h3 data-i18n="prog.title"></h3><div id="progList"></div></div>
+  <section class="card prog-card">
+    <h3 data-i18n="prog.title"></h3>
+    <div id="progList"></div>
   </section>
 
   <details class="pl-setup card" id="teacherPanel">

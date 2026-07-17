@@ -19,12 +19,14 @@ const PLEx=(()=>{
     "ff-major":{
       id:"ff-major", category:"five-finger", mode:"major", masterTonic:"C",
       titleKey:"ex.ffMajor", time:[4,4], octaves:1, difficulty:1, enabled:true,
-      tempo:{default:72,min:40,max:144},
-      /* register: transposed start stays near the master register; keys whose
-         semitone offset ≥ shiftDownFrom are dropped one octave (keeps RH on the
-         treble staff, LH on the bass staff without heavy ledger lines) */
-      register:{rh:{shiftDownFrom:12},lh:{shiftDownFrom:6}},
-      /* original 4-bar design: steps up, steps down, tonic, blocked chord */
+      tempo:{default:72,min:40,max:120},
+      /* register: hands stay exactly ONE octave apart in every key (lesson
+         rule for hands together). shiftDownFrom:12 = never drop an octave;
+         adjust per key here (data, not UI) if the instructor wants another
+         octave placement. */
+      register:{rh:{shiftDownFrom:12},lh:{shiftDownFrom:12}},
+      /* Lesson 1 pattern — scale degrees 1-2-3-4 | 5-4-3-2 | 1
+         (two measures of quarters, whole-note tonic to finish) */
       steps:[
         {d:"q", rh:["C4"], lh:["C3"], fr:[1], fl:[5], roman:null},
         {d:"q", rh:["D4"], lh:["D3"], fr:[2], fl:[4], roman:null},
@@ -34,13 +36,13 @@ const PLEx=(()=>{
         {d:"q", rh:["F4"], lh:["F3"], fr:[4], fl:[2], roman:null},
         {d:"q", rh:["E4"], lh:["E3"], fr:[3], fl:[3], roman:null},
         {d:"q", rh:["D4"], lh:["D3"], fr:[2], fl:[4], roman:null},
-        {d:"w", rh:["C4"], lh:["C3"], fr:[1], fl:[5], roman:null},
-        {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"}
+        {d:"w", rh:["C4"], lh:["C3"], fr:[1], fl:[5], roman:null}
       ]
     },
     "scale-major-1oct":{
+      /* engine demo — becomes a later lesson; hidden from the Lesson 1 screen */
       id:"scale-major-1oct", category:"scale", mode:"major", masterTonic:"C",
-      titleKey:"ex.scaleMajor1", time:[4,4], octaves:1, difficulty:2, enabled:true,
+      titleKey:"ex.scaleMajor1", time:[4,4], octaves:1, difficulty:2, enabled:false,
       tempo:{default:60,min:40,max:132},
       register:{rh:{shiftDownFrom:12},lh:{shiftDownFrom:6}},
       /* original 4-bar design: up, down, hold the tonic.
@@ -66,15 +68,33 @@ const PLEx=(()=>{
     }
   };
 
-  /* keys currently enabled per exercise (instructor-controlled; all 13 written
-     majors / 13 written minors are supported by the data model).
+  /* keys available per exercise, in SUGGESTED PROGRESSION order (this order
+     drives the Key selector). Five-finger patterns keep the same 1-5 fingering
+     in every key, so all 13 written majors are enabled.
      NOTE: the scale is enabled only for C and G on purpose — they share the
      master's thumb-crossing fingering. Black-key scales (F#, Gb, Db, …) use
      DIFFERENT standard fingering, so they must get per-key fingering
      overrides (DATA_FINGERING_OVERRIDES or instructor edits) BEFORE being
      enabled here. Fingering is never blindly transposed as playable truth —
      it is data that the instructor confirms per key. */
-  const KEYS_ENABLED={ "ff-major":["C","F#","Gb"], "scale-major-1oct":["C","G"] };
+  const KEYS_ENABLED={
+    "ff-major":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "scale-major-1oct":["C","G"]
+  };
+
+  /* teacher key enable/disable (per exercise), stored on this device.
+     keysFor() returns the progression order minus teacher-disabled keys. */
+  const LS_KEYS="pl-keys-disabled-v1";
+  function disabledKeys(){
+    try{ return JSON.parse(localStorage.getItem(LS_KEYS))||{}; }catch(e){ return {}; }
+  }
+  function setKeyEnabled(exId,key,on){
+    const d=disabledKeys();
+    d[exId]=d[exId]||{};
+    if(on) delete d[exId][key]; else d[exId][key]=1;
+    localStorage.setItem(LS_KEYS,JSON.stringify(d));
+  }
+  function keyEnabled(exId,key){ return !(disabledKeys()[exId]||{})[key]; }
 
   /* per-key data overrides shipped with the site (instructor-authored),
      e.g. PL_FINGERING_OVERRIDES["ff-major"]["Gb"]={rh:{0:[1],…},lh:{…}} */
@@ -128,8 +148,13 @@ const PLEx=(()=>{
   }
 
   function list(){ return Object.values(MASTERS).filter(m=>m.enabled); }
-  function keysFor(exId){ return KEYS_ENABLED[exId]||[]; }
+  function allKeys(exId){ return KEYS_ENABLED[exId]||[]; }
+  function keysFor(exId){
+    const ks=allKeys(exId).filter(k=>keyEnabled(exId,k));
+    return ks.length?ks:allKeys(exId).slice(0,1);   /* never leave zero keys */
+  }
 
-  return {MASTERS,expand,list,keysFor,applyOverride,setLocalFingering,clearLocalFingering};
+  return {MASTERS,expand,list,keysFor,allKeys,keyEnabled,setKeyEnabled,
+          applyOverride,setLocalFingering,clearLocalFingering};
 })();
 if(typeof module!=="undefined") module.exports=PLEx;

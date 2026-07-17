@@ -18,6 +18,9 @@ http(s). Web MIDI needs Chrome/Edge on https or localhost.
   exercise type + per-key expansion + fingering resolution
   (default → per-key data override → instructor local override).
   MusicXML import (phase 2) will feed this same shape.
+- `js/lessons.js` — lesson metadata (level/number, goal, formula chip,
+  exercise reference). The lesson screen renders whatever is here; this is the
+  template every technique lesson follows.
 - `js/notation.js` — original SVG renderer (single/grand staff, key/time
   signatures, ledger lines, chords, fingering, Roman numerals, per-step
   highlight states).

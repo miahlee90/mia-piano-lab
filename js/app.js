@@ -7,7 +7,7 @@
   const st={ ex:"ff-major", key:"C", hand:"rh", mode:"learn",
              tempo:72, loop:false, metronome:false, sound:true,
              showFing:true, fingerEdit:false, tolMs:180 };
-  let score=null, notation=null, piano=null, cur=-1, countTimer=null;
+  let lesson=null, score=null, notation=null, piano=null, cur=-1, countTimer=null;
 
   /* ---------- helpers ---------- */
   function keyName(tonic,mode){
@@ -73,6 +73,7 @@
   function startSession(){
     PLPlayer.stop(); notation.clearStates(); piano.clearAll(); cur=-1;
     PLAudio.ensure();
+    PLProgress.touch(st.ex,st.key,st.hand);   /* marks this key·hand In Progress */
     const begin=()=>PLSession.start({
       score, hand:st.hand, mode:st.mode, tempo:st.tempo, tolMs:st.tolMs,
       onTarget(i){
@@ -80,15 +81,17 @@
         else showStep(i);
         fb(t("fb.waiting",{i:i+1,n:score.steps.length}));
       },
-      onNote(midi,ok){ piano.flash(midi,ok?"k-correct":"k-wrong",ok?260:450); if(!ok) fb(t("fb.wrong")); },
+      onNote(midi,ok){ piano.flash(midi,ok?"k-correct":"k-wrong",ok?260:450); fb(ok?t("fb.correct"):t("fb.wrong")); },
       onStepDone(i){ notation.setStepState(i,"correct"); setTimeout(()=>{ if(!PLSession.isActive()||cur!==i) notation.setStepState(i,"done"); },280); },
       onFinish(sum){
         piano.clearTargets();
         let msg="<b>"+t("fb.done",{p:sum.pitchAcc,w:sum.wrong})+"</b>";
         if(sum.rhythmAcc!=null) msg+=t("fb.doneRhythm",{r:sum.rhythmAcc,t:sum.tempo});
-        fb(msg+"<br>"+t("fb.saved"));
+        const next=st.hand==="rh"?t("fb.nextLH"):st.hand==="lh"?t("fb.nextHT"):"";
+        fb(msg+(next?"<br>"+next:"")+"<br>"+t("fb.saved"));
         PLProgress.record({ex:st.ex,key:st.key,hand:st.hand,mode:sum.mode,
-          tempo:sum.tempo,pitchAcc:sum.pitchAcc,rhythmAcc:sum.rhythmAcc,completed:sum.completed});
+          tempo:sum.tempo,pitchAcc:sum.pitchAcc,rhythmAcc:sum.rhythmAcc,
+          wrong:sum.wrong,completed:sum.completed});
         renderProgress(); updateControls();
       }
     });
@@ -130,17 +133,21 @@
     });
   }
 
-  /* ---------- progress panel ---------- */
+  /* ---------- progress panel: every key × hand tracked separately ---------- */
   function renderProgress(){
-    const rows=[];
-    PLEx.keysFor(st.ex).forEach(k=>["rh","lh","ht"].forEach(h=>{
-      const b=PLProgress.best(st.ex,k,h);
-      if(b) rows.push(`<tr><td>${keyName(k,score.mode)}</td><td>${t("hand."+h+".short")}</td>`+
-        `<td>♩=${b.tempo}</td><td>${b.pitchAcc}%${b.rhythmAcc!=null?" · "+b.rhythmAcc+"%":""}</td></tr>`);
-    }));
-    $("#progList").innerHTML=rows.length
-      ?`<table><tr><th>${t("ui.key")}</th><th>${t("ui.hand")}</th><th>${t("ui.tempo")}</th><th>${t("prog.best")}</th></tr>${rows.join("")}</table>`
-      :`<p>${t("prog.none")}</p>`;
+    const rows=PLEx.keysFor(st.ex).map(k=>{
+      const cells=["rh","lh","ht"].map(h=>{
+        const s=PLProgress.status(st.ex,k,h);
+        const b=PLProgress.best(st.ex,k,h);
+        const icon=s==="completed"?"✓":s==="progress"?"●":"–";
+        const tip=b?`${t("prog.best")}: ♩=${b.tempo} · ${b.pitchAcc}%`:t("status."+s);
+        return `<td class="ps-${s}" title="${tip}">${icon}</td>`;
+      }).join("");
+      return `<tr><td>${keyName(k,score.mode)}</td>${cells}</tr>`;
+    });
+    $("#progList").innerHTML=
+      `<table class="ps"><tr><th>${t("ui.key")}</th><th>${t("hand.rh.short")}</th><th>${t("hand.lh.short")}</th><th>${t("hand.ht.short")}</th></tr>${rows.join("")}</table>`+
+      `<p class="ps-legend">✓ ${t("status.completed")} · ● ${t("status.progress")} · – ${t("status.none")}</p>`;
   }
 
   /* ---------- controls ---------- */
@@ -165,10 +172,33 @@
     if(state==="stop"){ /* leave last highlight for review */ }
   }
 
+  /* ---------- teacher panel: enable/disable keys per exercise ---------- */
+  function renderTeacherKeys(){
+    $("#teacherKeys").innerHTML=PLEx.allKeys(st.ex).map(k=>{
+      const M=PLEx.MASTERS[st.ex];
+      return `<label><input type="checkbox" data-k="${k}" ${PLEx.keyEnabled(st.ex,k)?"checked":""}>`+
+             `${keyName(k,M.mode)}</label>`;
+    }).join("");
+    $("#teacherKeys").querySelectorAll("input").forEach(c=>c.onchange=()=>{
+      PLEx.setKeyEnabled(st.ex,c.dataset.k,c.checked);
+      fillKeysRef(); rebuild(); renderTeacherKeys();
+    });
+  }
+  let fillKeysRef=()=>{};
+
   function boot(){
     document.title=PL_CONFIG.APP_NAME;
     $("#appName").textContent=PL_CONFIG.APP_NAME;
     PLI18N.apply();
+
+    /* lesson framing — all text/data from lessons.js + locales, none hardcoded */
+    lesson=PLLessons.current();
+    st.ex=lesson.exercise;
+    $("#lessonCrumb").textContent=t("lesson.crumb",{l:lesson.level,n:lesson.lesson});
+    $("#lessonTitle").textContent=t(lesson.titleKey);
+    $("#lessonGoal").textContent=t(lesson.goalKey);
+    $("#lessonDesc").textContent=t(lesson.descKey);
+    $("#formulaChip").innerHTML=`<b>${lesson.formula.join("–")}</b> · ${t("formula.degrees")} · ${t(lesson.formulaNoteKey)}`;
 
     const exSel=$("#selEx");
     exSel.innerHTML=PLEx.list().map(m=>`<option value="${m.id}">${t(m.titleKey)}</option>`).join("");
@@ -183,7 +213,9 @@
       el.min=T.min; el.max=T.max; el.value=st.tempo=T.default;
       $("#tempoVal").textContent=st.tempo;
     }
+    fillKeysRef=fillKeys;
     fillKeys();
+    renderTeacherKeys();
     $("#selKey").onchange=e=>{ st.key=e.target.value; rebuild(); };
 
     seg($("#segHand"),[{v:"rh",label:t("hand.rh.short")},{v:"lh",label:t("hand.lh.short")},{v:"ht",label:t("hand.ht.short")}],

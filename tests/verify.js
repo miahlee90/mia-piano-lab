@@ -5,7 +5,8 @@
    MIDI validation maps enharmonics to the same physical keys, and fingering
    overrides apply cleanly. */
 const PLPitch=require("../js/pitch.js");   global.PLPitch=PLPitch;
-global.localStorage={getItem:()=>null,setItem:()=>{},removeItem:()=>{}};
+global.localStorage={_d:{},getItem(k){return k in this._d?this._d[k]:null;},
+  setItem(k,v){this._d[k]=String(v);},removeItem(k){delete this._d[k];}};
 const PLEx=require("../js/exercises.js");
 
 let fails=0, tests=0;
@@ -62,23 +63,47 @@ eq("F#/Gb same physical keys (RH)",
 eq("F#/Gb same physical keys (LH)",
    FS.steps.map(s=>s.lh.map(PLPitch.midi)), GB.steps.map(s=>s.lh.map(PLPitch.midi)));
 ok("F#/Gb different notation",JSON.stringify(FS.steps)!==JSON.stringify(GB.steps));
-eq("LH register drops for 6-semitone keys",GB.steps[0].lh,["Gb2"]);
+eq("Gb LH one octave below RH",GB.steps[0].lh,["Gb3"]);
 eq("C LH stays at C3",C.steps[0].lh,["C3"]);
-eq("chord step is a group of 3",C.steps[9].rh,["C4","E4","G4"]);
-eq("chord roman label",C.steps[9].roman,"I");
+eq("lesson pattern: 9 steps (1234|5432|1)",C.steps.length,9);
+eq("final step is a whole note on the tonic",[C.steps[8].d,C.steps[8].rh[0]],["w","C4"]);
 
 /* ---- fingering: defaults + override precedence ---- */
 eq("RH default fingering",C.steps.slice(0,5).map(s=>s.fr[0]),[1,2,3,4,5]);
+eq("RH descending fingering",C.steps.slice(4,9).map(s=>s.fr[0]),[5,4,3,2,1]);
 eq("LH default fingering",C.steps.slice(0,5).map(s=>s.fl[0]),[5,4,3,2,1]);
+eq("LH descending fingering",C.steps.slice(4,9).map(s=>s.fl[0]),[1,2,3,4,5]);
 const ovSteps=PLEx.expand("ff-major","F#").steps;
-PLEx.applyOverride(ovSteps,{rh:{0:{0:2}},lh:{9:{2:2}}});
+PLEx.applyOverride(ovSteps,{rh:{0:{0:2}},lh:{8:{0:4}}});
 eq("override RH step0",ovSteps[0].fr[0],2);
-eq("override LH chord top",ovSteps[9].fl[2],2);
-eq("override leaves others",ovSteps[1].fr[0],2===3?0:2); /* step1 default = 2 */
+eq("override LH final",ovSteps[8].fl[0],4);
+eq("override leaves others",ovSteps[1].fr[0],2); /* step1 default = 2 */
 
 /* ---- durations fill 4/4 measures ---- */
 const beats=C.steps.reduce((a,s)=>a+({w:4,h:2,q:1})[s.d],0);
-eq("total beats = 4 measures of 4/4",beats,16);
+eq("total beats = 3 measures of 4/4",beats,12);
+
+/* ---- REQUIRED KEYS: exact note names for all 13 written majors ---- */
+const EXPECT={C:"C D E F G",G:"G A B C D",D:"D E F# G A",A:"A B C# D E",
+  E:"E F# G# A B",B:"B C# D# E F#","F#":"F# G# A# B C#","Gb":"Gb Ab Bb Cb Db",
+  "Db":"Db Eb F Gb Ab","Ab":"Ab Bb C Db Eb","Eb":"Eb F G Ab Bb",
+  "Bb":"Bb C D Eb F",F:"F G A Bb C"};
+for(const k in EXPECT){
+  const ex=PLEx.expand("ff-major",k);
+  eq("ff "+k+" spelling",ex.steps.slice(0,5).map(s=>s.rh[0].replace(/\d/,"")).join(" "),EXPECT[k]);
+  const m=ex.steps.slice(0,5).map(s=>PLPitch.midi(s.rh[0]));
+  eq("ff "+k+" is W-W-H-W",[m[1]-m[0],m[2]-m[1],m[3]-m[2],m[4]-m[3]],[2,2,1,2]);
+  eq("ff "+k+" LH mirrors RH an octave lower",
+     ex.steps.map(s=>PLPitch.midi(s.rh[0])-PLPitch.midi(s.lh[0])).every(d=>d===12),true);
+}
+eq("13 keys in suggested-progression order",PLEx.allKeys("ff-major"),
+   ["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"]);
+
+/* ---- teacher key enable/disable ---- */
+PLEx.setKeyEnabled("ff-major","B",false);
+ok("teacher can disable a key",!PLEx.keysFor("ff-major").includes("B"));
+PLEx.setKeyEnabled("ff-major","B",true);
+ok("teacher can re-enable a key",PLEx.keysFor("ff-major").includes("B"));
 
 /* ---- major scale, one octave (C and G share master fingering) ---- */
 const SC=PLEx.expand("scale-major-1oct","C");

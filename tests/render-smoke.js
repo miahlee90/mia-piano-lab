@@ -10,8 +10,8 @@ global.localStorage={getItem:()=>null,setItem:()=>{},removeItem:()=>{}};
 global.document={addEventListener:()=>{},querySelector:()=>null,querySelectorAll:()=>[]};
 function load(f){ vm.runInThisContext(fs.readFileSync(path.join(root,f),"utf-8"),{filename:f}); }
 ["js/config.js","locales/en.js","js/i18n.js","js/pitch.js","js/exercises.js",
- "js/notation.js","js/piano.js","js/midi.js","js/player.js","js/practice.js",
- "js/progress.js","js/app.js"].forEach(load);   /* app.js must load without DOM */
+ "js/lessons.js","js/notation.js","js/piano.js","js/midi.js","js/player.js",
+ "js/practice.js","js/progress.js","js/app.js"].forEach(load);   /* app.js must load without DOM */
 
 let fails=0,tests=0;
 function ok(name,cond){ tests++; if(!cond){fails++;console.log("  FAIL "+name);} }
@@ -24,19 +24,19 @@ function svgFor(tonic,hand,opts){
 }
 
 const cRH=svgFor("C","rh");
-ok("10 step groups",count(cRH,/class="nstep"/g)===10);
+ok("9 step groups (1234|5432|1)",count(cRH,/class="nstep"/g)===9);
 ok("C major: no key-sig accidentals",count(cRH,/[♯♭]/g)===0);
-ok("fingering rendered",count(cRH,/class="fing fing-rh"/g)===12);   /* 8q+1w+3 chord */
-ok("roman I rendered",cRH.includes(">I</text>"));
+ok("fingering rendered",count(cRH,/class="fing fing-rh"/g)===9);
+ok("whole-note tonic at the end",cRH.includes('rx="10.5"'));
 ok("treble clef, no brace",cRH.includes("clef-stroke")&&!cRH.includes("brace"));
 ok("final barline",cRH.includes("barfinal"));
-ok("3 mid barlines",count(cRH,/class="barline"/g)===3+1);           /* 3 measure + 1 thin final */
+ok("2 measure barlines + thin final",count(cRH,/class="barline"/g)===2+1);
 
 const fsHT=svgFor("F#","ht");
 ok("F# ht: 12 sharps in key sigs",count(fsHT,/♯/g)===12);
 ok("F# ht: no flats",count(fsHT,/♭/g)===0);
 ok("grand staff brace",fsHT.includes("brace"));
-ok("both hands' fingering",count(fsHT,/fing-rh/g)===12&&count(fsHT,/fing-lh/g)===12);
+ok("both hands' fingering",count(fsHT,/fing-rh/g)===9&&count(fsHT,/fing-lh/g)===9);
 
 const gbLH=svgFor("Gb","lh");
 ok("Gb lh: 6 flats",count(gbLH,/♭/g)===6);

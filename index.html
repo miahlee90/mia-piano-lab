@@ -15,6 +15,12 @@
   </div>
 </header>
 <main class="pl-main">
+  <section class="lesson-head card">
+    <div class="crumb" id="lessonCrumb"></div>
+    <h2 id="lessonTitle"></h2>
+    <p class="goal" id="lessonGoal"></p>
+    <p class="desc" id="lessonDesc"></p>
+  </section>
   <section class="pl-controls card">
     <div class="ctl-row">
       <label><span data-i18n="ui.exercise"></span><select id="selEx"></select></label>
@@ -45,7 +51,10 @@
     </div>
   </section>
 
-  <h2 id="exTitle" class="ex-title"></h2>
+  <div class="formula-row">
+    <h2 id="exTitle" class="ex-title"></h2>
+    <div class="formula" id="formulaChip"></div>
+  </div>
   <section id="score" class="score-wrap card" aria-label="Musical score"></section>
   <section id="kbd" class="kbd-wrap" aria-label="Piano keyboard"></section>
 
@@ -54,8 +63,15 @@
     <div class="card"><h3 data-i18n="prog.title"></h3><div id="progList"></div></div>
   </section>
 
+  <details class="pl-setup card" id="teacherPanel">
+    <summary data-i18n="teacher.title"></summary>
+    <p data-i18n="teacher.keys"></p>
+    <div id="teacherKeys" class="tkeys"></div>
+  </details>
+
   <details class="pl-setup card">
     <summary data-i18n="setup.title"></summary>
+    <p class="local-note" data-i18n="setup.local"></p>
     <p data-i18n="setup.p1"></p>
     <p data-i18n="setup.p2"></p>
     <p data-i18n="setup.p3"></p>
@@ -67,6 +83,7 @@
 <script src="js/i18n.js"></script>
 <script src="js/pitch.js"></script>
 <script src="js/exercises.js"></script>
+<script src="js/lessons.js"></script>
 <script src="js/notation.js"></script>
 <script src="js/piano.js"></script>
 <script src="js/audio.js"></script>

@@ -53,10 +53,13 @@ b,strong{font-weight:600}
 .lesson-head h2{margin:0 0 6px;font-size:1.45rem;font-weight:800;letter-spacing:-.3px;color:var(--brand-dark)}
 .lesson-head .goal{margin:0;font-weight:600}
 .lesson-head .desc{margin:3px 0 0;color:var(--muted);font-size:13.5px}
-.lesson-head .pattern-line{margin:10px 0 0;padding:9px 14px;background:var(--cream);
-  border-radius:9px;font-size:13.5px;color:var(--ink-2)}
-.lesson-head .pattern-line b{color:var(--brand-dark);font-size:15px;letter-spacing:1.5px}
-.lesson-head .pattern-long{color:var(--muted)}
+.mia-strip-sm{margin:12px 0 0}
+.mia-strip-sm .mia-avatar{width:50px;height:62px}
+.mia-strip-sm .mia-bubble{background:var(--cream);border-color:#ded1b0;flex:0 1 auto;
+  font-size:13.5px;color:var(--ink-2)}
+.mia-strip-sm .mia-bubble::before{background:var(--cream);border-color:#ded1b0}
+.mia-strip-sm .mia-bubble b{color:var(--brand-dark);font-size:15px;letter-spacing:1.5px}
+.pattern-long{color:var(--muted)}
 
 /* controls */
 .pl-controls{display:flex;flex-direction:column;gap:12px}

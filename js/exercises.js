@@ -402,6 +402,62 @@ const PLEx=(()=>{
     ]
   };
 
+  /* Unit 8 — more scales: chromatic (fingering RULE-GENERATED per key:
+     black keys 3, white keys 1, consecutive whites 1-2 / 2-1), whole-tone,
+     blues, WH-diminished (octatonic) and the seven modes. mode:"tonic" —
+     the Key selector shows plain tonics (spelling set = the 13 written
+     majors). Whole-tone/blues/diminished/mode default fingerings are
+     SUGGESTIONS pending instructor confirmation (editable per key). */
+  (function(){
+    const oct=sp=>sp.replace(/\d/,n=>n-1);
+    const seq=a=>a.concat(a.slice().reverse());
+    function mkUD(id,title,up,frA,flA,o){
+      const notes=seq(up), fr=seq(frA), fl=seq(flA);
+      const n=notes.length, peak=up.length-1;
+      MASTERS[id]={id,category:o.cat||"scale-x",mode:"tonic",masterTonic:"C",
+        titleKey:title,time:o.time||[4,4],octaves:1,difficulty:3,enabled:true,
+        chromatic:!!o.chromatic,
+        formula:o.formula,formulaNoteKey:o.note,
+        tempo:{default:o.bpm||72,min:40,max:120},
+        register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
+        steps:notes.map((sp,i)=>({
+          d:(o.hold&&(i===peak||i===n-1))?o.hold:"q",
+          rh:[sp],lh:[oct(sp)],fr:[fr[i]],fl:[fl[i]],roman:null}))};
+    }
+    mkUD("chromatic-1oct","ex.chromatic",
+      ["C4","C#4","D4","D#4","E4","F4","F#4","G4","G#4","A4","A#4","B4","C5"],
+      [1,3,1,3,1,2,3,1,3,1,3,1,2],[1,3,1,3,2,1,3,1,3,1,3,2,1],
+      {chromatic:true,hold:"h",formula:["H"],note:"lesson.l8.chromatic",bpm:80});
+    mkUD("wholetone-1oct","ex.wholetone",
+      ["C4","D4","E4","F#4","G#4","A#4","C5"],
+      [1,2,3,4,1,2,3],[3,2,1,4,3,2,1],
+      {time:[3,4],hold:"h.",formula:["W"],note:"lesson.l8.wholetone"});
+    mkUD("blues-1oct","ex.blues",
+      ["C4","Eb4","F4","F#4","G4","Bb4","C5"],
+      [1,2,3,4,1,2,5],[5,4,3,2,1,3,1],
+      {time:[3,4],hold:"h.",formula:["m3","W","H","H","m3","W"],note:"lesson.l8.blues"});
+    mkUD("dim-1oct","ex.dim",
+      ["C4","D4","Eb4","F4","Gb4","Ab4","A4","B4","C5"],
+      [1,2,3,4,1,2,3,4,5],[5,4,3,2,1,4,3,2,1],
+      {hold:"h",formula:["W","H"],note:"lesson.l8.dim"});
+    const SCF=[1,2,3,1,2,3,4,5], SCL=[5,4,3,2,1,3,2,1];
+    [["mode-ionian","ex.modeIonian",["C4","D4","E4","F4","G4","A4","B4","C5"],
+      ["W","W","H","W","W","W","H"],"lesson.l8.ionian"],
+     ["mode-dorian","ex.modeDorian",["C4","D4","Eb4","F4","G4","A4","Bb4","C5"],
+      ["W","H","W","W","W","H","W"],"lesson.l8.dorian"],
+     ["mode-phrygian","ex.modePhrygian",["C4","Db4","Eb4","F4","G4","Ab4","Bb4","C5"],
+      ["H","W","W","W","H","W","W"],"lesson.l8.phrygian"],
+     ["mode-lydian","ex.modeLydian",["C4","D4","E4","F#4","G4","A4","B4","C5"],
+      ["W","W","W","H","W","W","H"],"lesson.l8.lydian"],
+     ["mode-mixolydian","ex.modeMixolydian",["C4","D4","E4","F4","G4","A4","Bb4","C5"],
+      ["W","W","H","W","W","H","W"],"lesson.l8.mixolydian"],
+     ["mode-aeolian","ex.modeAeolian",["C4","D4","Eb4","F4","G4","Ab4","Bb4","C5"],
+      ["W","H","W","W","H","W","W"],"lesson.l8.aeolian"],
+     ["mode-locrian","ex.modeLocrian",["C4","Db4","Eb4","F4","Gb4","Ab4","Bb4","C5"],
+      ["H","W","W","H","W","W","W"],"lesson.l8.locrian"]
+    ].forEach(([id,ti,up,f,note])=>mkUD(id,ti,up,SCF,SCL,{cat:"mode",formula:f,note}));
+  })();
+
   /* Unit 6 — arpeggios (root position). Fingering from the instructor's
      chart tables (ARP_FINGERINGS_MAJOR/MINOR — 7 values = 2-oct ascent;
      the 1-oct ascent is values 1,2,3 + the last). Top note repeated, as in
@@ -571,7 +627,18 @@ const PLEx=(()=>{
     "inv-major":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "inv-minor":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
     "prog-inv-6":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
-    "prog-inv-64":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"]
+    "prog-inv-64":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "chromatic-1oct":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "wholetone-1oct":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "blues-1oct":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "dim-1oct":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "mode-ionian":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "mode-dorian":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "mode-phrygian":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "mode-lydian":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "mode-mixolydian":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "mode-aeolian":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "mode-locrian":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"]
   };
 
   /* teacher key enable/disable (per exercise), stored on this device.
@@ -620,7 +687,7 @@ const PLEx=(()=>{
   function expand(exId,tonic){
     const M=MASTERS[exId];
     if(!M) throw new Error("unknown exercise "+exId);
-    const keys=M.mode==="major"?PLPitch.MAJOR_KEYS:PLPitch.MINOR_KEYS;
+    const keys=M.mode==="minor"?PLPitch.MINOR_KEYS:PLPitch.MAJOR_KEYS;
     const K=keys[tonic];
     if(!K) throw new Error("unknown "+M.mode+" key "+tonic);
     const {ls,ss}=PLPitch.keyInterval(tonic,M.masterTonic);
@@ -658,6 +725,22 @@ const PLEx=(()=>{
         const fr=seq(T.rh), fl=seq(T.lh);
         steps.forEach((s,i)=>{ if(s.rh.length) s.fr=[fr[i]]; if(s.lh.length) s.fl=[fl[i]]; });
       }
+    }
+    /* chromatic: fingering follows the KEY COLOR of the actual keys —
+       black 3, white 1, consecutive whites 1-2 (RH) / 2-1 (LH) ascending;
+       descending mirrors. Correct from any written tonic. */
+    if(M.chromatic){
+      const half=steps.length/2;
+      const isB=m=>[1,3,6,8,10].includes(m%12);
+      const mid=i=>PLPitch.midi(steps[i].rh[0]);
+      const rh=[],lh=[];
+      for(let i=0;i<half;i++){
+        const b=isB(mid(i));
+        rh.push(b?3:(i>0&&!isB(mid(i-1))?2:1));
+        lh.push(b?3:(i<half-1&&!isB(mid(i+1))?2:1));
+      }
+      const fr=rh.concat(rh.slice().reverse()), fl=lh.concat(lh.slice().reverse());
+      steps.forEach((s,i)=>{ s.fr=[fr[i]]; s.fl=[fl[i]]; });
     }
     applyOverride(steps,(DATA_FINGERING_OVERRIDES[exId]||{})[tonic]);
     applyOverride(steps,(localOverrides()[exId]||{})[tonic]);

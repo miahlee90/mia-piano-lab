@@ -164,6 +164,18 @@ ok("broken study: 15 dots on the 5 blocked chords",count(bb,/class="dot"/g)===15
     })));
 }
 
+/* ---- Unit 8: more scales ---- */
+{
+  const ch=svgFor("C","rh",null,"chromatic-1oct");
+  ok("chromatic: 26 steps",count(ch,/class="nstep"/g)===26);
+  ok("chromatic: sharps rendered",count(ch,/♯/g)>=8);
+  ["chromatic-1oct","wholetone-1oct","blues-1oct","dim-1oct",
+   "mode-dorian","mode-lydian","mode-locrian"].forEach(ex=>
+    PLEx.allKeys(ex).forEach(k=>["rh","lh","ht"].forEach(h=>{
+      ok("no clipped coords "+ex+" "+k+" "+h,!/="-/.test(svgFor(k,h,null,ex)));
+    })));
+}
+
 /* ---- Unit 3: triad qualities — accidentals incl. double sharps/flats ---- */
 {
   const tq=svgFor("C","rh",null,"triad-qualities");

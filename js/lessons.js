@@ -13,7 +13,8 @@ const PLLessons=(()=>{
     {unit:4, nameKey:"unit.4"},         /* Major Scales */
     {unit:5, nameKey:"unit.5"},         /* Minor Scales (three forms) */
     {unit:6, nameKey:"unit.6"},         /* Arpeggios */
-    {unit:7, nameKey:"unit.7"}          /* Inversions */
+    {unit:7, nameKey:"unit.7"},         /* Inversions */
+    {unit:8, nameKey:"unit.8"}          /* More Scales */
   ];
   const LESSONS=[
     {
@@ -150,6 +151,44 @@ const PLLessons=(()=>{
       descKey:"lesson.l7n2.desc",
       formula:["I","IV","I","V7","I"], showDegrees:false,
       formulaNoteKey:"lesson.l7.prog6"
+    },
+    {
+      id:"l8-1", unit:8, label:"8.1",
+      exercises:["chromatic-1oct"],
+      titleKey:"lesson.l8n1.title", goalKey:"lesson.l8n1.goal",
+      descKey:"lesson.l8n1.desc",
+      formula:["H"], showDegrees:false, formulaNoteKey:"lesson.l8.chromatic"
+    },
+    {
+      id:"l8-2", unit:8, label:"8.2",
+      exercises:["wholetone-1oct"],
+      titleKey:"lesson.l8n2.title", goalKey:"lesson.l8n2.goal",
+      descKey:"lesson.l8n2.desc",
+      formula:["W"], showDegrees:false, formulaNoteKey:"lesson.l8.wholetone"
+    },
+    {
+      id:"l8-3", unit:8, label:"8.3",
+      exercises:["blues-1oct"],
+      titleKey:"lesson.l8n3.title", goalKey:"lesson.l8n3.goal",
+      descKey:"lesson.l8n3.desc",
+      formula:["m3","W","H","H","m3","W"], showDegrees:false,
+      formulaNoteKey:"lesson.l8.blues"
+    },
+    {
+      id:"l8-4", unit:8, label:"8.4",
+      exercises:["dim-1oct"],
+      titleKey:"lesson.l8n4.title", goalKey:"lesson.l8n4.goal",
+      descKey:"lesson.l8n4.desc",
+      formula:["W","H"], showDegrees:false, formulaNoteKey:"lesson.l8.dim"
+    },
+    {
+      id:"l8-5", unit:8, label:"8.5",
+      exercises:["mode-ionian","mode-dorian","mode-phrygian","mode-lydian",
+                 "mode-mixolydian","mode-aeolian","mode-locrian"],
+      titleKey:"lesson.l8n5.title", goalKey:"lesson.l8n5.goal",
+      descKey:"lesson.l8n5.desc",
+      formula:["W","W","H","W","W","W","H"], showDegrees:false,
+      formulaNoteKey:"lesson.l8.ionian"
     }
   ];
   return { list:()=>LESSONS,

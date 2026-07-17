@@ -12,7 +12,7 @@
   /* ---------- helpers ---------- */
   function keyName(tonic,mode){
     const disp=tonic.replace("#","♯").replace("b","♭");
-    return t(mode==="major"?"key.major":"key.minor",{k:disp});
+    return t(mode==="minor"?"key.minor":mode==="tonic"?"key.tonic":"key.major",{k:disp});
   }
   function stepTargets(i){
     const s=score.steps[i], out=[];

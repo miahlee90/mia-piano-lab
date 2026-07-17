@@ -200,9 +200,11 @@ eq("demo transposes with ties intact",PLEx.expand("engine-demo","D").steps[9].rh
 /* ---- curriculum structure (Unit.Lesson labels, Fundamentals style) ---- */
 const PLLessons=require("../js/lessons.js");
 eq("lesson labels",PLLessons.list().map(l=>l.label),
-   ["1.1","1.2","2.1","2.2","2.3","3.1","3.2","4.1","4.2","5.1","5.2","6.1","6.2","7.1","7.2"]);
-eq("lesson units",PLLessons.list().map(l=>l.unit),[1,1,2,2,2,3,3,4,4,5,5,6,6,7,7]);
-eq("units defined",PLLessons.units().map(u=>u.unit),[1,2,3,4,5,6,7]);
+   ["1.1","1.2","2.1","2.2","2.3","3.1","3.2","4.1","4.2","5.1","5.2",
+    "6.1","6.2","7.1","7.2","8.1","8.2","8.3","8.4","8.5"]);
+eq("lesson units",PLLessons.list().map(l=>l.unit),
+   [1,1,2,2,2,3,3,4,4,5,5,6,6,7,7,8,8,8,8,8]);
+eq("units defined",PLLessons.units().map(u=>u.unit),[1,2,3,4,5,6,7,8]);
 ok("every lesson's exercises exist",
    PLLessons.list().every(l=>l.exercises.every(id=>PLEx.MASTERS[id])));
 
@@ -413,6 +415,41 @@ eq("prog-inv-6 in F# keeps E# in the V7",
   for(const k of PLEx.allKeys(ex)) PLEx.expand(ex,k);
 });
 eq("lesson 7.2 offers both shapes",PLLessonsPeek("l7-2"),["prog-inv-6","prog-inv-64"]);
+
+/* ---- Unit 8: more scales ---- */
+const CH=PLEx.expand("chromatic-1oct","C");
+eq("chromatic: 26 steps, 7 bars",[CH.steps.length,
+   CH.steps.reduce((a,s)=>a+(s.d==="h"?2:1),0)],[26,28]);
+eq("chromatic RH fingering (rule: black=3, white pairs 1-2)",
+   CH.steps.map(s=>s.fr[0]).slice(0,13),[1,3,1,3,1,2,3,1,3,1,3,1,2]);
+eq("chromatic LH fingering (mirror rule)",
+   CH.steps.map(s=>s.fl[0]).slice(0,13),[1,3,1,3,2,1,3,1,3,1,3,2,1]);
+eq("chromatic from Gb starts on finger 3 (black key)",
+   PLEx.expand("chromatic-1oct","Gb").steps[0].fr[0],3);
+const WT=PLEx.expand("wholetone-1oct","C");
+eq("whole-tone notes",WT.steps.map(s=>s.rh[0]).slice(0,7),
+   ["C4","D4","E4","F#4","G#4","A#4","C5"]);
+ok("whole-tone: every step a whole step",
+   WT.steps.slice(0,7).map(s=>PLPitch.midi(s.rh[0]))
+     .every((m,i,a)=>i===0||m-a[i-1]===2));
+const BL=PLEx.expand("blues-1oct","C");
+eq("blues notes (1 b3 4 #4 5 b7)",BL.steps.map(s=>s.rh[0]).slice(0,7),
+   ["C4","Eb4","F4","F#4","G4","Bb4","C5"]);
+const DM=PLEx.expand("dim-1oct","C");
+eq("diminished: octatonic W-H",DM.steps.map(s=>s.rh[0]).slice(0,9),
+   ["C4","D4","Eb4","F4","Gb4","Ab4","A4","B4","C5"]);
+eq("dorian on C",PLEx.expand("mode-dorian","C").steps.map(s=>s.rh[0]).slice(0,8),
+   ["C4","D4","Eb4","F4","G4","A4","Bb4","C5"]);
+eq("locrian on C",PLEx.expand("mode-locrian","C").steps.map(s=>s.rh[0]).slice(0,8),
+   ["C4","Db4","Eb4","F4","Gb4","Ab4","Bb4","C5"]);
+eq("lydian on G has C#",PLEx.expand("mode-lydian","G").steps[3].rh[0],"C#5");
+["chromatic-1oct","wholetone-1oct","blues-1oct","dim-1oct",
+ "mode-ionian","mode-dorian","mode-phrygian","mode-lydian",
+ "mode-mixolydian","mode-aeolian","mode-locrian"].forEach(ex=>{
+  ok(ex+" enabled for 13 tonics",PLEx.allKeys(ex).length===13);
+  for(const k of PLEx.allKeys(ex)) PLEx.expand(ex,k);
+});
+eq("lesson 8.5 offers all seven modes",PLLessonsPeek("l8-5").length,7);
 
 /* ---- reference tables from the instructor's chart (future units) ---- */
 ok("harmonic-minor fingering: 13 minor keys",

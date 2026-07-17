@@ -101,14 +101,34 @@ const PLNotation=(()=>{
     opts=opts||{};
     const showFing=opts.showFingering!==false;
     const hands=hand==="ht"?["rh","lh"]:[hand];
+    /* dynamic vertical geometry — pad for ledger notes, stems and fingering
+       from the actual note extents so nothing is ever clipped */
+    function diaRange(h){
+      let mn=99,mx=-99;
+      score.steps.forEach(s=>s[h].forEach(sp=>{
+        const d=PLPitch.dia(sp); if(d<mn)mn=d; if(d>mx)mx=d; }));
+      return {mn,mx};
+    }
+    const topHand=hands[0], botHand=hands[hands.length-1];
+    const tBase=baseIdx(topHand==="rh"?"treble":"bass");
+    const bBase=baseIdx(botHand==="rh"?"treble":"bass");
+    const rT=diaRange(topHand), rB=diaRange(botHand);
+    const overTop=Math.max(0,rT.mx-(tBase+8))*(GAP/2)+9;   /* above top line */
+    const overBot=Math.max(0,bBase-rB.mn)*(GAP/2)+9;       /* below bottom line */
+    const padTop=Math.max(34,overTop+(showFing&&topHand==="rh"?38:26));
     const geo={};
-    if(hand==="ht"){ geo.yT=46; geo.yB=46+60+72; }
-    else if(hand==="rh"){ geo.yT=46; }
-    else { geo.yB=40; }
+    if(hand==="ht"){
+      const innerT=Math.max(0,tBase-rT.mn)*(GAP/2);        /* RH below its staff */
+      const innerB=Math.max(0,rB.mx-(bBase+8))*(GAP/2);    /* LH above its staff */
+      geo.yT=padTop;
+      geo.yB=geo.yT+4*GAP+Math.max(64,innerT+innerB+30);
+    }
+    else if(hand==="rh") geo.yT=padTop;
+    else geo.yB=padTop;
     const topY   = hand==="lh"?geo.yB:geo.yT;
     const botY   = hand==="rh"?geo.yT:geo.yB;
     const sysBot = botY+4*GAP;
-    const romanY = sysBot+ (hands.includes("lh")&&showFing?58:34);
+    const romanY = sysBot+overBot+(hands.includes("lh")&&showFing?52:30);
     const H      = romanY+16;
 
     const ksN=Math.abs(score.sig);

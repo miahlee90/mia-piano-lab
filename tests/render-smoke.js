@@ -46,6 +46,11 @@ ok("bass clef only",gbLH.includes("clef-path")&&!gbLH.includes("clef-stroke"));
 const noFing=svgFor("C","rh",{showFingering:false});
 ok("fingering can be hidden (test mode)",count(noFing,/class="fing/g)===0);
 
+/* nothing may render outside the canvas in ANY key/hand (clipping guard) */
+PLEx.allKeys("ff-major").forEach(k=>["rh","lh","ht"].forEach(h=>{
+  ok("no clipped coords "+k+" "+h,!/="-/.test(svgFor(k,h)));
+}));
+
 /* keyboard range rule: complete black-key groups (start C, end E or B) */
 {
   let lo=61,hi=73;                          /* C#4..C#5-ish exercise range */

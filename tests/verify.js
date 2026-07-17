@@ -65,6 +65,14 @@ eq("F#/Gb same physical keys (LH)",
 ok("F#/Gb different notation",JSON.stringify(FS.steps)!==JSON.stringify(GB.steps));
 eq("Gb LH one octave below RH",GB.steps[0].lh,["Gb3"]);
 eq("C LH stays at C3",C.steps[0].lh,["C3"]);
+
+/* ---- register rule: RH starting tonics run A3..Ab4, LH one octave lower ---- */
+eq("C RH starts C4",C.steps[0].rh,["C4"]);
+eq("Ab RH starts Ab4",PLEx.expand("ff-major","Ab").steps[0].rh,["Ab4"]);
+eq("A RH starts A3",PLEx.expand("ff-major","A").steps[0].rh,["A3"]);
+eq("Bb RH starts Bb3",PLEx.expand("ff-major","Bb").steps[0].rh,["Bb3"]);
+eq("B RH starts B3",PLEx.expand("ff-major","B").steps[0].rh,["B3"]);
+eq("A LH starts A2",PLEx.expand("ff-major","A").steps[0].lh,["A2"]);
 eq("lesson pattern: 9 steps (1234|5432|1)",C.steps.length,9);
 eq("final step is a whole note on the tonic",[C.steps[8].d,C.steps[8].rh[0]],["w","C4"]);
 

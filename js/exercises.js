@@ -20,11 +20,10 @@ const PLEx=(()=>{
       id:"ff-major", category:"five-finger", mode:"major", masterTonic:"C",
       titleKey:"ex.ffMajor", time:[4,4], octaves:1, difficulty:1, enabled:true,
       tempo:{default:72,min:40,max:120},
-      /* register: hands stay exactly ONE octave apart in every key (lesson
-         rule for hands together). shiftDownFrom:12 = never drop an octave;
-         adjust per key here (data, not UI) if the instructor wants another
-         octave placement. */
-      register:{rh:{shiftDownFrom:12},lh:{shiftDownFrom:12}},
+      /* register (instructor 2026-07-17): RH starting tonics run A3 up to
+         Ab4 — keys whose tonic is A/Bb/B (≥9 semitones above C) drop one
+         octave. LH is always exactly one octave below RH. */
+      register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
       /* Lesson 1 pattern — scale degrees 1-2-3-4 | 5-4-3-2 | 1
          (two measures of quarters, whole-note tonic to finish) */
       steps:[

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher Dashboard · Piano Lab</title>
+<link rel="stylesheet" href="css/style.css?v=057">
+<style>
+.td-wrap{max-width:1100px;margin:0 auto;padding:0 20px 60px}
+.td-card{background:#fff;border:1px solid var(--hairline);border-radius:12px;box-shadow:var(--shadow);padding:16px 18px;margin:14px 0}
+.td-card input{font:inherit;font-size:15px;padding:9px;border:2px solid var(--hairline-input);border-radius:8px}
+.td-card button{font:inherit;font-weight:700;min-height:40px;cursor:pointer;border:none;border-radius:9999px;
+  padding:9px 18px;background:linear-gradient(135deg,#533afd,#665efd);color:#fff}
+.td-card button.ghost{background:#fff;color:var(--primary);border:1px solid var(--hairline)}
+.td-stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.td-stat{flex:1 1 130px;background:var(--cream);border-radius:10px;padding:10px;text-align:center}
+.td-stat b{display:block;font-size:22px;font-feature-settings:"tnum"}
+.td-matrix{overflow-x:auto}
+.td-matrix table{border-collapse:collapse;font-size:12.5px;min-width:640px}
+.td-matrix th,.td-matrix td{border:1px solid var(--hairline);padding:5px 7px;text-align:center;white-space:nowrap;font-feature-settings:"tnum"}
+.td-matrix th{background:#eef1ff;position:sticky;top:0}
+.td-matrix td:first-child,.td-matrix th:first-child{position:sticky;left:0;background:#fff;text-align:left;font-weight:700}
+.td-c100{background:#dcfce7}.td-cpart{background:#fef9c3}
+.td-cell{cursor:pointer}
+.td-err{color:#b91c1c;font-weight:700;min-height:18px}
+.td-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.td-tbl th,.td-tbl td{border-bottom:1px solid #eee;padding:6px 8px;text-align:left;font-feature-settings:"tnum"}
+.td-small{font-size:12.5px;color:var(--muted)}
+.td-modal{position:fixed;inset:0;background:rgba(20,20,40,.5);display:flex;align-items:center;justify-content:center;z-index:999;padding:12px}
+.td-modal>div{background:#fff;border-radius:14px;padding:18px;max-width:820px;width:100%;max-height:88vh;overflow:auto}
+.td-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
+</style>
+</head>
+<body>
+<header class="pl-header"><div class="inner">
+  <h1 id="appName"></h1><span class="sub">Teacher Dashboard</span>
+  <a class="hdr-link" href="index.html" data-i18n="toc.home"></a>
+</div></header>
+<main class="td-wrap" id="app"><div class="td-card">Loading…</div></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js?v=057"></script>
+<script src="locales/en.js?v=057"></script>
+<script src="js/i18n.js?v=057"></script>
+<script src="js/lessons.js?v=057"></script>
+<script src="js/curriculum.js?v=057"></script>
+<script>
+(async function(){
+  const COURSE="piano-lab";
+  document.title="Teacher Dashboard · "+PL_CONFIG.APP_NAME;
+  document.getElementById("appName").textContent=PL_CONFIG.APP_NAME;
+  const app=document.getElementById("app");
+  const fmt=d=>d?new Date(d).toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"}):"—";
+  const pct=(a,b)=>b?Math.round(100*a/b):0;
+  const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  if(!LMS_CONFIG.SUPABASE_URL||!LMS_CONFIG.SUPABASE_ANON_KEY){
+    app.innerHTML=`<div class="td-card"><h2>Not configured</h2><p>Fill in <code>js/config.js</code> first (see supabase/SETUP.md).</p></div>`; return;
+  }
+  const sb=supabase.createClient(LMS_CONFIG.SUPABASE_URL,LMS_CONFIG.SUPABASE_ANON_KEY);
+  async function rpc(fn,args){ const {data,error}=await sb.rpc(fn,args||{}); if(error) throw error; return data; }
+  const units=PL_CURRICULUM.units, pages=PL_CURRICULUM.pages;
+
+  let {data:{session}}=await sb.auth.getSession();
+  if(!session) return renderLogin();
+  boot();
+
+  function renderLogin(msg){
+    app.innerHTML=`<div class="td-card" style="max-width:460px;margin:24px auto">
+      <h2>Teacher Sign-in</h2>
+      <p class="td-small">Use your approved teacher email — the same one that works for Music Fundamentals.
+      You'll get a one-time sign-in link, or use a password if the administrator set one.</p>
+      <div class="td-row"><input id="em" type="email" placeholder="you@example.com" style="flex:1"><button id="go">Send link</button></div>
+      <div class="td-row"><input id="pw" type="password" placeholder="…or password (optional)" style="flex:1"><button id="goPw">Sign in</button></div>
+      <p class="td-err" id="err">${msg||""}</p></div>`;
+    document.getElementById("go").onclick=async()=>{
+      const email=document.getElementById("em").value.trim();
+      const {error}=await sb.auth.signInWithOtp({email,options:{shouldCreateUser:false,emailRedirectTo:location.href.split("#")[0]}});
+      document.getElementById("err").innerHTML=error?
+        (/not.*found|signups/i.test(error.message)?"This email is not authorized. Please contact the administrator.":esc(error.message)):
+        '<span style="color:#166534">Check your email and open the link on THIS device.</span>';
+    };
+    document.getElementById("goPw").onclick=async()=>{
+      const {error}=await sb.auth.signInWithPassword({email:document.getElementById("em").value.trim(),password:document.getElementById("pw").value});
+      if(error) document.getElementById("err").textContent=esc(error.message); else location.reload();
+    };
+  }
+  async function boot(){
+    let hello;
+    try{ hello=await rpc("teacher_hello"); }catch(e){ app.innerHTML=`<div class="td-card td-err">${esc(e.message)}</div>`; return; }
+    if(!hello.ok){ app.innerHTML=`<div class="td-card"><p class="td-err">${esc(hello.message||"Not authorized.")}</p>
+      <button onclick="location.reload()">Back</button></div>`; await sb.auth.signOut(); return; }
+    renderClasses();
+  }
+  async function renderClasses(){
+    app.innerHTML=`<div class="td-card">Loading classes…</div>`;
+    const {data:classes,error}=await sb.from("classes").select("*").order("created_at");
+    if(error){ app.innerHTML=`<div class="td-card td-err">${esc(error.message)}</div>`; return; }
+    /* only classes enrolled in the piano-lab course */
+    const {data:cc}=await sb.from("class_courses").select("class_id").eq("course_id",COURSE);
+    const plIds=new Set((cc||[]).map(x=>x.class_id));
+    const mine=(classes||[]).filter(c=>plIds.has(c.id));
+    let html=`<div class="td-card"><div class="td-row" style="justify-content:space-between">
+      <h2 style="margin:0">Piano Lab — My Classes</h2>
+      <span><button id="newClass">+ New class</button> <button class="ghost" id="signout">Sign out</button></span></div>
+      <p class="td-small">Classes created here are Piano Lab classes. Manage Music Fundamentals classes on that site.</p>
+      <table class="td-tbl"><tr><th>Class</th><th>Class Code</th><th>Created</th><th></th></tr>`+
+      mine.map(c=>`<tr style="${c.archived?"opacity:.5":""}">
+        <td><b>${esc(c.name)}</b>${c.archived?" (archived)":""}</td>
+        <td><code style="font-size:15px">${c.class_code}</code></td><td>${fmt(c.created_at)}</td>
+        <td><button data-open="${c.id}" ${c.archived?"disabled":""}>Open</button>
+            <button class="ghost" data-arch="${c.id}" data-to="${!c.archived}">${c.archived?"Restore":"Archive"}</button></td></tr>`).join("")+
+      `</table>${mine.length?"":"<p>No Piano Lab classes yet — create your first one!</p>"}</div>`;
+    app.innerHTML=html;
+    document.getElementById("signout").onclick=async()=>{ await sb.auth.signOut(); location.reload(); };
+    document.getElementById("newClass").onclick=async()=>{
+      const name=prompt("Class name (e.g. 'Class Piano I — Tue')"); if(!name) return;
+      const r=await rpc("create_class",{p_name:name,p_course:COURSE});
+      alert("Class created!\nClass Code: "+r.classCode+"\n\nStudents use this code to sign in.");
+      renderClasses();
+    };
+    app.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>renderClass(b.dataset.open));
+    app.querySelectorAll("[data-arch]").forEach(b=>b.onclick=async()=>{
+      if(b.dataset.to==="true"&&!confirm("Archive this class?")) return;
+      await rpc("set_class_archived",{p_class:b.dataset.arch,p_archived:b.dataset.to==="true"}); renderClasses(); });
+  }
+  async function renderClass(classId){
+    app.innerHTML=`<div class="td-card">Loading class…</div>`;
+    let m;
+    try{ m=await rpc("class_matrix_course",{p_class:classId,p_course:COURSE}); }
+    catch(e){ app.innerHTML=`<div class="td-card td-err">${esc(e.message)}</div>`; return; }
+    const students=(m.students||[]).filter(s=>!s.archived);
+    const week=Date.now()-7*864e5;
+    const activeW=students.filter(s=>s.lastActive&&new Date(s.lastActive)>week).length;
+    const avg=students.length?Math.round(students.reduce((a,s)=>a+pct(s.completedPages,pages.length),0)/students.length):0;
+    let html=`<div class="td-card">
+      <div class="td-row" style="justify-content:space-between">
+        <h2 style="margin:0">${esc(m.class.name)} <code style="font-size:15px">${m.class.code}</code></h2>
+        <button class="ghost" id="back">← All classes</button></div>
+      <div class="td-stats">
+        <div class="td-stat"><b>${students.length}</b>students</div>
+        <div class="td-stat"><b>${avg}%</b>avg completion</div>
+        <div class="td-stat"><b>${activeW}</b>active this week</div>
+      </div>
+      <div class="td-row" style="margin-top:10px"><button id="addStu">+ Add student</button>
+        <button id="csvImp">Import names (CSV)</button></div></div>
+      <div class="td-card td-matrix"><table><tr><th>Student</th>`+
+      units.map(u=>`<th title="${esc(u.title)}">U${u.unit}</th>`).join("")+
+      `<th>Lessons</th><th>Practiced</th><th></th></tr>`;
+    students.forEach(s=>{
+      html+=`<tr><td>${esc(s.name)}<div class="td-small">${s.lastActive?"active "+fmt(s.lastActive):"never signed in"}</div></td>`;
+      units.forEach(u=>{
+        const c=(s.units||{})[u.unit]||{done:0,total:pages.filter(p=>p.unit===u.unit).length};
+        const cls=c.done>=c.total&&c.total>0?"td-c100":c.done>0?"td-cpart":"";
+        html+=`<td class="td-cell ${cls}" data-stu="${s.id}" title="Unit ${u.unit}: ${c.done}/${c.total}">${c.done}/${c.total}</td>`;
+      });
+      html+=`<td><b>${s.completedPages}/${pages.length}</b></td><td><b>${s.practiceTotal||0}×</b></td>
+        <td><button data-rep="${s.id}">Report</button></td></tr>`;
+    });
+    html+=`</table>${students.length?"":"<p>No students yet.</p>"}</div>`;
+    app.innerHTML=html;
+    document.getElementById("back").onclick=renderClasses;
+    document.getElementById("addStu").onclick=async()=>{
+      const name=prompt("Student display name or nickname (no personal data needed):"); if(!name) return;
+      const r=await rpc("add_student",{p_class:classId,p_name:name});
+      showCards([{name,classCode:r.classCode,accessCode:r.accessCode}]); renderClass(classId);
+    };
+    document.getElementById("csvImp").onclick=async()=>{
+      const txt=prompt("Paste student names — one per line:"); if(!txt) return;
+      const names=txt.split(/[\n,]/).map(x=>x.trim()).filter(Boolean), cards=[];
+      for(const nm of names){ const r=await rpc("add_student",{p_class:classId,p_name:nm});
+        cards.push({name:nm,classCode:r.classCode,accessCode:r.accessCode}); }
+      showCards(cards); renderClass(classId);
+    };
+    app.querySelectorAll("[data-rep]").forEach(b=>b.onclick=()=>showReport(b.dataset.rep,classId));
+    app.querySelectorAll(".td-cell").forEach(c=>c.onclick=()=>showReport(c.dataset.stu,classId));
+  }
+  async function showReport(sid,classId){
+    const r=await rpc("student_report",{p_student:sid});
+    const P={}; (r.progress||[]).forEach(p=>{ if(p.course===COURSE) P[p.item]=p; });
+    const doneAll=pages.filter(p=>(P[p.item]||{}).status==="completed").length;
+    const totalPractice=pages.reduce((a,p)=>a+((P[p.item]||{}).lbdAttempts||0),0);
+    let html=`<h3>${esc(r.student.name)}</h3>
+      <p class="td-small">Lessons completed: <b>${doneAll}/${pages.length}</b> · total practices: <b>${totalPractice}×</b></p>
+      <table class="td-tbl"><tr><th></th><th>Lesson</th><th>Exercises finished</th><th>Practiced</th><th>Completed</th></tr>`;
+    pages.forEach(p=>{
+      const q=P[p.item]||{}; const st=q.status||"not_started";
+      const icon=st==="completed"?"✅":st==="in_progress"?"🟡":"⬜";
+      html+=`<tr><td>${icon}</td><td><b>${p.label}</b> ${esc(p.title)}</td>
+        <td>${(q.lbdDone||[]).length}/${p.lbdCount}</td><td>${q.lbdAttempts||0}×</td><td>${fmt(q.completedAt)}</td></tr>`;
+    });
+    html+=`</table><div class="td-row" style="margin-top:10px"><button onclick="document.querySelector('.td-modal').remove()">Close</button></div>`;
+    const d=document.createElement("div"); d.className="td-modal"; d.innerHTML=`<div>${html}</div>`;
+    d.onclick=e=>{ if(e.target===d) d.remove(); }; document.body.appendChild(d);
+  }
+  function showCards(cards){
+    const w=window.open("","_blank");
+    w.document.write(`<html><head><title>Student Access Cards</title><style>
+      body{font-family:system-ui,sans-serif;display:flex;flex-wrap:wrap;gap:12px;padding:16px}
+      .card{border:2px dashed #533afd;border-radius:12px;padding:16px 20px;width:280px}
+      .card b{font-size:18px} code{font-size:20px;letter-spacing:2px;display:block;margin:4px 0}
+      .lbl{font-size:11px;color:#666;text-transform:uppercase;margin-top:8px}
+      @media print{.noprint{display:none}}</style></head><body>
+      <div class="noprint" style="width:100%"><button onclick="print()">🖨 Print</button>
+      <b style="color:#b91c1c"> Save or print now — codes are shown only once.</b></div>`+
+      cards.map(c=>`<div class="card"><b>${c.name}</b>
+        <div class="lbl">Website</div><code style="font-size:13px;letter-spacing:0">${location.origin+location.pathname.replace(/teacher\.html$/,"student.html")}</code>
+        <div class="lbl">Class Code</div><code>${c.classCode}</code>
+        <div class="lbl">Access Code</div><code>${c.accessCode}</code></div>`).join("")+`</body></html>`);
+    w.document.close();
+  }
+})();
+</script>
+</body>
+</html>

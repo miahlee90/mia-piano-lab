@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Progress · Piano Lab</title>
+<link rel="stylesheet" href="css/style.css?v=057">
+<style>
+.sd-wrap{max-width:900px;margin:0 auto;padding:0 20px 60px}
+.sd-card{background:#fff;border:1px solid var(--hairline);border-radius:12px;box-shadow:var(--shadow);padding:18px 20px;margin:14px 0}
+.sd-login input{font-size:18px;padding:12px;border:2px solid var(--hairline-input);border-radius:10px;width:100%;
+  box-sizing:border-box;margin:6px 0;text-transform:uppercase;letter-spacing:1px}
+.sd-login button,.sd-card button{min-height:44px;font:inherit;font-weight:700;cursor:pointer;border:none;
+  border-radius:9999px;padding:10px 22px;background:linear-gradient(135deg,#533afd,#665efd);color:#fff}
+.sd-card button.ghost{background:#fff;color:var(--primary);border:1px solid var(--hairline)}
+.sd-bar{background:#eee5cd;border-radius:9999px;height:12px;overflow:hidden}
+.sd-fill{background:linear-gradient(90deg,#533afd,#8b5cf6);height:100%;border-radius:9999px}
+.sd-unit h3{margin:0 0 6px;font-size:15.5px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;cursor:pointer;color:var(--brand-dark)}
+.sd-pages{display:none;margin-top:10px;border-top:1px dashed var(--hairline);padding-top:8px}
+.sd-unit.open .sd-pages{display:block}
+.sd-row{display:flex;align-items:center;gap:8px;padding:7px 2px;border-bottom:1px solid #f2ecd9;font-size:13.5px;flex-wrap:wrap}
+.sd-row .st{width:20px;text-align:center;flex:none}
+.sd-row .ttl{flex:1 1 200px;min-width:150px}
+.sd-row .res{color:var(--muted);font-size:12.5px;flex:1 1 150px;font-feature-settings:"tnum"}
+.sd-row a{flex:none;padding:6px 12px;border:1.5px solid var(--primary);border-radius:9999px;color:var(--primary);
+  text-decoration:none;font-weight:700;font-size:12.5px}
+.sd-done{color:var(--correct)}.sd-prog{color:var(--accent-dark)}.sd-not{color:#999}
+.sd-err{color:#b91c1c;font-weight:700;min-height:20px}
+</style>
+</head>
+<body>
+<header class="pl-header"><div class="inner">
+  <h1 id="appName"></h1>
+  <span class="sub">My progress</span>
+  <a class="hdr-link" href="index.html" data-i18n="toc.home"></a>
+</div></header>
+<main class="sd-wrap" id="app"><div class="sd-card">Loading…</div></main>
+<script src="js/config.js?v=057"></script>
+<script src="locales/en.js?v=057"></script>
+<script src="js/i18n.js?v=057"></script>
+<script src="js/lessons.js?v=057"></script>
+<script src="js/curriculum.js?v=057"></script>
+<script src="js/lms.js?v=057"></script>
+<script>
+(function(){
+  document.title="My Progress · "+PL_CONFIG.APP_NAME;
+  document.getElementById("appName").textContent=PL_CONFIG.APP_NAME;
+  PLI18N.apply();
+  const app=document.getElementById("app");
+  const fmt=d=>d?new Date(d).toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"}):"";
+  const pct=(a,b)=>b?Math.round(100*a/b):0;
+
+  if(!PLTrack.enabled){
+    app.innerHTML=`<div class="sd-card"><h2>Not set up yet</h2>
+      <p>Online progress isn't configured on this site yet. You can still use every
+      lesson — your progress is saved on this device.</p></div>`; return;
+  }
+  if(!PLTrack.session()) return renderLogin();
+  load();
+
+  function renderLogin(msg){
+    app.innerHTML=`<div class="sd-card sd-login"><h2>Student Sign-in</h2>
+      <p>Enter the two codes your teacher gave you. No email needed — the codes work on any device.</p>
+      <label>Class Code<input id="cc" autocomplete="off" placeholder="e.g. QK7M2P"></label>
+      <label>Access Code<input id="ac" autocomplete="off" placeholder="e.g. ABCD-2345"></label>
+      <p class="sd-err" id="err">${msg||""}</p>
+      <button id="go">Sign in</button></div>`;
+    document.getElementById("go").onclick=async()=>{
+      const b=document.getElementById("go"); b.disabled=true; b.textContent="Signing in…";
+      try{
+        const r=await PLTrack.login(document.getElementById("cc").value.trim(),
+                                    document.getElementById("ac").value.trim());
+        if(r.ok) load();
+        else { document.getElementById("err").textContent=r.message||"Sign-in failed."; b.disabled=false; b.textContent="Sign in"; }
+      }catch(e){ document.getElementById("err").textContent="Could not reach the server — check your internet connection."; b.disabled=false; b.textContent="Sign in"; }
+    };
+  }
+  async function load(){
+    app.innerHTML=`<div class="sd-card">Loading your progress…</div>`;
+    let data;
+    try{ data=await PLTrack.progress(); }
+    catch(e){ app.innerHTML=`<div class="sd-card"><p class="sd-err">Could not load progress (offline?).
+        Your work is still recorded on this device and will sync automatically.</p>
+        <button onclick="location.reload()">Try again</button>
+        <button class="ghost" onclick="if(PLTrack.logout())location.reload()">Sign out</button></div>`; return; }
+    if(!data||!data.ok){ PLTrack.logout(false); return renderLogin("Session expired — please sign in again."); }
+    render(data);
+  }
+  function render(data){
+    const P={}; (data.progress||[]).forEach(p=>{ if(p.course===PLTrack.COURSE) P[p.item]=p; });
+    const pages=PL_CURRICULUM.pages;
+    const doneCount=pages.filter(p=>(P[p.item]||{}).status==="completed").length;
+    const s=PLTrack.session();
+    const cls=(data.classes&&data.classes[0])||{name:s.class};
+    let html=`<div class="sd-card">
+      <h2 style="margin:0 0 4px">${s.name} <span style="font-weight:400;color:var(--muted);font-size:14px">· ${cls.name} · ${PL_CURRICULUM.courseTitle}</span></h2>
+      <p style="margin:6px 0"><b>${doneCount} of ${pages.length}</b> lessons completed (${pct(doneCount,pages.length)}%)</p>
+      <div class="sd-bar"><div class="sd-fill" style="width:${pct(doneCount,pages.length)}%"></div></div>
+      <p style="margin:12px 0 0"><button class="ghost" onclick="if(PLTrack.logout())location.reload()">Sign out</button></p>
+    </div>`;
+    PL_CURRICULUM.units.forEach(u=>{
+      const ups=pages.filter(p=>p.unit===u.unit);
+      const ud=ups.filter(p=>(P[p.item]||{}).status==="completed").length;
+      html+=`<div class="sd-card sd-unit">
+        <h3 onclick="this.parentElement.classList.toggle('open')"><span>Unit ${u.unit} — ${u.title}</span>
+          <span style="font-weight:600;color:var(--muted)">${ud}/${ups.length} · ${pct(ud,ups.length)}%</span></h3>
+        <div class="sd-bar"><div class="sd-fill" style="width:${pct(ud,ups.length)}%"></div></div>
+        <div class="sd-pages">`+
+        ups.map(p=>{
+          const r=P[p.item]||{}; const st=r.status||"not_started";
+          const icon=st==="completed"?'<span class="st sd-done">✅</span>':st==="in_progress"?'<span class="st sd-prog">🟡</span>':'<span class="st sd-not">⬜</span>';
+          const doneEx=(r.lbdDone||[]).length;
+          const res=`Exercises finished: ${doneEx}/${p.lbdCount} · practiced ${r.lbdAttempts||0}×`;
+          return `<div class="sd-row">${icon}
+            <span class="ttl"><b>${p.label}</b> ${p.title}</span>
+            <span class="res">${res}${r.completedAt?` · done ${fmt(r.completedAt)}`:""}</span>
+            <a href="${p.route}">${st==="completed"?"Review":"Practice"}</a></div>`;
+        }).join("")+`</div></div>`;
+    });
+    app.innerHTML=html;
+  }
+})();
+</script>
+</body>
+</html>

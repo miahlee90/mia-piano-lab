@@ -8,9 +8,11 @@ const root=path.join(__dirname,"..");
 
 global.localStorage={getItem:()=>null,setItem:()=>{},removeItem:()=>{}};
 global.document={addEventListener:()=>{},querySelector:()=>null,querySelectorAll:()=>[]};
+global.window={addEventListener:()=>{}};   /* lms.js registers online/load handlers */
+global.crypto={randomUUID:()=>"00000000-0000-4000-8000-000000000000"};
 function load(f){ vm.runInThisContext(fs.readFileSync(path.join(root,f),"utf-8"),{filename:f}); }
 ["js/config.js","locales/en.js","js/i18n.js","js/pitch.js","js/exercises.js",
- "js/lessons.js","js/notation.js","js/piano.js","js/fall.js","js/midi.js",
+ "js/lessons.js","js/curriculum.js","js/lms.js","js/notation.js","js/piano.js","js/fall.js","js/midi.js",
  "js/player.js","js/practice.js","js/progress.js","js/app.js"].forEach(load);   /* app.js must load without DOM */
 
 let fails=0,tests=0;
@@ -170,6 +172,19 @@ ok("broken study: 15 dots on the 5 blocked chords",count(bb,/class="dot"/g)===15
   PLEx.allKeys(ex).forEach(k=>["rh","lh","ht"].forEach(h=>{
     ok("no clipped coords "+ex+" "+k+" "+h,!/="-/.test(svgFor(k,h,null,ex)));
   })));
+
+/* ---- LMS curriculum map (must mirror the SQL seed) ---- */
+ok("curriculum: one item per lesson",PL_CURRICULUM.pages.length===PLLessons.list().length);
+ok("curriculum: item ids are 1..N in order",
+   PL_CURRICULUM.pages.every((p,i)=>p.item===i+1));
+ok("curriculum: 8 units",PL_CURRICULUM.units.length===8);
+ok("curriculum: exercise maps to its lesson's item",
+   PL_CURRICULUM.itemForExercise("ff-major")===PL_CURRICULUM.itemForLesson("l1-1"));
+ok("curriculum: every exercise resolves to an item",
+   PLLessons.list().every(l=>l.exercises.every(ex=>PL_CURRICULUM.itemForExercise(ex)>=1)));
+ok("curriculum: lbdIds equal the lesson's exercises",
+   PL_CURRICULUM.pages.every(p=>p.lbdIds.length===p.lbdCount&&!p.hasQuiz));
+ok("lms: PLTrack loaded, course piano-lab",PLTrack.COURSE==="piano-lab");
 
 /* ---- Unit 8: more scales ---- */
 {

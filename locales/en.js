@@ -244,6 +244,7 @@ const I18N_EN={
   "fb.saved":"Result saved.",
   "fb.fingerEditHint":"Edit fingering: click any finger number in the score, then type the new finger (1–5). Stored per key, hand, and note.",
   "prog.title":"My progress",
+  "prog.myProgress":"My progress",
   "prog.none":"No attempts recorded yet on this device.",
   "prog.best":"best",
   "status.completed":"Completed",

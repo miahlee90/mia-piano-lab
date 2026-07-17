@@ -172,6 +172,11 @@
         PLProgress.record({ex:st.ex,key:st.key,hand:st.hand,mode:sum.mode,
           tempo:sum.tempo,pitchAcc:sum.pitchAcc,rhythmAcc:sum.rhythmAcc,
           wrong:sum.wrong,completed:sum.completed});
+        /* if signed in, also record this finish to the shared LMS so the
+           teacher sees it on any device (one practice event per finish) */
+        if(sum.completed&&typeof PLTrack!=="undefined"&&PLTrack.enabled&&PLTrack.session()
+           &&typeof PL_CURRICULUM!=="undefined")
+          PLTrack.practice(PL_CURRICULUM.itemForExercise(st.ex),st.ex);
         renderProgress(); updateControls();
       }
     });

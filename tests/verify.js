@@ -288,17 +288,20 @@ eq("Gb scale spelling incl Cb",
    PLEx.expand("scale-major-1oct","Gb").steps.slice(0,8).map(s=>s.rh[0].replace(/\d/,"")).join(" "),
    "Gb Ab Bb Cb Db Eb F Gb");
 
-/* two octaves: 29 steps of 8ths + final half = 4 bars of 4/4 */
+/* two octaves: quarters, 8 bars, top tonic repeated and held (CDEF|GABC|
+   DEFG|AB C-half|CBAG|FEDC|BAGF|ED C-half) */
 const S2=PLEx.expand("scale-major-2oct","C");
-eq("2-oct: 29 steps",S2.steps.length,29);
-eq("2-oct beats",S2.steps.reduce((a,s)=>a+(s.d==="h"?2:.5),0),16);
-eq("2-oct top note",S2.steps[14].rh[0],"C6");
+eq("2-oct: 30 steps",S2.steps.length,30);
+eq("2-oct beats = 8 bars of 4/4",S2.steps.reduce((a,s)=>a+(s.d==="h"?2:1),0),32);
+eq("2-oct peak held",[S2.steps[14].rh[0],S2.steps[14].d],["C6","h"]);
+eq("2-oct peak repeated to start the descent",
+   [S2.steps[15].rh[0],S2.steps[15].d,S2.steps[15].fr[0]],["C6","q",5]);
 eq("2-oct RH fingering (pattern restarts each octave)",
    S2.steps.map(s=>s.fr[0]).slice(0,15),[1,2,3,1,2,3,4,1,2,3,1,2,3,4,5]);
 eq("2-oct LH fingering (4 crosses at the octave)",
    S2.steps.map(s=>s.fl[0]).slice(0,15),[5,4,3,2,1,3,2,1,4,3,2,1,3,2,1]);
-eq("2-oct ends on the tonic with the start finger",
-   [S2.steps[28].rh[0],S2.steps[28].fr[0],S2.steps[28].fl[0]],["C4",1,5]);
+eq("2-oct ends on the tonic, held, with the start finger",
+   [S2.steps[29].rh[0],S2.steps[29].d,S2.steps[29].fr[0],S2.steps[29].fl[0]],["C4","h",1,5]);
 for(const k of PLEx.allKeys("scale-major-2oct")) PLEx.expand("scale-major-2oct",k);
 
 /* ---- reference tables from the instructor's chart (future units) ---- */

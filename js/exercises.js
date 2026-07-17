@@ -259,19 +259,21 @@ const PLEx=(()=>{
     }
   };
 
-  /* Unit 4.2 master — two octaves in eighths (auto-beamed), final half note.
-     Built programmatically: 15 up, 13 down, tonic. LH one octave below. */
+  /* Unit 4.2 master (instructor 2026-07-17): two octaves in quarters,
+     4/4 × 8 bars, top tonic REPEATED and held a half note at each peak:
+     CDEF | GABC | DEFG | AB C(h) | CBAG | FEDC | BAGF | ED C(h).
+     Built programmatically; LH one octave below. */
   (function(){
     const up=["C4","D4","E4","F4","G4","A4","B4","C5","D5","E5","F5","G5","A5","B5","C6"];
-    const seq=up.concat(up.slice(0,-1).reverse());
+    const seq=up.concat(up.slice().reverse());          /* 30 notes, C6 twice */
     MASTERS["scale-major-2oct"]={
       id:"scale-major-2oct", category:"scale", mode:"major", masterTonic:"C",
       titleKey:"ex.scaleMajor2", time:[4,4], octaves:2, difficulty:3, enabled:true,
       scaleFingering:"2oct",
-      tempo:{default:60,min:40,max:104},
+      tempo:{default:72,min:40,max:120},
       register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
       steps:seq.map((sp,i)=>({
-        d:i===seq.length-1?"h":"8",
+        d:(i===14||i===seq.length-1)?"h":"q",           /* C6 and final C held */
         rh:[sp], lh:[sp.replace(/\d/,n=>n-1)],
         fr:[1], fl:[1], roman:null
       }))
@@ -351,12 +353,13 @@ const PLEx=(()=>{
   };
 
   function scaleFingerSeq(form,a8,hand){
-    /* 1-oct: the top tonic repeats (CDEF|GABC|CBAG|FEDC) → full mirror.
-       2-oct: top played once → mirror without repeating the peak. */
+    /* the top tonic repeats in BOTH forms → full mirror of the ascent.
+       2-oct ascent: RH restarts the pattern each octave; LH crosses 4. */
     if(form==="1oct") return a8.concat(a8.slice().reverse());
-    const mir=a=>a.concat(a.slice(0,-1).reverse());
-    if(hand==="rh"){ const a7=a8.slice(0,7); return mir(a7.concat(a7,[a8[7]])); }
-    return mir(a8.concat(a8.slice(1)));
+    let up;
+    if(hand==="rh"){ const a7=a8.slice(0,7); up=a7.concat(a7,[a8[7]]); }
+    else up=a8.concat(a8.slice(1));
+    return up.concat(up.slice().reverse());
   }
 
   /* keys available per exercise, in SUGGESTED PROGRESSION order (this order

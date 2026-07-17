@@ -196,15 +196,21 @@ const PLNotation=(()=>{
       const notes=sps.map(PLPitch.parse);
       const ys=notes.map(p=>yFor(p,clef,y0));
       const nd=normD(step.d), hollow=(nd==="w"||nd==="h");
+      /* chords containing a second: the upper note of the pair is offset to
+         the right, as in engraved notation (notes are LOW→HIGH in data) */
+      const dias=notes.map(p=>PLPitch.dia(p));
+      const off=notes.map(()=>0);
+      for(let i=1;i<notes.length;i++) if(dias[i]-dias[i-1]===1&&!off[i-1]) off[i]=13;
       notes.forEach((p,i)=>{
-        ledgerSVG(parts,xC,PLPitch.dia(p),clef,y0);
+        const nx=xC+off[i];
+        ledgerSVG(parts,nx,PLPitch.dia(p),clef,y0);
         if(p.acc!==PLPitch.sigAccFor(score.sig,p.letter)) parts.push(accSVG(xC-22,ys[i],p.acc));
         parts.push(nd==="w"
-          ?`<ellipse class="note hollow" cx="${xC}" cy="${ys[i]}" rx="10.5" ry="6.5"/>`
-          :`<ellipse class="note${hollow?" hollow":""}" cx="${xC}" cy="${ys[i]}" rx="9" ry="6.5" transform="rotate(-14 ${xC} ${ys[i]})"/>`);
+          ?`<ellipse class="note hollow" cx="${nx}" cy="${ys[i]}" rx="10.5" ry="6.5"/>`
+          :`<ellipse class="note${hollow?" hollow":""}" cx="${nx}" cy="${ys[i]}" rx="9" ry="6.5" transform="rotate(-14 ${nx} ${ys[i]})"/>`);
         if(isDot(step.d)){
           const onLine=(PLPitch.dia(p)-baseIdx(clef))%2===0;
-          parts.push(`<circle class="dot" cx="${xC+15}" cy="${ys[i]-(onLine?GAP/2:0)}" r="2.7"/>`);
+          parts.push(`<circle class="dot" cx="${nx+15}" cy="${ys[i]-(onLine?GAP/2:0)}" r="2.7"/>`);
         }
       });
       if(nd!=="w"){

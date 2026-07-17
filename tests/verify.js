@@ -146,11 +146,32 @@ eq("demo transposes with ties intact",PLEx.expand("engine-demo","D").steps[9].rh
 
 /* ---- curriculum structure (Unit.Lesson labels, Fundamentals style) ---- */
 const PLLessons=require("../js/lessons.js");
-eq("lesson labels",PLLessons.list().map(l=>l.label),["1.1","1.2"]);
-eq("both lessons in unit 1",PLLessons.list().map(l=>l.unit),[1,1]);
-eq("one unit defined",PLLessons.units().map(u=>u.unit),[1]);
+eq("lesson labels",PLLessons.list().map(l=>l.label),["1.1","1.2","2.1","2.2","2.3"]);
+eq("lesson units",PLLessons.list().map(l=>l.unit),[1,1,2,2,2]);
+eq("units defined",PLLessons.units().map(u=>u.unit),[1,2]);
 ok("every lesson's exercises exist",
    PLLessons.list().every(l=>l.exercises.every(id=>PLEx.MASTERS[id])));
+
+/* ---- Unit 2: chord progressions (keyboard-style voicings) ---- */
+const P51=PLEx.expand("prog-1-5-1","C");
+eq("I chord spelling",P51.steps[0].rh,["C4","E4","G4"]);
+eq("V7 chord spelling (3-note keyboard style)",P51.steps[1].rh,["B3","F4","G4"]);
+eq("progression romans",P51.steps.map(s=>s.roman),["I","V7","I"]);
+eq("RH fingering I / V7",[P51.steps[0].fr,P51.steps[1].fr],[[1,3,5],[1,4,5]]);
+eq("LH fingering I / V7",[P51.steps[0].fl,P51.steps[1].fl],[[5,3,1],[5,2,1]]);
+ok("prog LH exactly one octave below RH",
+   P51.steps.every(s=>s.rh.every((sp,i)=>PLPitch.midi(sp)-PLPitch.midi(s.lh[i])===12)));
+eq("V7 in F# keeps E# (never F)",PLEx.expand("prog-1-5-1","F#").steps[1].rh,["E#4","B4","C#5"]);
+eq("V7 in Gb keeps Cb (never B)",PLEx.expand("prog-1-5-1","Gb").steps[1].rh,["F4","Cb5","Db5"]);
+eq("IV chord spelling",PLEx.expand("prog-1-4-1","C").steps[1].rh,["C4","F4","A4"]);
+eq("full cadence romans",PLEx.expand("prog-1-4-5-1","C").steps.map(s=>s.roman),
+   ["I","IV","I","V7","I"]);
+eq("A major progression drops an octave",PLEx.expand("prog-1-5-1","A").steps[0].rh,
+   ["A3","C#4","E4"]);
+["prog-1-5-1","prog-1-4-1","prog-1-4-5-1"].forEach(ex=>{
+  ok(ex+" enabled for all 13 majors",PLEx.allKeys(ex).length===13);
+  for(const k of PLEx.allKeys(ex)) PLEx.expand(ex,k);   /* throws on bad data */
+});
 
 /* ---- teacher key enable/disable ---- */
 PLEx.setKeyEnabled("ff-major","B",false);

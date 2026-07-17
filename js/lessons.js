@@ -7,7 +7,8 @@
    selector is hidden when a lesson has only one exercise. */
 const PLLessons=(()=>{
   const UNITS=[
-    {unit:1, nameKey:"unit.1"}          /* Five-Finger Patterns */
+    {unit:1, nameKey:"unit.1"},         /* Five-Finger Patterns */
+    {unit:2, nameKey:"unit.2"}          /* Chord Progressions */
   ];
   const LESSONS=[
     {
@@ -27,6 +28,33 @@ const PLLessons=(()=>{
       descKey:"lesson.l1n2.desc",
       formula:["W","H","W","W"],
       formulaNoteKey:"lesson.l1n2.halfstep"
+    },
+    {
+      id:"l2-1", unit:2, label:"2.1",
+      exercises:["prog-1-5-1"],
+      titleKey:"lesson.l2n1.title",
+      goalKey:"lesson.l2n1.goal",
+      descKey:"lesson.l2n1.desc",
+      formula:["I","V7","I"], showDegrees:false,
+      formulaNoteKey:"lesson.l2n1.motion"
+    },
+    {
+      id:"l2-2", unit:2, label:"2.2",
+      exercises:["prog-1-4-1"],
+      titleKey:"lesson.l2n2.title",
+      goalKey:"lesson.l2n2.goal",
+      descKey:"lesson.l2n2.desc",
+      formula:["I","IV","I"], showDegrees:false,
+      formulaNoteKey:"lesson.l2n2.motion"
+    },
+    {
+      id:"l2-3", unit:2, label:"2.3",
+      exercises:["prog-1-4-5-1"],
+      titleKey:"lesson.l2n3.title",
+      goalKey:"lesson.l2n3.goal",
+      descKey:"lesson.l2n3.desc",
+      formula:["I","IV","I","V7","I"], showDegrees:false,
+      formulaNoteKey:"lesson.l2n3.motion"
     }
   ];
   return { list:()=>LESSONS,

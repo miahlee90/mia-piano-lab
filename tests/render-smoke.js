@@ -60,6 +60,25 @@ PLEx.allKeys("ff-minor").forEach(k=>["rh","lh","ht"].forEach(h=>{
   ok("no clipped coords minor "+k+" "+h,!/="-/.test(svgFor(k,h,null,"ff-minor")));
 }));
 
+/* ---- Unit 2: chord progressions ---- */
+const p51=svgFor("C","rh",null,"prog-1-5-1");
+ok("3 chord steps",count(p51,/class="nstep"/g)===3);
+ok("3 roman labels",count(p51,/class="roman"/g)===3);
+ok("9 whole-note heads",count(p51,/class="note hollow"/g)===9);
+/* the V7 contains a second (F-G): its upper note must be offset right */
+{
+  const step1=/<g class="nstep" data-i="1">([\s\S]*?)<\/g>/.exec(p51)[1];
+  const cxs=[...step1.matchAll(/ellipse[^>]*cx="([\d.]+)"/g)].map(m=>+m[1]);
+  ok("V7 second-interval offset",new Set(cxs).size===2&&Math.abs(Math.max(...cxs)-Math.min(...cxs)-13)<0.01);
+  const step0=/<g class="nstep" data-i="0">([\s\S]*?)<\/g>/.exec(p51)[1];
+  const cx0=[...step0.matchAll(/ellipse[^>]*cx="([\d.]+)"/g)].map(m=>+m[1]);
+  ok("triad stays in one column",new Set(cx0).size===1);
+}
+["prog-1-5-1","prog-1-4-1","prog-1-4-5-1"].forEach(ex=>
+  PLEx.allKeys(ex).forEach(k=>["rh","lh","ht"].forEach(h=>{
+    ok("no clipped coords "+ex+" "+k+" "+h,!/="-/.test(svgFor(k,h,null,ex)));
+  })));
+
 /* ---- rhythm elements (hidden engine-demo exercise) ---- */
 const demo=svgFor("C","rh",null,"engine-demo");
 ok("demo: 12 steps",count(demo,/class="nstep"/g)===12);

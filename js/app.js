@@ -274,17 +274,21 @@
       $("#lessonGoal").textContent=t(L.goalKey);
       $("#lessonDesc").textContent=t(L.descKey);
       const long=L.formula.map(x=>t("formula."+x)).join(" – ");
-      $("#formulaChip").innerHTML=
-        `${t("formula.pattern")} <b>${L.formula.join("–")}</b> `+
-        `<span class="pattern-long">(${long})</span> · `+
-        `${t("formula.degrees")} · ${t(L.formulaNoteKey)}`;
+      const parts=[`${t("formula.pattern")} <b>${L.formula.join("–")}</b> `+
+                   `<span class="pattern-long">(${long})</span>`];
+      if(L.showDegrees!==false) parts.push(t("formula.degrees"));
+      parts.push(t(L.formulaNoteKey));
+      $("#formulaChip").innerHTML=parts.join(" · ");
       exSel.innerHTML=L.exercises.map(id=>`<option value="${id}">${t(PLEx.MASTERS[id].titleKey)}</option>`).join("");
       /* one-exercise lessons don't need the Exercise selector */
       $("#exWrap").style.display=L.exercises.length>1?"":"none";
       fillKeys(); applyTempoBounds(); renderTeacherKeys(); rebuild();
     }
-    lsSel.innerHTML=PLLessons.list().map(l=>
-      `<option value="${l.id}">${l.label} — ${t(l.titleKey)}</option>`).join("");
+    lsSel.innerHTML=PLLessons.units().map(u=>
+      `<optgroup label="Unit ${u.unit} — ${t(u.nameKey)}">`+
+      PLLessons.list().filter(l=>l.unit===u.unit).map(l=>
+        `<option value="${l.id}">${l.label} — ${t(l.titleKey)}</option>`).join("")+
+      `</optgroup>`).join("");
     lsSel.onchange=()=>applyLesson(PLLessons.get(lsSel.value));
     exSel.onchange=()=>{ st.ex=exSel.value; fillKeys(); applyTempoBounds(); renderTeacherKeys(); rebuild(); };
     function fillKeys(){

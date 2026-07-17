@@ -59,6 +59,46 @@ const PLEx=(()=>{
         {d:"w", rh:["A3"], lh:["A2"], fr:[1], fl:[5], roman:null}
       ]
     },
+    /* ---- Unit 2: chord progressions — keyboard-style five-finger-position
+       voicings (class-piano standard). Blocked whole-note chords, Roman
+       labels. V7 = three notes (3rd, 7th, root of the dominant), e.g. in C:
+       B-F-G. Fingering RH 1-3-5 / 1-4-5, LH 5-3-1 / 5-2-1 in every key;
+       instructor overrides remain available per key. */
+    "prog-1-5-1":{
+      id:"prog-1-5-1", category:"progression", mode:"major", masterTonic:"C",
+      titleKey:"ex.prog151", time:[4,4], octaves:1, difficulty:2, enabled:true,
+      tempo:{default:60,min:40,max:96},
+      register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
+      steps:[
+        {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"},
+        {d:"w", rh:["B3","F4","G4"], lh:["B2","F3","G3"], fr:[1,4,5], fl:[5,2,1], roman:"V7"},
+        {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"}
+      ]
+    },
+    "prog-1-4-1":{
+      id:"prog-1-4-1", category:"progression", mode:"major", masterTonic:"C",
+      titleKey:"ex.prog141", time:[4,4], octaves:1, difficulty:2, enabled:true,
+      tempo:{default:60,min:40,max:96},
+      register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
+      steps:[
+        {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"},
+        {d:"w", rh:["C4","F4","A4"], lh:["C3","F3","A3"], fr:[1,4,5], fl:[5,2,1], roman:"IV"},
+        {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"}
+      ]
+    },
+    "prog-1-4-5-1":{
+      id:"prog-1-4-5-1", category:"progression", mode:"major", masterTonic:"C",
+      titleKey:"ex.prog1451", time:[4,4], octaves:1, difficulty:3, enabled:true,
+      tempo:{default:60,min:40,max:96},
+      register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
+      steps:[
+        {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"},
+        {d:"w", rh:["C4","F4","A4"], lh:["C3","F3","A3"], fr:[1,4,5], fl:[5,2,1], roman:"IV"},
+        {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"},
+        {d:"w", rh:["B3","F4","G4"], lh:["B2","F3","G3"], fr:[1,4,5], fl:[5,2,1], roman:"V7"},
+        {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"}
+      ]
+    },
     "engine-demo":{
       /* NOT a lesson — hidden reference exercise that exercises every rhythm
          element the renderer/player supports (8th/16th + beams, dotted
@@ -128,6 +168,9 @@ const PLEx=(()=>{
     /* minor progression mirrors the major one via relative minors;
        D# minor and Eb minor are SEPARATE written keys */
     "ff-minor":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
+    "prog-1-5-1":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "prog-1-4-1":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "prog-1-4-5-1":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "scale-major-1oct":["C","G"]
   };
 

@@ -208,6 +208,7 @@ const I18N_EN={
   "ui.tolerance":"Timing tolerance",
   "ui.fingering":"Show fingering",
   "ui.fall":"Falling notes",
+  "ui.guide":"Highlight next key",
   "ui.fingerEdit":"Edit fingering",
   "ui.play":"Play",
   "ui.pause":"Pause",

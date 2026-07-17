@@ -6,7 +6,9 @@
   const $=s=>document.querySelector(s);
   const st={ ex:"ff-major", key:"C", hand:"rh", mode:"learn",
              tempo:72, loop:false, metronome:false, sound:true,
-             showFing:true, fingerEdit:false, fall:true, tolMs:180 };
+             showFing:true, fingerEdit:false, fall:true, tolMs:180,
+             guide:false };   /* practice: pre-highlight the next key (off —
+                                 instructor: react to what is played) */
   let lesson=null, score=null, notation=null, piano=null, cur=-1, countTimer=null;
 
   /* ---------- helpers ---------- */
@@ -80,7 +82,11 @@
     if(cur>=0&&cur!==i) notation.setStepState(cur,"done");
     notation.setStepState(i,state||"current");
     piano.clearTargets();
-    stepTargets(i).forEach(x=>piano.set(x.midi,"k-target-"+x.hand,true));
+    /* keyboard pre-highlighting: always in Learn; in Practice only when the
+       student turns the guide on — otherwise the app only REACTS to what
+       is actually played */
+    if(st.mode==="learn"||(st.mode==="practice"&&st.guide))
+      stepTargets(i).forEach(x=>piano.set(x.midi,"k-target-"+x.hand,true));
     cur=i;
     autoScroll(i);
   }
@@ -240,6 +246,8 @@
     $("#chkLoop").disabled=!learn;
     $("#chkFall").disabled=!learn;
     $("#tolWrap").style.display=st.mode==="test"?"":"none";
+    /* the next-key guide toggle only applies to Practice */
+    $("#guideWrap").style.display=st.mode==="practice"?"":"none";
     /* test mode: the keyboard disappears — score reading only */
     $("#kbd").style.display=st.mode==="test"?"none":"";
     /* waterfall canvas shows only in Learn mode (and when enabled) */
@@ -343,6 +351,7 @@
     $("#chkSound").onchange=e=>{ st.sound=e.target.checked; PLAudio.setSound(st.sound); };
     $("#chkFing").onchange=e=>{ st.showFing=e.target.checked; rebuild(); };
     $("#chkFall").onchange=e=>{ st.fall=e.target.checked; updateControls(); if(!st.fall) PLFall.stop(); };
+    $("#chkGuide").onchange=e=>st.guide=e.target.checked;
     $("#chkFingEdit").onchange=e=>{ st.fingerEdit=e.target.checked;
       if(st.fingerEdit) fb(t("fb.fingerEditHint"));
       rebuild(); };

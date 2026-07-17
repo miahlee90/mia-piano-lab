@@ -200,9 +200,9 @@ eq("demo transposes with ties intact",PLEx.expand("engine-demo","D").steps[9].rh
 /* ---- curriculum structure (Unit.Lesson labels, Fundamentals style) ---- */
 const PLLessons=require("../js/lessons.js");
 eq("lesson labels",PLLessons.list().map(l=>l.label),
-   ["1.1","1.2","2.1","2.2","2.3","3.1","3.2","4.1","4.2","5.1","5.2","6.1","6.2"]);
-eq("lesson units",PLLessons.list().map(l=>l.unit),[1,1,2,2,2,3,3,4,4,5,5,6,6]);
-eq("units defined",PLLessons.units().map(u=>u.unit),[1,2,3,4,5,6]);
+   ["1.1","1.2","2.1","2.2","2.3","3.1","3.2","4.1","4.2","5.1","5.2","6.1","6.2","7.1","7.2"]);
+eq("lesson units",PLLessons.list().map(l=>l.unit),[1,1,2,2,2,3,3,4,4,5,5,6,6,7,7]);
+eq("units defined",PLLessons.units().map(u=>u.unit),[1,2,3,4,5,6,7]);
 ok("every lesson's exercises exist",
    PLLessons.list().every(l=>l.exercises.every(id=>PLEx.MASTERS[id])));
 
@@ -385,6 +385,34 @@ eq("Bb minor arpeggio uses 231",
   ok(ex+" enabled for 13 keys",PLEx.allKeys(ex).length===13);
   for(const k of PLEx.allKeys(ex)) PLEx.expand(ex,k);
 });
+
+/* ---- Unit 7: inversions ---- */
+const IV1=PLEx.expand("inv-major","C");
+eq("inversion chords up and down",IV1.steps.map(s=>s.rh),
+   [["C4","E4","G4"],["E4","G4","C5"],["G4","C5","E5"],["C5","E5","G5"],
+    ["G4","C5","E5"],["E4","G4","C5"],["C4","E4","G4"]]);
+eq("inversion labels",IV1.steps.map(s=>s.roman),
+   ["Root","1st","2nd","Root","2nd","1st","Root"]);
+eq("RH inversion fingering 135/125/135",IV1.steps.slice(0,3).map(s=>s.fr),
+   [[1,3,5],[1,2,5],[1,3,5]]);
+eq("LH inversion fingering 531/531/521",IV1.steps.slice(0,3).map(s=>s.fl),
+   [[5,3,1],[5,3,1],[5,2,1]]);
+const P6=PLEx.expand("prog-inv-6","C");
+eq("prog-inv-6: LH roots only",P6.steps.map(s=>s.lh),
+   [["C3"],["F3"],["C3"],["G3"],["C3"]]);
+eq("prog-inv-6: LH one-position fingering",P6.steps.map(s=>s.fl[0]),[5,2,5,1,5]);
+eq("prog-inv-6: RH from the I6 shape",P6.steps.map(s=>s.rh),
+   [["E4","G4","C5"],["F4","A4","C5"],["E4","G4","C5"],["F4","G4","B4"],["E4","G4","C5"]]);
+const P64=PLEx.expand("prog-inv-64","C");
+eq("prog-inv-64: RH from the I6/4 shape",P64.steps.map(s=>s.rh),
+   [["G4","C5","E5"],["A4","C5","F5"],["G4","C5","E5"],["G4","B4","F5"],["G4","C5","E5"]]);
+eq("prog-inv-6 in F# keeps E# in the V7",
+   PLEx.expand("prog-inv-6","F#").steps[3].rh,["B4","C#5","E#5"]);
+["inv-major","inv-minor","prog-inv-6","prog-inv-64"].forEach(ex=>{
+  ok(ex+" enabled for 13 keys",PLEx.allKeys(ex).length===13);
+  for(const k of PLEx.allKeys(ex)) PLEx.expand(ex,k);
+});
+eq("lesson 7.2 offers both shapes",PLLessonsPeek("l7-2"),["prog-inv-6","prog-inv-64"]);
 
 /* ---- reference tables from the instructor's chart (future units) ---- */
 ok("harmonic-minor fingering: 13 minor keys",

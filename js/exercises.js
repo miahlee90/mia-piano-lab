@@ -334,6 +334,74 @@ const PLEx=(()=>{
        melUp2.concat(natDown2),true);
   })();
 
+  /* Unit 7 — inversions.
+     7.1: the same triad rearranged — Root | 1st | 2nd | Root(8) | 2nd | 1st |
+     Root, whole notes, standard fingering RH 135/125/135, LH 531/531/521.
+     7.2: I-IV-I-V7-I with LH playing ROOTS ONLY (C-F-C-G-C inside one hand
+     position, 5-2-5-1-5) and RH voice-leading from the I6 or I6/4 shape.
+     Labels stay I/IV/V7 — the bass carries the root, so the chords ARE in
+     root position; the "shape" names describe the RH hand position. */
+  MASTERS["inv-major"]={
+    id:"inv-major", category:"inversion", mode:"major", masterTonic:"C",
+    titleKey:"ex.invMaj", time:[4,4], octaves:1, difficulty:2, enabled:true,
+    formula:["R","1st","2nd"], formulaNoteKey:"lesson.l7.inv",
+    tempo:{default:80,min:40,max:112},
+    register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
+    steps:[
+      {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"Root"},
+      {d:"w", rh:["E4","G4","C5"], lh:["E3","G3","C4"], fr:[1,2,5], fl:[5,3,1], roman:"1st"},
+      {d:"w", rh:["G4","C5","E5"], lh:["G3","C4","E4"], fr:[1,3,5], fl:[5,2,1], roman:"2nd"},
+      {d:"w", rh:["C5","E5","G5"], lh:["C4","E4","G4"], fr:[1,3,5], fl:[5,3,1], roman:"Root"},
+      {d:"w", rh:["G4","C5","E5"], lh:["G3","C4","E4"], fr:[1,3,5], fl:[5,2,1], roman:"2nd"},
+      {d:"w", rh:["E4","G4","C5"], lh:["E3","G3","C4"], fr:[1,2,5], fl:[5,3,1], roman:"1st"},
+      {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"Root"}
+    ]
+  };
+  MASTERS["inv-minor"]={
+    id:"inv-minor", category:"inversion", mode:"minor", masterTonic:"A",
+    titleKey:"ex.invMin", time:[4,4], octaves:1, difficulty:2, enabled:true,
+    formula:["R","1st","2nd"], formulaNoteKey:"lesson.l7.inv",
+    tempo:{default:80,min:40,max:112},
+    register:{rh:{shiftDownFrom:12},lh:{shiftDownFrom:12}},
+    steps:[
+      {d:"w", rh:["A3","C4","E4"], lh:["A2","C3","E3"], fr:[1,3,5], fl:[5,3,1], roman:"Root"},
+      {d:"w", rh:["C4","E4","A4"], lh:["C3","E3","A3"], fr:[1,2,5], fl:[5,3,1], roman:"1st"},
+      {d:"w", rh:["E4","A4","C5"], lh:["E3","A3","C4"], fr:[1,3,5], fl:[5,2,1], roman:"2nd"},
+      {d:"w", rh:["A4","C5","E5"], lh:["A3","C4","E4"], fr:[1,3,5], fl:[5,3,1], roman:"Root"},
+      {d:"w", rh:["E4","A4","C5"], lh:["E3","A3","C4"], fr:[1,3,5], fl:[5,2,1], roman:"2nd"},
+      {d:"w", rh:["C4","E4","A4"], lh:["C3","E3","A3"], fr:[1,2,5], fl:[5,3,1], roman:"1st"},
+      {d:"w", rh:["A3","C4","E4"], lh:["A2","C3","E3"], fr:[1,3,5], fl:[5,3,1], roman:"Root"}
+    ]
+  };
+  MASTERS["prog-inv-6"]={
+    id:"prog-inv-6", category:"progression", mode:"major", masterTonic:"C",
+    titleKey:"ex.progInv6", time:[4,4], octaves:1, difficulty:3, enabled:true,
+    formula:["I","IV","I","V7","I"], formulaNoteKey:"lesson.l7.prog6",
+    tempo:{default:80,min:40,max:112},
+    register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
+    steps:[
+      {d:"w", rh:["E4","G4","C5"], lh:["C3"], fr:[1,2,5], fl:[5], roman:"I"},
+      {d:"w", rh:["F4","A4","C5"], lh:["F3"], fr:[1,3,5], fl:[2], roman:"IV"},
+      {d:"w", rh:["E4","G4","C5"], lh:["C3"], fr:[1,2,5], fl:[5], roman:"I"},
+      {d:"w", rh:["F4","G4","B4"], lh:["G3"], fr:[1,2,4], fl:[1], roman:"V7"},
+      {d:"w", rh:["E4","G4","C5"], lh:["C3"], fr:[1,2,5], fl:[5], roman:"I"}
+    ]
+  };
+  MASTERS["prog-inv-64"]={
+    id:"prog-inv-64", category:"progression", mode:"major", masterTonic:"C",
+    titleKey:"ex.progInv64", time:[4,4], octaves:1, difficulty:3, enabled:true,
+    formula:["I","IV","I","V7","I"], formulaNoteKey:"lesson.l7.prog64",
+    tempo:{default:80,min:40,max:112},
+    register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
+    steps:[
+      {d:"w", rh:["G4","C5","E5"], lh:["C3"], fr:[1,3,5], fl:[5], roman:"I"},
+      {d:"w", rh:["A4","C5","F5"], lh:["F3"], fr:[1,2,5], fl:[2], roman:"IV"},
+      {d:"w", rh:["G4","C5","E5"], lh:["C3"], fr:[1,3,5], fl:[5], roman:"I"},
+      {d:"w", rh:["G4","B4","F5"], lh:["G3"], fr:[1,2,5], fl:[1], roman:"V7"},
+      {d:"w", rh:["G4","C5","E5"], lh:["C3"], fr:[1,3,5], fl:[5], roman:"I"}
+    ]
+  };
+
   /* Unit 6 — arpeggios (root position). Fingering from the instructor's
      chart tables (ARP_FINGERINGS_MAJOR/MINOR — 7 values = 2-oct ascent;
      the 1-oct ascent is values 1,2,3 + the last). Top note repeated, as in
@@ -499,7 +567,11 @@ const PLEx=(()=>{
     "arp-major-1oct":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "arp-major-2oct":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "arp-minor-1oct":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
-    "arp-minor-2oct":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"]
+    "arp-minor-2oct":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
+    "inv-major":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "inv-minor":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
+    "prog-inv-6":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "prog-inv-64":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"]
   };
 
   /* teacher key enable/disable (per exercise), stored on this device.

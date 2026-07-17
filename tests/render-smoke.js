@@ -150,6 +150,20 @@ ok("broken study: 15 dots on the 5 blocked chords",count(bb,/class="dot"/g)===15
     })));
 }
 
+/* ---- Unit 7: inversions ---- */
+{
+  const p6=svgFor("C","ht",null,"prog-inv-6");
+  ok("prog-inv-6: 5 chords + brace",count(p6,/class="nstep"/g)===5&&p6.includes("brace"));
+  /* the V7 shape F-G-B contains a second — lower note offsets left */
+  const s3=/<g class="nstep" data-i="3">([\s\S]*?)<\/g>/.exec(p6)[1];
+  const cx3=[...s3.matchAll(/ellipse[^>]*cx="([\d.]+)"/g)].map(m=>+m[1]);
+  ok("V7 second offset in the inversion progression",new Set(cx3).size===2);
+  ["inv-major","inv-minor","prog-inv-6","prog-inv-64"].forEach(ex=>
+    PLEx.allKeys(ex).forEach(k=>["rh","lh","ht"].forEach(h=>{
+      ok("no clipped coords "+ex+" "+k+" "+h,!/="-/.test(svgFor(k,h,null,ex)));
+    })));
+}
+
 /* ---- Unit 3: triad qualities — accidentals incl. double sharps/flats ---- */
 {
   const tq=svgFor("C","rh",null,"triad-qualities");

@@ -12,7 +12,8 @@ const PLLessons=(()=>{
     {unit:3, nameKey:"unit.3"},         /* Triad Qualities (before scales) */
     {unit:4, nameKey:"unit.4"},         /* Major Scales */
     {unit:5, nameKey:"unit.5"},         /* Minor Scales (three forms) */
-    {unit:6, nameKey:"unit.6"}          /* Arpeggios */
+    {unit:6, nameKey:"unit.6"},         /* Arpeggios */
+    {unit:7, nameKey:"unit.7"}          /* Inversions */
   ];
   const LESSONS=[
     {
@@ -131,6 +132,24 @@ const PLLessons=(()=>{
       descKey:"lesson.l6n2.desc",
       formula:["1","3","5","8"], showDegrees:false,
       formulaNoteKey:"lesson.l6.maj"
+    },
+    {
+      id:"l7-1", unit:7, label:"7.1",
+      exercises:["inv-major","inv-minor"],
+      titleKey:"lesson.l7n1.title",
+      goalKey:"lesson.l7n1.goal",
+      descKey:"lesson.l7n1.desc",
+      formula:["R","1st","2nd"], showDegrees:false,
+      formulaNoteKey:"lesson.l7.inv"
+    },
+    {
+      id:"l7-2", unit:7, label:"7.2",
+      exercises:["prog-inv-6","prog-inv-64"],
+      titleKey:"lesson.l7n2.title",
+      goalKey:"lesson.l7n2.goal",
+      descKey:"lesson.l7n2.desc",
+      formula:["I","IV","I","V7","I"], showDegrees:false,
+      formulaNoteKey:"lesson.l7.prog6"
     }
   ];
   return { list:()=>LESSONS,

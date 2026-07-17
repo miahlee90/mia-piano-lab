@@ -51,6 +51,15 @@ PLEx.allKeys("ff-major").forEach(k=>["rh","lh","ht"].forEach(h=>{
   ok("no clipped coords "+k+" "+h,!/="-/.test(svgFor(k,h)));
 }));
 
+/* ---- Lesson 2: minor five-finger rendering ---- */
+const dsm=svgFor("D#","rh",null,"ff-minor");
+ok("D# minor: 6 sharps in key sig",count(dsm,/♯/g)===6&&count(dsm,/♭/g)===0);
+const ebm=svgFor("Eb","lh",null,"ff-minor");
+ok("Eb minor: 6 flats in key sig",count(ebm,/♭/g)===6&&count(ebm,/♯/g)===0);
+PLEx.allKeys("ff-minor").forEach(k=>["rh","lh","ht"].forEach(h=>{
+  ok("no clipped coords minor "+k+" "+h,!/="-/.test(svgFor(k,h,null,"ff-minor")));
+}));
+
 /* ---- rhythm elements (hidden engine-demo exercise) ---- */
 const demo=svgFor("C","rh",null,"engine-demo");
 ok("demo: 12 steps",count(demo,/class="nstep"/g)===12);

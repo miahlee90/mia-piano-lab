@@ -263,20 +263,29 @@
     PLI18N.apply();
 
     /* lesson framing — all text/data from lessons.js + locales, none hardcoded */
-    lesson=PLLessons.current();
-    st.ex=lesson.exercise;
-    $("#lessonCrumb").textContent=t("lesson.crumb",{l:lesson.level,n:lesson.lesson});
-    $("#lessonTitle").textContent=t(lesson.titleKey);
-    $("#lessonGoal").textContent=t(lesson.goalKey);
-    $("#lessonDesc").textContent=t(lesson.descKey);
-    $("#formulaChip").innerHTML=
-      `${t("formula.pattern")} <b>${lesson.formula.join("–")}</b> `+
-      `<span class="pattern-long">(${t("formula.long")})</span> · `+
-      `${t("formula.degrees")} · ${t(lesson.formulaNoteKey)}`;
-
-    const exSel=$("#selEx");
-    exSel.innerHTML=PLEx.list().map(m=>`<option value="${m.id}">${t(m.titleKey)}</option>`).join("");
-    exSel.onchange=()=>{ st.ex=exSel.value; fillKeys(); applyTempoBounds(); rebuild(); };
+    const exSel=$("#selEx"), lsSel=$("#selLesson");
+    function applyLesson(L){
+      lesson=L;
+      st.ex=L.exercises[0];
+      st.key=PLEx.keysFor(st.ex)[0];
+      $("#lessonCrumb").textContent=t("lesson.crumb",{l:L.level,n:L.lesson});
+      $("#lessonTitle").textContent=t(L.titleKey);
+      $("#lessonGoal").textContent=t(L.goalKey);
+      $("#lessonDesc").textContent=t(L.descKey);
+      const long=L.formula.map(x=>t("formula."+x)).join(" – ");
+      $("#formulaChip").innerHTML=
+        `${t("formula.pattern")} <b>${L.formula.join("–")}</b> `+
+        `<span class="pattern-long">(${long})</span> · `+
+        `${t("formula.degrees")} · ${t(L.formulaNoteKey)}`;
+      exSel.innerHTML=L.exercises.map(id=>`<option value="${id}">${t(PLEx.MASTERS[id].titleKey)}</option>`).join("");
+      /* one-exercise lessons don't need the Exercise selector */
+      $("#exWrap").style.display=L.exercises.length>1?"":"none";
+      fillKeys(); applyTempoBounds(); renderTeacherKeys(); rebuild();
+    }
+    lsSel.innerHTML=PLLessons.list().map(l=>
+      `<option value="${l.id}">${l.level}.${l.lesson} — ${t(l.titleKey)}</option>`).join("");
+    lsSel.onchange=()=>applyLesson(PLLessons.get(lsSel.value));
+    exSel.onchange=()=>{ st.ex=exSel.value; fillKeys(); applyTempoBounds(); renderTeacherKeys(); rebuild(); };
     function fillKeys(){
       const M=PLEx.MASTERS[st.ex], keys=PLEx.keysFor(st.ex);
       if(!keys.includes(st.key)) st.key=keys[0];
@@ -288,8 +297,6 @@
       $("#tempoVal").textContent=st.tempo;
     }
     fillKeysRef=fillKeys;
-    fillKeys();
-    renderTeacherKeys();
     $("#selKey").onchange=e=>{ st.key=e.target.value; rebuild(); };
 
     seg($("#segHand"),[{v:"rh",label:t("hand.rh.short")},{v:"lh",label:t("hand.lh.short")},{v:"ht",label:t("hand.ht.short")}],
@@ -297,7 +304,6 @@
     seg($("#segMode"),[{v:"learn",label:t("mode.learn")},{v:"practice",label:t("mode.practice")},{v:"test",label:t("mode.test")}],
         ()=>st.mode,v=>st.mode=v);
 
-    applyTempoBounds();
     const tempoEl=$("#tempo");
     tempoEl.oninput=()=>{ st.tempo=+tempoEl.value; $("#tempoVal").textContent=st.tempo; };
     $("#tol").oninput=e=>{ st.tolMs=+e.target.value; $("#tolVal").textContent=st.tolMs; };
@@ -329,7 +335,7 @@
       chip.textContent= s.startsWith("on:") ? t("midi.on",{n:s.slice(3)}) : t("midi."+s);
     });
 
-    rebuild();
+    applyLesson(PLLessons.current());
   }
   document.addEventListener("DOMContentLoaded",boot);
 })();

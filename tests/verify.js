@@ -107,6 +107,30 @@ for(const k in EXPECT){
 eq("13 keys in suggested-progression order",PLEx.allKeys("ff-major"),
    ["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"]);
 
+/* ---- Lesson 2: minor five-finger — all 13 written minor keys ---- */
+const AM=PLEx.expand("ff-minor","A");
+eq("A minor RH (A3 start)",AM.steps.slice(0,5).map(s=>s.rh[0]),["A3","B3","C4","D4","E4"]);
+eq("A minor LH one octave below",AM.steps[0].lh,["A2"]);
+eq("minor pattern: 9 steps",AM.steps.length,9);
+const MEXPECT={A:"A B C D E",E:"E F# G A B",B:"B C# D E F#","F#":"F# G# A B C#",
+  "C#":"C# D# E F# G#","G#":"G# A# B C# D#","D#":"D# E# F# G# A#","Eb":"Eb F Gb Ab Bb",
+  "Bb":"Bb C Db Eb F",F:"F G Ab Bb C",C:"C D Eb F G",G:"G A Bb C D",D:"D E F G A"};
+for(const k in MEXPECT){
+  const ex=PLEx.expand("ff-minor",k);
+  eq("ffm "+k+" spelling",ex.steps.slice(0,5).map(s=>s.rh[0].replace(/\d/,"")).join(" "),MEXPECT[k]);
+  const m=ex.steps.slice(0,5).map(s=>PLPitch.midi(s.rh[0]));
+  eq("ffm "+k+" is W-H-W-W",[m[1]-m[0],m[2]-m[1],m[3]-m[2],m[4]-m[3]],[2,1,2,2]);
+  eq("ffm "+k+" LH mirrors RH an octave lower",
+     ex.steps.map(s=>PLPitch.midi(s.rh[0])-PLPitch.midi(s.lh[0])).every(d=>d===12),true);
+}
+const DSM=PLEx.expand("ff-minor","D#"), EBM=PLEx.expand("ff-minor","Eb");
+eq("D#m/Ebm same physical keys",
+   DSM.steps.map(s=>s.rh.map(PLPitch.midi)),EBM.steps.map(s=>s.rh.map(PLPitch.midi)));
+ok("D#m/Ebm different notation",JSON.stringify(DSM.steps)!==JSON.stringify(EBM.steps));
+ok("D# minor uses E# (never F)",DSM.steps.some(s=>s.rh[0]==="E#4"));
+eq("13 minor keys in progression order",PLEx.allKeys("ff-minor"),
+   ["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"]);
+
 /* ---- rhythm-element data layer (engine-demo) ---- */
 const PLNot=require("../js/notation.js"); global.PLNotation=PLNot;
 const D=PLEx.expand("engine-demo","C");

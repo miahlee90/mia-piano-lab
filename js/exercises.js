@@ -38,6 +38,27 @@ const PLEx=(()=>{
         {d:"w", rh:["C4"], lh:["C3"], fr:[1], fl:[5], roman:null}
       ]
     },
+    "ff-minor":{
+      id:"ff-minor", category:"five-finger", mode:"minor", masterTonic:"A",
+      titleKey:"ex.ffMinor", time:[4,4], octaves:1, difficulty:1, enabled:true,
+      tempo:{default:72,min:40,max:120},
+      /* minor tonics spelled A..G# all land inside the A3..Ab4 starting
+         window from this A3 master — no octave drop needed */
+      register:{rh:{shiftDownFrom:12},lh:{shiftDownFrom:12}},
+      /* Lesson 2 pattern — scale degrees 1-2-3-4 | 5-4-3-2 | 1 (minor:
+         W-H-W-W, half step between the 2nd and 3rd notes) */
+      steps:[
+        {d:"q", rh:["A3"], lh:["A2"], fr:[1], fl:[5], roman:null},
+        {d:"q", rh:["B3"], lh:["B2"], fr:[2], fl:[4], roman:null},
+        {d:"q", rh:["C4"], lh:["C3"], fr:[3], fl:[3], roman:null},
+        {d:"q", rh:["D4"], lh:["D3"], fr:[4], fl:[2], roman:null},
+        {d:"q", rh:["E4"], lh:["E3"], fr:[5], fl:[1], roman:null},
+        {d:"q", rh:["D4"], lh:["D3"], fr:[4], fl:[2], roman:null},
+        {d:"q", rh:["C4"], lh:["C3"], fr:[3], fl:[3], roman:null},
+        {d:"q", rh:["B3"], lh:["B2"], fr:[2], fl:[4], roman:null},
+        {d:"w", rh:["A3"], lh:["A2"], fr:[1], fl:[5], roman:null}
+      ]
+    },
     "engine-demo":{
       /* NOT a lesson — hidden reference exercise that exercises every rhythm
          element the renderer/player supports (8th/16th + beams, dotted
@@ -104,6 +125,9 @@ const PLEx=(()=>{
      it is data that the instructor confirms per key. */
   const KEYS_ENABLED={
     "ff-major":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    /* minor progression mirrors the major one via relative minors;
+       D# minor and Eb minor are SEPARATE written keys */
+    "ff-minor":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
     "scale-major-1oct":["C","G"]
   };
 

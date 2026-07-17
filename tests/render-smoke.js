@@ -76,7 +76,12 @@ ok("9 whole-note heads",count(p51,/class="note hollow"/g)===9);
 }
 ["prog-1-5-1","prog-1-4-1","prog-1-4-5-1"].forEach(ex=>
   PLEx.allKeys(ex).forEach(k=>["rh","lh","ht"].forEach(h=>{
-    ok("no clipped coords "+ex+" "+k+" "+h,!/="-/.test(svgFor(k,h,null,ex)));
+    const svg=svgFor(k,h,null,ex);
+    ok("no clipped coords "+ex+" "+k+" "+h,!/="-/.test(svg));
+    /* chord fingering stacks must stay fully inside the canvas (glyph
+       ascent ~11px above the baseline y) */
+    const fy=[...svg.matchAll(/class="fing[^"]*"[^>]*y="([\d.]+)"/g)].map(m=>+m[1]);
+    ok("fingering not clipped "+ex+" "+k+" "+h,!fy.length||Math.min(...fy)>=12);
   })));
 
 /* ---- rhythm elements (hidden engine-demo exercise) ---- */

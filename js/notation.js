@@ -128,7 +128,11 @@ const PLNotation=(()=>{
     const rT=diaRange(topHand), rB=diaRange(botHand);
     const overTop=Math.max(0,rT.mx-(tBase+8))*(GAP/2)+9;
     const overBot=Math.max(0,bBase-rB.mn)*(GAP/2)+9;
-    const padTop=Math.max(34,overTop+(showFing&&topHand==="rh"?38:26));
+    /* fingering stacks one number per chord note — reserve room for the
+       tallest chord, above (RH) and below (LH) */
+    const nT=Math.max(1,...score.steps.map(s=>s[topHand].length));
+    const nB=Math.max(1,...score.steps.map(s=>s[botHand].length));
+    const padTop=Math.max(34,overTop+(showFing&&topHand==="rh"?38+15*(nT-1):26));
     const geo={};
     if(hand==="ht"){
       const innerT=Math.max(0,tBase-rT.mn)*(GAP/2);
@@ -141,7 +145,7 @@ const PLNotation=(()=>{
     const topY   = hand==="lh"?geo.yB:geo.yT;
     const botY   = hand==="rh"?geo.yT:geo.yB;
     const sysBot = botY+4*GAP;
-    const romanY = sysBot+overBot+(hands.includes("lh")&&showFing?52:30);
+    const romanY = sysBot+overBot+(hands.includes("lh")&&showFing?52+15*(nB-1):30);
     const H      = romanY+16;
 
     const ksN=Math.abs(score.sig);

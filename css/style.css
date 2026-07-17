@@ -22,16 +22,24 @@ body{font-family:Inter,"SF Pro Display",-apple-system,"Segoe UI",Roboto,"Noto Sa
   background:var(--bg);color:var(--ink);font-size:15.5px;line-height:1.55}
 b,strong{font-weight:600}
 
-/* header — gradient mesh band like the lesson pages */
-.pl-header{color:#fff;background:linear-gradient(135deg,#1c1e54 0%,#2e2b8c 62%,#4434d4 100%)}
-.pl-header .inner{max-width:1180px;margin:0 auto;padding:18px 20px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
-.pl-header h1{margin:0;font-size:1.45rem;font-weight:800;letter-spacing:-.4px}
-.pl-header .sub{color:rgba(255,255,255,.82);font-size:13.5px}
-.hdr-piano{margin-left:auto;height:44px;width:auto;opacity:.95;border-radius:4px;overflow:hidden;
-  filter:drop-shadow(0 2px 6px rgba(0,0,0,.25))}
-.hdr-piano rect{fill:#fdfaf2;stroke:#c9c2ae;stroke-width:.6}
-.hdr-piano rect.bk{fill:#10122e;stroke:#000}
-.midi-chip{font-size:12.5px;background:rgba(255,255,255,.14);color:#fff;
+/* header — same hero art as the studio's lesson index: deep navy-indigo
+   gradient, big diagonal piano keys entering from the right, faint tilted
+   staff + notes, glow + vignette (artwork shared from the v2 design system) */
+.pl-header{color:#fff;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#12143c 0%,#22246e 55%,#3a2fae 100%)}
+.pl-header::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='900' height='260' viewBox='0 0 900 260' preserveAspectRatio='xMaxYMid slice'><defs><radialGradient id='glow' cx='0.68' cy='0.2' r='0.55'><stop offset='0' stop-color='%237fb4ff' stop-opacity='0.10'/><stop offset='1' stop-color='%237fb4ff' stop-opacity='0'/></radialGradient><radialGradient id='vig' cx='0.42' cy='0.4' r='0.85'><stop offset='0.6' stop-color='%23070926' stop-opacity='0'/><stop offset='1' stop-color='%23070926' stop-opacity='0.38'/></radialGradient><linearGradient id='wk' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23767cbe'/><stop offset='0.45' stop-color='%23c3c8ef'/><stop offset='1' stop-color='%23f0f2ff'/></linearGradient><linearGradient id='bk' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%2305060f'/><stop offset='0.18' stop-color='%23343a68'/><stop offset='0.4' stop-color='%230b0d24'/><stop offset='1' stop-color='%2305060f'/></linearGradient><linearGradient id='amb' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%230a0c2e' stop-opacity='0.6'/><stop offset='0.55' stop-color='%230a0c2e' stop-opacity='0.15'/><stop offset='1' stop-color='%230a0c2e' stop-opacity='0'/></linearGradient><linearGradient id='fadeG' x1='0' y1='0' x2='1' y2='0.6'><stop offset='0' stop-color='%23000000' stop-opacity='0'/><stop offset='0.35' stop-color='%23ffffff' stop-opacity='0.3'/><stop offset='0.7' stop-color='%23ffffff' stop-opacity='0.9'/><stop offset='1' stop-color='%23ffffff'/></linearGradient><mask id='fade'><rect x='330' y='-80' width='700' height='420' fill='url(%23fadeG)'/></mask></defs><rect width='900' height='260' fill='url(%23glow)'/><g stroke='%23ffffff' stroke-opacity='0.08' stroke-width='1.4' transform='rotate(-6 400 130)'><line x1='20' y1='96' x2='740' y2='96'/><line x1='20' y1='107' x2='740' y2='107'/><line x1='20' y1='118' x2='740' y2='118'/><line x1='20' y1='129' x2='740' y2='129'/><line x1='20' y1='140' x2='740' y2='140'/></g><g fill='%23ffffff' fill-opacity='0.09' stroke='%23ffffff' stroke-opacity='0.09' stroke-width='2.2' transform='rotate(-6 400 130)'><ellipse cx='130' cy='108' rx='8' ry='5.6' transform='rotate(-18 130 108)'/><line x1='137' y1='106' x2='137' y2='72'/><ellipse cx='240' cy='130' rx='8' ry='5.6' transform='rotate(-18 240 130)'/><line x1='247' y1='128' x2='247' y2='94'/><ellipse cx='330' cy='96' rx='8' ry='5.6' transform='rotate(-18 330 96)'/><line x1='323' y1='98' x2='323' y2='132'/><ellipse cx='470' cy='118' rx='8' ry='5.6' transform='rotate(-18 470 118)'/><line x1='477' y1='116' x2='477' y2='82'/><ellipse cx='600' cy='104' rx='8' ry='5.6' transform='rotate(-18 600 104)'/><line x1='593' y1='106' x2='593' y2='140'/><ellipse cx='690' cy='126' rx='8' ry='5.6' transform='rotate(-18 690 126)'/><line x1='697' y1='124' x2='697' y2='90'/></g><g transform='rotate(-30 900 320)' mask='url(%23fade)'><rect x='470' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='519' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='568' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='617' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='666' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='715' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='764' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='813' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='862' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='911' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='960' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='1009' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='503' y='-30' width='29' height='215' rx='3.5' fill='url(%23bk)'/><rect x='552' y='-30' width='29' height='215' rx='3.5' fill='url(%23bk)'/><rect x='650' y='-30' width='29' height='215' rx='3.5' fill='url(%23bk)'/><rect x='699' y='-30' width='29' height='215' rx='3.5' fill='url(%23bk)'/><rect x='748' y='-30' width='29' height='215' rx='3.5' fill='url(%23bk)'/><rect x='846' y='-30' width='29' height='215' rx='3.5' fill='url(%23bk)'/><rect x='895' y='-30' width='29' height='215' rx='3.5' fill='url(%23bk)'/><rect x='993' y='-30' width='29' height='215' rx='3.5' fill='url(%23bk)'/><rect x='1042' y='-30' width='29' height='215' rx='3.5' fill='url(%23bk)'/><rect x='460' y='-30' width='640' height='380' fill='url(%23amb)'/></g><rect width='900' height='260' fill='url(%23vig)'/></svg>") right center/cover no-repeat}
+.pl-header::after{content:"";position:absolute;inset:0;pointer-events:none;background:
+  radial-gradient(40% 90% at 85% 10%,rgba(249,107,238,.22),transparent 65%),
+  radial-gradient(35% 80% at 12% 100%,rgba(255,209,102,.14),transparent 60%)}
+.pl-header .inner{max-width:1180px;margin:0 auto;padding:30px 20px 34px;position:relative;z-index:1;
+  display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.pl-header h1{margin:0;font-size:2rem;font-weight:800;letter-spacing:-.5px;line-height:1.15}
+.pl-header h1::after{content:"";display:block;width:64px;height:5px;border-radius:3px;
+  background:linear-gradient(90deg,#ffd166,#f96bee);margin-top:10px}
+.pl-header .sub{color:rgba(255,255,255,.85);font-size:14px}
+.midi-chip{margin-left:auto;font-size:12.5px;background:rgba(10,12,46,.5);color:#fff;
   padding:5px 14px;border-radius:9999px;font-feature-settings:"tnum"}
 .pl-main{max-width:1180px;margin:0 auto;padding:14px 20px 60px}
 
@@ -98,7 +106,9 @@ b,strong{font-weight:600}
 .pl-score .acc,.pl-score .tsig{fill:#16263e;font-family:"Segoe UI Symbol","Times New Roman",serif}
 .pl-score .tsig{font-weight:800;font-family:Georgia,serif}
 .pl-score .note{fill:#16263e;stroke:#16263e;stroke-width:1.6}
-.pl-score .note.hollow{fill:#fff}
+/* hollow (half/whole) noteheads: transparent center so staff lines show
+   through the hole, as in engraved notation */
+.pl-score .note.hollow{fill:transparent;stroke-width:2.2}
 .pl-score .fing{font:800 15px Inter,"Segoe UI",sans-serif}
 .pl-score .fing-rh{fill:var(--rh)}
 .pl-score .fing-lh{fill:var(--lh)}

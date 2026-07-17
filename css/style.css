@@ -128,15 +128,18 @@ b,strong{font-weight:600}
 .pl-score .fing-lh{fill:var(--lh)}
 .pl-score .fing.editable{cursor:pointer;text-decoration:underline}
 .pl-score .roman{font:700 19px Georgia,serif;fill:var(--ink-2)}
+/* hollow noteheads stay TRANSPARENT in every state — staff lines must show
+   through the hole; states color the ring (stroke) only */
 .nstep.st-current .note{fill:var(--primary);stroke:var(--primary)}
-.nstep.st-current .note.hollow{fill:#e6e2ff}
+.nstep.st-current .note.hollow{fill:transparent}
 .nstep.st-current .stem{stroke:var(--primary)}
 .nstep.st-cursor .note{stroke:var(--primary);stroke-width:2.6}
 .nstep.st-correct .note{fill:var(--correct);stroke:var(--correct)}
-.nstep.st-correct .note.hollow{fill:#d9efe2}
+.nstep.st-correct .note.hollow{fill:transparent}
 .nstep.st-wrong .note{fill:var(--wrong);stroke:var(--wrong)}
+.nstep.st-wrong .note.hollow{fill:transparent}
 .nstep.st-done .note{fill:var(--done);stroke:var(--done)}
-.nstep.st-done .note.hollow{fill:#f0f2f5}
+.nstep.st-done .note.hollow{fill:transparent}
 .nstep.st-done .stem{stroke:var(--done)}
 .nstep.st-done .fing{opacity:.45}
 

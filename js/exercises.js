@@ -67,7 +67,7 @@ const PLEx=(()=>{
     "prog-1-5-1":{
       id:"prog-1-5-1", category:"progression", mode:"major", masterTonic:"C",
       titleKey:"ex.prog151", time:[4,4], octaves:1, difficulty:2, enabled:true,
-      tempo:{default:60,min:40,max:96},
+      tempo:{default:80,min:40,max:112},
       register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
       steps:[
         {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"},
@@ -78,7 +78,7 @@ const PLEx=(()=>{
     "prog-1-4-1":{
       id:"prog-1-4-1", category:"progression", mode:"major", masterTonic:"C",
       titleKey:"ex.prog141", time:[4,4], octaves:1, difficulty:2, enabled:true,
-      tempo:{default:60,min:40,max:96},
+      tempo:{default:80,min:40,max:112},
       register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
       steps:[
         {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"},
@@ -89,7 +89,7 @@ const PLEx=(()=>{
     "prog-1-4-5-1":{
       id:"prog-1-4-5-1", category:"progression", mode:"major", masterTonic:"C",
       titleKey:"ex.prog1451", time:[4,4], octaves:1, difficulty:3, enabled:true,
-      tempo:{default:60,min:40,max:96},
+      tempo:{default:80,min:40,max:112},
       register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
       steps:[
         {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"},

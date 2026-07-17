@@ -293,6 +293,9 @@ const PLNotation=(()=>{
     container.innerHTML=svg;
 
     const el=container.querySelector("svg");
+    /* constant visual scale regardless of step count — short exercises
+       (e.g. 3-chord progressions) must not blow up to fill the card */
+    if(el&&el.style) el.style.maxWidth=Math.round(W*1.3)+"px";
     const steps=el.querySelectorAll(".nstep");
     function setStepState(i,state){
       const g=steps[i]; if(!g) return;

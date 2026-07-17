@@ -32,12 +32,13 @@ const PLPlayer=(()=>{
   function play(){
     if(!S||playing) return;
     PLAudio.ensure();
+    if(beat>=total) beat=0;      /* pressing Play after the end = replay */
     playing=true; t0=performance.now(); beatsDone=0;
     S.onState("play"); fire();
   }
   function pause(){ if(!playing) return; clearTimeout(timer); playing=false; S.onState("pause"); }
   function stop(){ clearTimeout(timer); playing=false; beat=0; if(S) S.onState("stop"); }
   function restart(){ stop(); play(); }
-  return {load,play,pause,stop,restart,isPlaying:()=>playing};
+  return {load,play,pause,stop,restart,isPlaying:()=>playing,beatPos:()=>beat};
 })();
 if(typeof module!=="undefined") module.exports=PLPlayer;

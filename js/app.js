@@ -178,7 +178,11 @@
   }
   function transport(state){
     $("#btnPlay").textContent=state==="play"?"⏸":"▶";
-    if(state==="stop"){ /* leave last highlight for review */ }
+    /* fresh start from the top (Play after end, or Restart): wipe the old run's
+       highlights so the score doesn't begin gray */
+    if(state==="play"&&PLPlayer.beatPos()===0){
+      notation.clearStates(); piano.clearTargets(); cur=-1;
+    }
   }
 
   /* ---------- teacher panel: enable/disable keys per exercise ---------- */

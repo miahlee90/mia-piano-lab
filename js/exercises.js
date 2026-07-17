@@ -37,12 +37,44 @@ const PLEx=(()=>{
         {d:"w", rh:["C4"], lh:["C3"], fr:[1], fl:[5], roman:null},
         {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"}
       ]
+    },
+    "scale-major-1oct":{
+      id:"scale-major-1oct", category:"scale", mode:"major", masterTonic:"C",
+      titleKey:"ex.scaleMajor1", time:[4,4], octaves:1, difficulty:2, enabled:true,
+      tempo:{default:60,min:40,max:132},
+      register:{rh:{shiftDownFrom:12},lh:{shiftDownFrom:6}},
+      /* original 4-bar design: up, down, hold the tonic.
+         Master fingering (thumb crossings) is the standard C/G pattern —
+         RH 123 12345, LH 54321 321. */
+      steps:[
+        {d:"q", rh:["C4"], lh:["C3"], fr:[1], fl:[5], roman:null},
+        {d:"q", rh:["D4"], lh:["D3"], fr:[2], fl:[4], roman:null},
+        {d:"q", rh:["E4"], lh:["E3"], fr:[3], fl:[3], roman:null},
+        {d:"q", rh:["F4"], lh:["F3"], fr:[1], fl:[2], roman:null},
+        {d:"q", rh:["G4"], lh:["G3"], fr:[2], fl:[1], roman:null},
+        {d:"q", rh:["A4"], lh:["A3"], fr:[3], fl:[3], roman:null},
+        {d:"q", rh:["B4"], lh:["B3"], fr:[4], fl:[2], roman:null},
+        {d:"q", rh:["C5"], lh:["C4"], fr:[5], fl:[1], roman:null},
+        {d:"q", rh:["B4"], lh:["B3"], fr:[4], fl:[2], roman:null},
+        {d:"q", rh:["A4"], lh:["A3"], fr:[3], fl:[3], roman:null},
+        {d:"q", rh:["G4"], lh:["G3"], fr:[2], fl:[1], roman:null},
+        {d:"q", rh:["F4"], lh:["F3"], fr:[1], fl:[2], roman:null},
+        {d:"q", rh:["E4"], lh:["E3"], fr:[3], fl:[3], roman:null},
+        {d:"q", rh:["D4"], lh:["D3"], fr:[2], fl:[4], roman:null},
+        {d:"h", rh:["C4"], lh:["C3"], fr:[1], fl:[5], roman:null}
+      ]
     }
   };
 
   /* keys currently enabled per exercise (instructor-controlled; all 13 written
-     majors / 13 written minors are supported by the data model) */
-  const KEYS_ENABLED={ "ff-major":["C","F#","Gb"] };
+     majors / 13 written minors are supported by the data model).
+     NOTE: the scale is enabled only for C and G on purpose — they share the
+     master's thumb-crossing fingering. Black-key scales (F#, Gb, Db, …) use
+     DIFFERENT standard fingering, so they must get per-key fingering
+     overrides (DATA_FINGERING_OVERRIDES or instructor edits) BEFORE being
+     enabled here. Fingering is never blindly transposed as playable truth —
+     it is data that the instructor confirms per key. */
+  const KEYS_ENABLED={ "ff-major":["C","F#","Gb"], "scale-major-1oct":["C","G"] };
 
   /* per-key data overrides shipped with the site (instructor-authored),
      e.g. PL_FINGERING_OVERRIDES["ff-major"]["Gb"]={rh:{0:[1],…},lh:{…}} */

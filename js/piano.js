@@ -19,11 +19,13 @@ const PLPiano=(()=>{
     whites.forEach((m,i)=>{
       const label=(m%12===0)?("C"+(Math.floor(m/12)-1)):"";
       frag.push(`<div class="pk pk-w" data-midi="${m}" style="left:${(i*ww).toFixed(4)}%;width:${ww.toFixed(4)}%">`+
+                `<span class="pk-fing"></span>`+
                 (label?`<span class="pk-lbl">${label}</span>`:"")+`</div>`);
     });
     whites.forEach((m,i)=>{
       if([0,2,5,7,9].includes(m%12)&&m+1<=hi)
-        frag.push(`<div class="pk pk-b" data-midi="${m+1}" style="left:${((i+1)*ww-ww*0.30).toFixed(4)}%;width:${(ww*0.60).toFixed(4)}%"></div>`);
+        frag.push(`<div class="pk pk-b" data-midi="${m+1}" style="left:${((i+1)*ww-ww*0.30).toFixed(4)}%;width:${(ww*0.60).toFixed(4)}%">`+
+                  `<span class="pk-fing"></span></div>`);
     });
     container.innerHTML=`<div class="pl-kbd">${frag.join("")}</div>`;
     const keys={};
@@ -35,10 +37,15 @@ const PLPiano=(()=>{
     });
     const STATES=["k-target-rh","k-target-lh","k-correct","k-wrong","k-done","k-pressed"];
     function set(midi,cls,on){ const k=keys[midi]; if(k) k.classList.toggle(cls,!!on); }
-    function clearTargets(){ for(const m in keys) keys[m].classList.remove("k-target-rh","k-target-lh","k-correct","k-wrong","k-done"); }
-    function clearAll(){ for(const m in keys) keys[m].classList.remove(...STATES); }
+    /* finger number shown ON the key while it is a target (recommendation
+       only — never something MIDI can verify) */
+    function setFinger(midi,f){ const k=keys[midi]; if(k) k.querySelector(".pk-fing").textContent=f??""; }
+    function clearTargets(){ for(const m in keys){
+      keys[m].classList.remove("k-target-rh","k-target-lh","k-correct","k-wrong","k-done");
+      keys[m].querySelector(".pk-fing").textContent=""; } }
+    function clearAll(){ clearTargets(); for(const m in keys) keys[m].classList.remove("k-pressed"); }
     function flash(midi,cls,ms){ set(midi,cls,true); setTimeout(()=>set(midi,cls,false),ms||350); }
-    return {set,flash,clearTargets,clearAll,lo,hi,
+    return {set,setFinger,flash,clearTargets,clearAll,lo,hi,
             setPressed:(m,on)=>set(m,"k-pressed",on)};
   }
   return {render,name:m=>NAMES[m%12]+(Math.floor(m/12)-1)};

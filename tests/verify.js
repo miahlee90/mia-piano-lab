@@ -80,5 +80,21 @@ eq("override leaves others",ovSteps[1].fr[0],2===3?0:2); /* step1 default = 2 */
 const beats=C.steps.reduce((a,s)=>a+({w:4,h:2,q:1})[s.d],0);
 eq("total beats = 4 measures of 4/4",beats,16);
 
+/* ---- major scale, one octave (C and G share master fingering) ---- */
+const SC=PLEx.expand("scale-major-1oct","C");
+const SG=PLEx.expand("scale-major-1oct","G");
+eq("C scale RH notes",SC.steps.map(s=>s.rh[0]),
+   ["C4","D4","E4","F4","G4","A4","B4","C5","B4","A4","G4","F4","E4","D4","C4"]);
+eq("C scale RH fingering (thumb crossings)",SC.steps.map(s=>s.fr[0]),
+   [1,2,3,1,2,3,4,5,4,3,2,1,3,2,1]);
+eq("C scale LH fingering",SC.steps.map(s=>s.fl[0]),
+   [5,4,3,2,1,3,2,1,2,3,1,2,3,4,5]);
+eq("G scale has F#5",SG.steps[6].rh[0],"F#5");
+eq("G scale LH drops an octave",SG.steps[0].lh[0],"G2");
+eq("scale beats = 4 measures of 4/4",
+   SC.steps.reduce((a,s)=>a+({w:4,h:2,q:1})[s.d],0),16);
+ok("scale enabled keys limited until per-key fingering exists",
+   JSON.stringify(PLEx.keysFor("scale-major-1oct"))===JSON.stringify(["C","G"]));
+
 console.log(fails? "FAILURES: "+fails+"/"+tests : "ALL PASS ("+tests+" checks)");
 process.exit(fails?1:0);

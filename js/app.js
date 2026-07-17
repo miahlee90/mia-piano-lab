@@ -16,8 +16,8 @@
   }
   function stepTargets(i){
     const s=score.steps[i], out=[];
-    if(st.hand!=="lh") s.rh.forEach(sp=>out.push({midi:PLPitch.midi(sp),hand:"rh"}));
-    if(st.hand!=="rh") s.lh.forEach(sp=>out.push({midi:PLPitch.midi(sp),hand:"lh"}));
+    if(st.hand!=="lh") s.rh.forEach((sp,k)=>out.push({midi:PLPitch.midi(sp),hand:"rh",f:s.fr[k]}));
+    if(st.hand!=="rh") s.lh.forEach((sp,k)=>out.push({midi:PLPitch.midi(sp),hand:"lh",f:s.fl[k]}));
     return out;
   }
   function scoreRange(){
@@ -51,7 +51,10 @@
     if(cur>=0&&cur!==i) notation.setStepState(cur,"done");
     notation.setStepState(i,state||"current");
     piano.clearTargets();
-    stepTargets(i).forEach(x=>piano.set(x.midi,"k-target-"+x.hand,true));
+    stepTargets(i).forEach(x=>{
+      piano.set(x.midi,"k-target-"+x.hand,true);
+      if(st.showFing) piano.setFinger(x.midi,x.f);
+    });
     cur=i;
   }
   function playerStep(i,durMs){
@@ -154,6 +157,8 @@
     $("#btnStart").textContent=busy?t("ui.restart"):t("ui.start");
     $("#chkLoop").disabled=!learn;
     $("#tolWrap").style.display=st.mode==="test"?"":"none";
+    /* test mode: the keyboard disappears — score reading only */
+    $("#kbd").style.display=st.mode==="test"?"none":"";
   }
   function transport(state){
     $("#btnPlay").textContent=state==="play"?"⏸":"▶";
@@ -167,11 +172,16 @@
 
     const exSel=$("#selEx");
     exSel.innerHTML=PLEx.list().map(m=>`<option value="${m.id}">${t(m.titleKey)}</option>`).join("");
-    exSel.onchange=()=>{ st.ex=exSel.value; fillKeys(); rebuild(); };
+    exSel.onchange=()=>{ st.ex=exSel.value; fillKeys(); applyTempoBounds(); rebuild(); };
     function fillKeys(){
-      const M=PLEx.MASTERS[st.ex];
-      $("#selKey").innerHTML=PLEx.keysFor(st.ex).map(k=>`<option value="${k}" ${k===st.key?"selected":""}>${keyName(k,M.mode)}</option>`).join("");
-      if(!PLEx.keysFor(st.ex).includes(st.key)) st.key=PLEx.keysFor(st.ex)[0];
+      const M=PLEx.MASTERS[st.ex], keys=PLEx.keysFor(st.ex);
+      if(!keys.includes(st.key)) st.key=keys[0];
+      $("#selKey").innerHTML=keys.map(k=>`<option value="${k}" ${k===st.key?"selected":""}>${keyName(k,M.mode)}</option>`).join("");
+    }
+    function applyTempoBounds(){
+      const T=PLEx.MASTERS[st.ex].tempo, el=$("#tempo");
+      el.min=T.min; el.max=T.max; el.value=st.tempo=T.default;
+      $("#tempoVal").textContent=st.tempo;
     }
     fillKeys();
     $("#selKey").onchange=e=>{ st.key=e.target.value; rebuild(); };
@@ -181,10 +191,8 @@
     seg($("#segMode"),[{v:"learn",label:t("mode.learn")},{v:"practice",label:t("mode.practice")},{v:"test",label:t("mode.test")}],
         ()=>st.mode,v=>st.mode=v);
 
-    const M=PLEx.MASTERS[st.ex];
+    applyTempoBounds();
     const tempoEl=$("#tempo");
-    tempoEl.min=M.tempo.min; tempoEl.max=M.tempo.max; tempoEl.value=st.tempo=M.tempo.default;
-    $("#tempoVal").textContent=st.tempo;
     tempoEl.oninput=()=>{ st.tempo=+tempoEl.value; $("#tempoVal").textContent=st.tempo; };
     $("#tol").oninput=e=>{ st.tolMs=+e.target.value; $("#tolVal").textContent=st.tolMs; };
     $("#chkLoop").onchange=e=>st.loop=e.target.checked;

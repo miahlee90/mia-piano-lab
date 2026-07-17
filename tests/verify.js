@@ -181,9 +181,9 @@ eq("demo transposes with ties intact",PLEx.expand("engine-demo","D").steps[9].rh
 
 /* ---- curriculum structure (Unit.Lesson labels, Fundamentals style) ---- */
 const PLLessons=require("../js/lessons.js");
-eq("lesson labels",PLLessons.list().map(l=>l.label),["1.1","1.2","2.1","2.2","2.3","3.1"]);
-eq("lesson units",PLLessons.list().map(l=>l.unit),[1,1,2,2,2,3]);
-eq("units defined",PLLessons.units().map(u=>u.unit),[1,2,3]);
+eq("lesson labels",PLLessons.list().map(l=>l.label),["1.1","1.2","2.1","2.2","2.3","3.1","4.1","4.2"]);
+eq("lesson units",PLLessons.list().map(l=>l.unit),[1,1,2,2,2,3,4,4]);
+eq("units defined",PLLessons.units().map(u=>u.unit),[1,2,3,4]);
 ok("every lesson's exercises exist",
    PLLessons.list().every(l=>l.exercises.every(id=>PLEx.MASTERS[id])));
 
@@ -241,11 +241,47 @@ eq("C scale RH fingering (thumb crossings)",SC.steps.map(s=>s.fr[0]),
 eq("C scale LH fingering",SC.steps.map(s=>s.fl[0]),
    [5,4,3,2,1,3,2,1,2,3,1,2,3,4,5]);
 eq("G scale has F#5",SG.steps[6].rh[0],"F#5");
-eq("G scale LH drops an octave",SG.steps[0].lh[0],"G2");
+eq("G scale LH one octave below RH",SG.steps[0].lh[0],"G3");
 eq("scale beats = 4 measures of 4/4",
    SC.steps.reduce((a,s)=>a+({w:4,h:2,q:1})[s.d],0),16);
-ok("scale enabled keys limited until per-key fingering exists",
-   JSON.stringify(PLEx.keysFor("scale-major-1oct"))===JSON.stringify(["C","G"]));
+
+/* ---- Unit 4: per-key STANDARD scale fingering (never transposed) ---- */
+const SEQ=(a)=>a.concat(a.slice(0,-1).reverse());
+const FEXP={
+  F :{rh:[1,2,3,4,1,2,3,4], lh:[5,4,3,2,1,3,2,1]},
+  Bb:{rh:[4,1,2,3,1,2,3,4], lh:[3,2,1,4,3,2,1,3]},
+  Eb:{rh:[3,1,2,3,4,1,2,3], lh:[3,2,1,4,3,2,1,3]},
+  Ab:{rh:[3,4,1,2,3,1,2,3], lh:[3,2,1,4,3,2,1,3]},
+  Db:{rh:[2,3,1,2,3,4,1,2], lh:[3,2,1,4,3,2,1,3]},
+  "F#":{rh:[2,3,4,1,2,3,1,2], lh:[4,3,2,1,3,2,1,4]},
+  "Gb":{rh:[2,3,4,1,2,3,1,2], lh:[4,3,2,1,3,2,1,4]},
+  B :{rh:[1,2,3,1,2,3,4,5], lh:[4,3,2,1,4,3,2,1]}
+};
+for(const k in FEXP){
+  const ex=PLEx.expand("scale-major-1oct",k);
+  eq("scale "+k+" RH fingering",ex.steps.map(s=>s.fr[0]),SEQ(FEXP[k].rh));
+  eq("scale "+k+" LH fingering",ex.steps.map(s=>s.fl[0]),SEQ(FEXP[k].lh));
+}
+ok("1-oct scale enabled for 13 keys",PLEx.allKeys("scale-major-1oct").length===13);
+eq("F# scale spelling incl E#",
+   PLEx.expand("scale-major-1oct","F#").steps.slice(0,8).map(s=>s.rh[0].replace(/\d/,"")).join(" "),
+   "F# G# A# B C# D# E# F#");
+eq("Gb scale spelling incl Cb",
+   PLEx.expand("scale-major-1oct","Gb").steps.slice(0,8).map(s=>s.rh[0].replace(/\d/,"")).join(" "),
+   "Gb Ab Bb Cb Db Eb F Gb");
+
+/* two octaves: 29 steps of 8ths + final half = 4 bars of 4/4 */
+const S2=PLEx.expand("scale-major-2oct","C");
+eq("2-oct: 29 steps",S2.steps.length,29);
+eq("2-oct beats",S2.steps.reduce((a,s)=>a+(s.d==="h"?2:.5),0),16);
+eq("2-oct top note",S2.steps[14].rh[0],"C6");
+eq("2-oct RH fingering (pattern restarts each octave)",
+   S2.steps.map(s=>s.fr[0]).slice(0,15),[1,2,3,1,2,3,4,1,2,3,1,2,3,4,5]);
+eq("2-oct LH fingering (4 crosses at the octave)",
+   S2.steps.map(s=>s.fl[0]).slice(0,15),[5,4,3,2,1,3,2,1,4,3,2,1,3,2,1]);
+eq("2-oct ends on the tonic with the start finger",
+   [S2.steps[28].rh[0],S2.steps[28].fr[0],S2.steps[28].fl[0]],["C4",1,5]);
+for(const k of PLEx.allKeys("scale-major-2oct")) PLEx.expand("scale-major-2oct",k);
 
 console.log(fails? "FAILURES: "+fails+"/"+tests : "ALL PASS ("+tests+" checks)");
 process.exit(fails?1:0);

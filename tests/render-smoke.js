@@ -106,6 +106,18 @@ ok("broken study: 15 dots on the 5 blocked chords",count(bb,/class="dot"/g)===15
      fings.map(x=>x.f).join("")==="135");
 }
 
+/* ---- Unit 4: major scales ---- */
+{
+  const s2=svgFor("C","rh",null,"scale-major-2oct");
+  ok("2-oct scale: 29 steps",count(s2,/class="nstep"/g)===29);
+  ok("2-oct scale: eighths beamed in pairs",count(s2,/class="beam"/g)===14);
+  ok("2-oct scale: no flags (all beamed)",count(s2,/class="flag"/g)===0);
+  ["scale-major-1oct","scale-major-2oct"].forEach(ex=>
+    PLEx.allKeys(ex).forEach(k=>["rh","lh","ht"].forEach(h=>{
+      ok("no clipped coords "+ex+" "+k+" "+h,!/="-/.test(svgFor(k,h,null,ex)));
+    })));
+}
+
 /* ---- Unit 3: triad qualities — accidentals incl. double sharps/flats ---- */
 {
   const tq=svgFor("C","rh",null,"triad-qualities");

@@ -210,11 +210,13 @@ const PLEx=(()=>{
       ]
     },
     "scale-major-1oct":{
-      /* engine demo — becomes a later lesson; hidden from the Lesson 1 screen */
+      /* Unit 4.1 — per-key fingering comes from SCALE_FINGERINGS (standard
+         table), NEVER transposed from the C master */
       id:"scale-major-1oct", category:"scale", mode:"major", masterTonic:"C",
-      titleKey:"ex.scaleMajor1", time:[4,4], octaves:1, difficulty:2, enabled:false,
-      tempo:{default:60,min:40,max:132},
-      register:{rh:{shiftDownFrom:12},lh:{shiftDownFrom:6}},
+      titleKey:"ex.scaleMajor1", time:[4,4], octaves:1, difficulty:2, enabled:true,
+      scaleFingering:"1oct",
+      tempo:{default:72,min:40,max:120},
+      register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
       /* original 4-bar design: up, down, hold the tonic.
          Master fingering (thumb crossings) is the standard C/G pattern —
          RH 123 12345, LH 54321 321. */
@@ -238,6 +240,52 @@ const PLEx=(()=>{
     }
   };
 
+  /* Unit 4.2 master — two octaves in eighths (auto-beamed), final half note.
+     Built programmatically: 15 up, 13 down, tonic. LH one octave below. */
+  (function(){
+    const up=["C4","D4","E4","F4","G4","A4","B4","C5","D5","E5","F5","G5","A5","B5","C6"];
+    const seq=up.concat(up.slice(0,-1).reverse());
+    MASTERS["scale-major-2oct"]={
+      id:"scale-major-2oct", category:"scale", mode:"major", masterTonic:"C",
+      titleKey:"ex.scaleMajor2", time:[4,4], octaves:2, difficulty:3, enabled:true,
+      scaleFingering:"2oct",
+      tempo:{default:60,min:40,max:104},
+      register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
+      steps:seq.map((sp,i)=>({
+        d:i===seq.length-1?"h":"8",
+        rh:[sp], lh:[sp.replace(/\d/,n=>n-1)],
+        fr:[1], fl:[1], roman:null
+      }))
+    };
+  })();
+
+  /* STANDARD per-key major-scale fingering (Hanon/ABRSM table) — ascending
+     one octave, 8 values per hand. Scales NEVER copy fingering from the
+     transposed master; expand() applies this table (then instructor local
+     overrides on top). Descending mirrors ascending; two octaves restart the
+     pattern each octave (RH) / cross with 4 at the octave (LH). */
+  const SCALE_FINGERINGS={
+    C :{rh:[1,2,3,1,2,3,4,5], lh:[5,4,3,2,1,3,2,1]},
+    G :{rh:[1,2,3,1,2,3,4,5], lh:[5,4,3,2,1,3,2,1]},
+    D :{rh:[1,2,3,1,2,3,4,5], lh:[5,4,3,2,1,3,2,1]},
+    A :{rh:[1,2,3,1,2,3,4,5], lh:[5,4,3,2,1,3,2,1]},
+    E :{rh:[1,2,3,1,2,3,4,5], lh:[5,4,3,2,1,3,2,1]},
+    B :{rh:[1,2,3,1,2,3,4,5], lh:[4,3,2,1,4,3,2,1]},
+    F :{rh:[1,2,3,4,1,2,3,4], lh:[5,4,3,2,1,3,2,1]},
+    Bb:{rh:[4,1,2,3,1,2,3,4], lh:[3,2,1,4,3,2,1,3]},
+    Eb:{rh:[3,1,2,3,4,1,2,3], lh:[3,2,1,4,3,2,1,3]},
+    Ab:{rh:[3,4,1,2,3,1,2,3], lh:[3,2,1,4,3,2,1,3]},
+    Db:{rh:[2,3,1,2,3,4,1,2], lh:[3,2,1,4,3,2,1,3]},
+    "F#":{rh:[2,3,4,1,2,3,1,2], lh:[4,3,2,1,3,2,1,4]},
+    "Gb":{rh:[2,3,4,1,2,3,1,2], lh:[4,3,2,1,3,2,1,4]}
+  };
+  function scaleFingerSeq(form,a8,hand){
+    const mir=a=>a.concat(a.slice(0,-1).reverse());
+    if(form==="1oct") return mir(a8);
+    if(hand==="rh"){ const a7=a8.slice(0,7); return mir(a7.concat(a7,[a8[7]])); }
+    return mir(a8.concat(a8.slice(1)));
+  }
+
   /* keys available per exercise, in SUGGESTED PROGRESSION order (this order
      drives the Key selector). Five-finger patterns keep the same 1-5 fingering
      in every key, so all 13 written majors are enabled.
@@ -259,7 +307,8 @@ const PLEx=(()=>{
     "prog-1-4-1":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "prog-1-4-5-1":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "triad-qualities":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
-    "scale-major-1oct":["C","G"]
+    "scale-major-1oct":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "scale-major-2oct":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"]
   };
 
   /* teacher key enable/disable (per exercise), stored on this device.
@@ -326,6 +375,13 @@ const PLEx=(()=>{
       rhT:ties(s.rh), lhT:ties(s.lh),
       fr:(s.fr||[]).slice(), fl:(s.fl||[]).slice()
     }));
+    /* scales: per-key STANDARD fingering from the table (never transposed) */
+    if(M.scaleFingering&&SCALE_FINGERINGS[tonic]){
+      const T=SCALE_FINGERINGS[tonic];
+      const fr=scaleFingerSeq(M.scaleFingering,T.rh,"rh");
+      const fl=scaleFingerSeq(M.scaleFingering,T.lh,"lh");
+      steps.forEach((s,i)=>{ if(s.rh.length) s.fr=[fr[i]]; if(s.lh.length) s.fl=[fl[i]]; });
+    }
     applyOverride(steps,(DATA_FINGERING_OVERRIDES[exId]||{})[tonic]);
     applyOverride(steps,(localOverrides()[exId]||{})[tonic]);
     return { id:exId, tonic, mode:M.mode, sig:K.sig, time:M.time,

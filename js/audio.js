@@ -11,12 +11,15 @@ const PLAudio=(()=>{
     if(!ctx){
       ctx=new (window.AudioContext||window.webkitAudioContext)();
       master=ctx.createGain(); master.gain.value=.8;
+      /* high-pass kills sub-bass rumble from summed low tails ("woofer" boom) */
+      const hp=ctx.createBiquadFilter();
+      hp.type="highpass"; hp.frequency.value=70; hp.Q.value=.5;
       /* gentle safety limiter — default compressor settings pump audibly
          when two hands play together */
       const comp=ctx.createDynamicsCompressor();
       comp.threshold.value=-18; comp.knee.value=24; comp.ratio.value=4;
       comp.attack.value=.005; comp.release.value=.12;
-      master.connect(comp); comp.connect(ctx.destination);
+      master.connect(hp); hp.connect(comp); comp.connect(ctx.destination);
     }
     if(ctx.state==="suspended") ctx.resume();
   }
@@ -25,24 +28,30 @@ const PLAudio=(()=>{
     if(!on) return;
     ensure();
     if(active.has(m)) return;            /* duplicate-trigger guard */
-    const t=ctx.currentTime, f=freq(m), v=Math.min(1,(vel||90)/127)*.34;
-    /* low notes: longer attack (a 4ms ramp is shorter than one cycle down
-       there and clicks) and a stronger 2nd harmonic instead of raw sine
-       level — pure low sine at speaking volume rattles small speakers */
+    const t=ctx.currentTime, f=freq(m);
+    /* low notes: quieter fundamental + stronger harmonics — a loud pure
+       low sine held for a whole note booms like a subwoofer */
+    const v=Math.min(1,(vel||90)/127)*.34*(f<180?.72:1);
     const att=f<200?.014:.005;
-    const h2=f<180?.3:.12;
+    const h2=f<180?.34:.14;
     const g=ctx.createGain();
     const lp=ctx.createBiquadFilter(); lp.type="lowpass";
-    lp.frequency.value=Math.min(6000,Math.max(700,f*5)); lp.Q.value=.4;
+    lp.frequency.value=Math.min(6000,Math.max(800,f*5)); lp.Q.value=.4;
     const o1=ctx.createOscillator(); o1.type="sine";     o1.frequency.value=f;
     const o2=ctx.createOscillator(); o2.type="triangle"; o2.frequency.value=f*2;
+    const o3=ctx.createOscillator(); o3.type="sine";     o3.frequency.value=f*3;
     const g2=ctx.createGain(); g2.gain.value=h2;
+    const g3=ctx.createGain(); g3.gain.value=f<400?.09:.05;
+    /* piano-like envelope: keeps DECAYING through long notes — no held
+       sustain level to ring against the room */
     g.gain.setValueAtTime(0,t);
     g.gain.linearRampToValueAtTime(v,t+att);
-    g.gain.exponentialRampToValueAtTime(Math.max(v*.08,.0006),t+1.6);
-    o1.connect(g); o2.connect(g2); g2.connect(g); g.connect(lp); lp.connect(master);
-    o1.start(t); o2.start(t);
-    active.set(m,{o1,o2,g});
+    g.gain.exponentialRampToValueAtTime(v*.28,t+.7);
+    g.gain.exponentialRampToValueAtTime(.0008,t+3.6);
+    o1.connect(g); o2.connect(g2); g2.connect(g); o3.connect(g3); g3.connect(g);
+    g.connect(lp); lp.connect(master);
+    o1.start(t); o2.start(t); o3.start(t);
+    active.set(m,{o1,o2,o3,g});
   }
   function noteOff(m){
     const a=active.get(m); if(!a) return;
@@ -55,6 +64,7 @@ const PLAudio=(()=>{
     else{ const v=Math.max(g.value,.0006); g.cancelScheduledValues(t); g.setValueAtTime(v,t); }
     g.exponentialRampToValueAtTime(.0004,t+.14);
     a.o1.stop(t+.3); a.o2.stop(t+.3);   /* stop only after the fade is done */
+    if(a.o3) a.o3.stop(t+.3);
   }
   function blip(m,ms,vel){ noteOn(m,vel); setTimeout(()=>noteOff(m),Math.max(150,(ms||300)*.85)); }
   function tick(accent){

@@ -175,16 +175,16 @@
         renderProgress(); updateControls();
       }
     });
-    if(st.mode==="test"){
-      fb(t("fb.countIn"));
-      const spb=60000/st.tempo, beats=score.time[0];
-      let b=0;
-      (function count(){
-        PLAudio.tick(b===0);
-        if(++b<beats) countTimer=setTimeout(count,spb);
-        else countTimer=setTimeout(begin,spb);
-      })();
-    } else begin();
+    /* one full measure of count-in before EVERY practice/test session
+       (instructor) — follows the exercise's time signature */
+    fb(t("fb.countIn"));
+    const spb=60000/st.tempo, beats=score.time[0];
+    let b=0;
+    (function count(){
+      PLAudio.tick(b===0);
+      if(++b<beats) countTimer=setTimeout(count,spb);
+      else countTimer=setTimeout(begin,spb);
+    })();
     updateControls();
   }
   function endSession(){ clearTimeout(countTimer); PLSession.abort(); }

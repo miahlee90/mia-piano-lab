@@ -185,6 +185,8 @@ ok("prog LH exactly one octave below RH",
 eq("V7 in F# keeps E# (never F)",PLEx.expand("prog-1-5-1","F#").steps[1].rh,["E#4","B4","C#5"]);
 eq("V7 in Gb keeps Cb (never B)",PLEx.expand("prog-1-5-1","Gb").steps[1].rh,["F4","Cb5","Db5"]);
 eq("IV chord spelling",PLEx.expand("prog-1-4-1","C").steps[1].rh,["C4","F4","A4"]);
+eq("IV chord RH fingering 1-3-5 (instructor)",PLEx.expand("prog-1-4-1","C").steps[1].fr,[1,3,5]);
+eq("IV in full cadence also 1-3-5",PLEx.expand("prog-1-4-5-1","C").steps[1].fr,[1,3,5]);
 eq("full cadence romans",PLEx.expand("prog-1-4-5-1","C").steps.map(s=>s.roman),
    ["I","IV","I","V7","I"]);
 eq("A major progression drops an octave",PLEx.expand("prog-1-5-1","A").steps[0].rh,

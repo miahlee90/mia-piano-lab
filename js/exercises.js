@@ -149,7 +149,7 @@ const PLEx=(()=>{
       register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
       steps:[
         {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"},
-        {d:"w", rh:["C4","F4","A4"], lh:["C3","F3","A3"], fr:[1,4,5], fl:[5,2,1], roman:"IV"},
+        {d:"w", rh:["C4","F4","A4"], lh:["C3","F3","A3"], fr:[1,3,5], fl:[5,2,1], roman:"IV"},
         {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"}
       ]
     },
@@ -160,7 +160,7 @@ const PLEx=(()=>{
       register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
       steps:[
         {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"},
-        {d:"w", rh:["C4","F4","A4"], lh:["C3","F3","A3"], fr:[1,4,5], fl:[5,2,1], roman:"IV"},
+        {d:"w", rh:["C4","F4","A4"], lh:["C3","F3","A3"], fr:[1,3,5], fl:[5,2,1], roman:"IV"},
         {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"},
         {d:"w", rh:["B3","F4","G4"], lh:["B2","F3","G3"], fr:[1,4,5], fl:[5,2,1], roman:"V7"},
         {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"}

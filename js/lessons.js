@@ -8,7 +8,10 @@
 const PLLessons=(()=>{
   const UNITS=[
     {unit:1, nameKey:"unit.1"},         /* Five-Finger Patterns */
-    {unit:2, nameKey:"unit.2"}          /* Chord Progressions */
+    {unit:2, nameKey:"unit.2"},         /* Chord Progressions */
+    {unit:3, nameKey:"unit.3"}          /* Triad Qualities (before scales;
+                                           seventh qualities come AFTER the
+                                           future scales unit) */
   ];
   const LESSONS=[
     {
@@ -55,6 +58,15 @@ const PLLessons=(()=>{
       descKey:"lesson.l2n3.desc",
       formula:["I","IV","I","V7","I"], showDegrees:false,
       formulaNoteKey:"lesson.l2n3.motion"
+    },
+    {
+      id:"l3-1", unit:3, label:"3.1",
+      exercises:["triad-qualities"],
+      titleKey:"lesson.l3n1.title",
+      goalKey:"lesson.l3n1.goal",
+      descKey:"lesson.l3n1.desc",
+      formula:["M","Aug","m","dim"], showDegrees:false,
+      formulaNoteKey:"lesson.l3n1.motion"
     }
   ];
   return { list:()=>LESSONS,

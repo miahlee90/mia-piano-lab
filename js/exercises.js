@@ -166,6 +166,23 @@ const PLEx=(()=>{
         {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"}
       ]
     },
+    "triad-qualities":{
+      /* Unit 3 (instructor 2026-07-17): C - Caug - C - Cm - Cdim.
+         One note moves a half step at each quality change; fingering stays
+         1-3-5 / 5-3-1. Transposed spellings keep theory exact (F# aug uses
+         C-double-sharp, Gb dim uses B-double-flat). */
+      id:"triad-qualities", category:"chord-quality", mode:"major", masterTonic:"C",
+      titleKey:"ex.triadQual", time:[4,4], octaves:1, difficulty:2, enabled:true,
+      tempo:{default:80,min:40,max:112},
+      register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
+      steps:[
+        {d:"w", rh:["C4","E4","G4"],   lh:["C3","E3","G3"],   fr:[1,3,5], fl:[5,3,1], roman:"M"},
+        {d:"w", rh:["C4","E4","G#4"],  lh:["C3","E3","G#3"],  fr:[1,3,5], fl:[5,3,1], roman:"+"},
+        {d:"w", rh:["C4","E4","G4"],   lh:["C3","E3","G3"],   fr:[1,3,5], fl:[5,3,1], roman:"M"},
+        {d:"w", rh:["C4","Eb4","G4"],  lh:["C3","Eb3","G3"],  fr:[1,3,5], fl:[5,3,1], roman:"m"},
+        {d:"w", rh:["C4","Eb4","Gb4"], lh:["C3","Eb3","Gb3"], fr:[1,3,5], fl:[5,3,1], roman:"°"}
+      ]
+    },
     "engine-demo":{
       /* NOT a lesson — hidden reference exercise that exercises every rhythm
          element the renderer/player supports (8th/16th + beams, dotted
@@ -241,6 +258,7 @@ const PLEx=(()=>{
     "prog-broken-1-5":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "prog-1-4-1":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "prog-1-4-5-1":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "triad-qualities":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "scale-major-1oct":["C","G"]
   };
 

@@ -106,6 +106,19 @@ ok("broken study: 15 dots on the 5 blocked chords",count(bb,/class="dot"/g)===15
      fings.map(x=>x.f).join("")==="135");
 }
 
+/* ---- Unit 3: triad qualities — accidentals incl. double sharps/flats ---- */
+{
+  const tq=svgFor("C","rh",null,"triad-qualities");
+  ok("triad qualities: 5 steps",count(tq,/class="nstep"/g)===5);
+  ok("C view: 1 sharp (G#) + 3 flats (Eb Eb Gb)",
+     count(tq,/♯/g)===1&&count(tq,/♭/g)===3);
+  ok("double sharp rendered in F#",/𝄪/.test(svgFor("F#","rh",null,"triad-qualities")));
+  ok("double flats rendered in Gb",count(svgFor("Gb","rh",null,"triad-qualities"),/𝄫/g)>=2);
+  PLEx.allKeys("triad-qualities").forEach(k=>["rh","lh","ht"].forEach(h=>{
+    ok("no clipped coords tq "+k+" "+h,!/="-/.test(svgFor(k,h,null,"triad-qualities")));
+  }));
+}
+
 /* ---- rhythm elements (hidden engine-demo exercise) ---- */
 const demo=svgFor("C","rh",null,"engine-demo");
 ok("demo: 12 steps",count(demo,/class="nstep"/g)===12);

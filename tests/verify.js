@@ -152,6 +152,20 @@ ok("D# minor uses E# (never F)",DSM.steps.some(s=>s.rh[0]==="E#4"));
 eq("13 minor keys in progression order",PLEx.allKeys("ff-minor"),
    ["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"]);
 
+/* ---- Unit 3: triad qualities (M - aug - M - m - dim on one root) ---- */
+const TQ=PLEx.expand("triad-qualities","C");
+eq("qualities in C",TQ.steps.map(s=>s.rh),
+   [["C4","E4","G4"],["C4","E4","G#4"],["C4","E4","G4"],["C4","Eb4","G4"],["C4","Eb4","Gb4"]]);
+eq("quality labels",TQ.steps.map(s=>s.roman),["M","+","M","m","°"]);
+eq("F# augmented uses C-double-sharp",PLEx.expand("triad-qualities","F#").steps[1].rh,
+   ["F#4","A#4","C##5"]);
+eq("Gb diminished uses double-flats",PLEx.expand("triad-qualities","Gb").steps[4].rh,
+   ["Gb4","Bbb4","Dbb5"]);
+eq("F# diminished spelled F#-A-C",PLEx.expand("triad-qualities","F#").steps[4].rh,
+   ["F#4","A4","C5"]);
+ok("triad qualities enabled for 13 keys",PLEx.allKeys("triad-qualities").length===13);
+for(const k of PLEx.allKeys("triad-qualities")) PLEx.expand("triad-qualities",k);
+
 /* ---- rhythm-element data layer (engine-demo) ---- */
 const PLNot=require("../js/notation.js"); global.PLNotation=PLNot;
 const D=PLEx.expand("engine-demo","C");
@@ -167,9 +181,9 @@ eq("demo transposes with ties intact",PLEx.expand("engine-demo","D").steps[9].rh
 
 /* ---- curriculum structure (Unit.Lesson labels, Fundamentals style) ---- */
 const PLLessons=require("../js/lessons.js");
-eq("lesson labels",PLLessons.list().map(l=>l.label),["1.1","1.2","2.1","2.2","2.3"]);
-eq("lesson units",PLLessons.list().map(l=>l.unit),[1,1,2,2,2]);
-eq("units defined",PLLessons.units().map(u=>u.unit),[1,2]);
+eq("lesson labels",PLLessons.list().map(l=>l.label),["1.1","1.2","2.1","2.2","2.3","3.1"]);
+eq("lesson units",PLLessons.list().map(l=>l.unit),[1,1,2,2,2,3]);
+eq("units defined",PLLessons.units().map(u=>u.unit),[1,2,3]);
 ok("every lesson's exercises exist",
    PLLessons.list().every(l=>l.exercises.every(id=>PLEx.MASTERS[id])));
 

@@ -14,20 +14,22 @@ const PLPiano=(()=>{
     while(lo%12!==0) lo--;                       /* start on C */
     while(hi%12!==4&&hi%12!==11) hi++;           /* end on E or B */
     const whites=[]; for(let m=lo;m<=hi;m++) if(WHITE_PC.includes(m%12)) whites.push(m);
-    const ww=100/whites.length;
+    /* FIXED key size — every exercise and hand shows keys at the same scale
+       (wider ranges scroll horizontally instead of shrinking the keys) */
+    const KW=52, BW=Math.round(KW*.6);
     const frag=[];
     whites.forEach((m,i)=>{
       const label=(m%12===0)?("C"+(Math.floor(m/12)-1)):"";
-      frag.push(`<div class="pk pk-w" data-midi="${m}" style="left:${(i*ww).toFixed(4)}%;width:${ww.toFixed(4)}%">`+
+      frag.push(`<div class="pk pk-w" data-midi="${m}" style="left:${i*KW}px;width:${KW}px">`+
                 `<span class="pk-fing"></span>`+
                 (label?`<span class="pk-lbl">${label}</span>`:"")+`</div>`);
     });
     whites.forEach((m,i)=>{
       if([0,2,5,7,9].includes(m%12)&&m+1<=hi)
-        frag.push(`<div class="pk pk-b" data-midi="${m+1}" style="left:${((i+1)*ww-ww*0.30).toFixed(4)}%;width:${(ww*0.60).toFixed(4)}%">`+
+        frag.push(`<div class="pk pk-b" data-midi="${m+1}" style="left:${(i+1)*KW-BW/2}px;width:${BW}px">`+
                   `<span class="pk-fing"></span></div>`);
     });
-    container.innerHTML=`<div class="pl-kbd">${frag.join("")}</div>`;
+    container.innerHTML=`<div class="pl-kbd"><div class="pl-kbd-inner" style="width:${whites.length*KW}px">${frag.join("")}</div></div>`;
     const keys={};
     container.querySelectorAll(".pk").forEach(k=>{
       keys[+k.dataset.midi]=k;

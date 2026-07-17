@@ -60,10 +60,12 @@ const PLAudio=(()=>{
   function tick(accent){
     if(!on) return;
     ensure();
+    /* clearly audible woodblock-ish click (triangle = extra harmonics) */
     const t=ctx.currentTime, o=ctx.createOscillator(), g=ctx.createGain();
-    o.type="sine"; o.frequency.value=accent?1568:1046;   /* soft woodblock-ish ping */
-    g.gain.setValueAtTime(.16,t); g.gain.exponentialRampToValueAtTime(.0006,t+.05);
-    o.connect(g); g.connect(master); o.start(t); o.stop(t+.06);
+    o.type="triangle"; o.frequency.value=accent?2093:1568;
+    g.gain.setValueAtTime(accent?.6:.45,t);
+    g.gain.exponentialRampToValueAtTime(.001,t+.07);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t+.08);
   }
   function setSound(v){ on=!!v; if(!on) [...active.keys()].forEach(noteOff); }
   return {noteOn,noteOff,blip,tick,setSound,isOn:()=>on,ensure};

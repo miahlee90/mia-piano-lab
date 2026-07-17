@@ -168,15 +168,20 @@ for(const k of PLEx.allKeys("triad-qualities")) PLEx.expand("triad-qualities",k)
 
 /* ---- Lesson 3.2: seventh-chord qualities ---- */
 const SQ=PLEx.expand("seventh-qualities","C");
-eq("7th qualities in C",SQ.steps.map(s=>s.rh),
-   [["C4","E4","G4"],["C4","E4","G4","B4"],["C4","Eb4","G4","Bb4"],
-    ["C4","Eb4","Gb4","Bb4"],["C4","Eb4","Gb4","Bbb4"]]);
-eq("7th quality labels",SQ.steps.map(s=>s.roman),["M","maj7","m7","m7♭5","°7"]);
+eq("7th qualities in C (connected chain)",SQ.steps.map(s=>s.rh),
+   [["C4","E4","G4","C5"],["C4","E4","G4","B4"],["C4","E4","G4","Bb4"],
+    ["C4","Eb4","G4","Bb4"],["C4","Eb4","Gb4","Bb4"],["C4","Eb4","Gb4","Bbb4"]]);
+eq("7th quality labels",SQ.steps.map(s=>s.roman),["M","maj7","7","m7","m7♭5","°7"]);
 eq("7th chord fingering RH/LH",[SQ.steps[1].fr,SQ.steps[1].fl],[[1,2,3,5],[5,3,2,1]]);
+/* the chain property itself: exactly ONE note changes at every step */
+ok("exactly one note moves per change",SQ.steps.slice(1).every((s,i)=>{
+  const prev=SQ.steps[i].rh;
+  return s.rh.filter((sp,j)=>sp!==prev[j]).length===1;
+}));
 eq("F# dim7 spells Eb (dim 7th above F#)",
-   PLEx.expand("seventh-qualities","F#").steps[4].rh,["F#4","A4","C5","Eb5"]);
+   PLEx.expand("seventh-qualities","F#").steps[5].rh,["F#4","A4","C5","Eb5"]);
 eq("Gb dim7 spells Fbb",
-   PLEx.expand("seventh-qualities","Gb").steps[4].rh,["Gb4","Bbb4","Dbb5","Fbb5"]);
+   PLEx.expand("seventh-qualities","Gb").steps[5].rh,["Gb4","Bbb4","Dbb5","Fbb5"]);
 for(const k of PLEx.allKeys("seventh-qualities")) PLEx.expand("seventh-qualities",k);
 
 /* ---- rhythm-element data layer (engine-demo) ---- */

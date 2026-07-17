@@ -74,7 +74,7 @@ const PLLessons=(()=>{
       titleKey:"lesson.l3n2.title",
       goalKey:"lesson.l3n2.goal",
       descKey:"lesson.l3n2.desc",
-      formula:["M","maj7","m7","m7♭5","°7"], showDegrees:false,
+      formula:["M","maj7","7","m7","m7♭5","°7"], showDegrees:false,
       formulaNoteKey:"lesson.l3n2.motion"
     },
     {

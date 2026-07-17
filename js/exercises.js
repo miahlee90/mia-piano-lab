@@ -184,16 +184,19 @@ const PLEx=(()=>{
       ]
     },
     "seventh-qualities":{
-      /* Lesson 3.2 (instructor): C - Cmaj7 - Cm7 - Cm7b5 - Cdim7.
-         Four-note chords, RH 1-2-3-5 / LH 5-3-2-1 (opening triad 1-3-5).
+      /* Lesson 3.2 (instructor 2026-07-17): a CONNECTED chain — the top
+         voice steps down C-B-Bb, then exactly one note moves per change:
+         C(octave) - Cmaj7 - C7 - Cm7 - Cm7b5 - Cdim7.
+         All chords four notes, RH 1-2-3-5 / LH 5-3-2-1.
          Transposition stays theoretically exact — e.g. Gb dim7 spells Fbb. */
       id:"seventh-qualities", category:"chord-quality", mode:"major", masterTonic:"C",
       titleKey:"ex.seventhQual", time:[4,4], octaves:1, difficulty:3, enabled:true,
       tempo:{default:80,min:40,max:112},
       register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
       steps:[
-        {d:"w", rh:["C4","E4","G4"],          lh:["C3","E3","G3"],          fr:[1,3,5],   fl:[5,3,1],   roman:"M"},
+        {d:"w", rh:["C4","E4","G4","C5"],     lh:["C3","E3","G3","C4"],     fr:[1,2,3,5], fl:[5,3,2,1], roman:"M"},
         {d:"w", rh:["C4","E4","G4","B4"],     lh:["C3","E3","G3","B3"],     fr:[1,2,3,5], fl:[5,3,2,1], roman:"maj7"},
+        {d:"w", rh:["C4","E4","G4","Bb4"],    lh:["C3","E3","G3","Bb3"],    fr:[1,2,3,5], fl:[5,3,2,1], roman:"7"},
         {d:"w", rh:["C4","Eb4","G4","Bb4"],   lh:["C3","Eb3","G3","Bb3"],   fr:[1,2,3,5], fl:[5,3,2,1], roman:"m7"},
         {d:"w", rh:["C4","Eb4","Gb4","Bb4"],  lh:["C3","Eb3","Gb3","Bb3"],  fr:[1,2,3,5], fl:[5,3,2,1], roman:"m7♭5"},
         {d:"w", rh:["C4","Eb4","Gb4","Bbb4"], lh:["C3","Eb3","Gb3","Bbb3"], fr:[1,2,3,5], fl:[5,3,2,1], roman:"°7"}

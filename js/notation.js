@@ -153,13 +153,16 @@ const PLNotation=(()=>{
     const x0=xTime+32;
 
     /* ---- pass 1: x positions + barlines from the time signature ---- */
-    const xs=[], bars=[];
-    let x=x0, beatAcc=pickup?(score.time[0]-pickup):0;
+    const xs=[], bars=[], measureOf=[];
+    let x=x0, beatAcc=pickup?(score.time[0]-pickup):0, mi=0;
     score.steps.forEach((s,i)=>{
-      xs.push(x+20);
+      xs.push(x+20); measureOf.push(mi);
       x+=spacingOf(s.d);
       beatAcc+=beatsOf(s.d);
-      if(beatAcc>=score.time[0]-1e-6&&i<score.steps.length-1){ bars.push(x); x+=16; beatAcc=0; }
+      if(beatAcc>=score.time[0]-1e-6){
+        if(i<score.steps.length-1){ bars.push(x); x+=16; }
+        beatAcc=0; mi++;
+      }
     });
     const endX=x+14.5;   /* right edge of the final thick barline */
     const W=x+26;
@@ -192,6 +195,11 @@ const PLNotation=(()=>{
     }
 
     /* ---- pass 3: heads/stems/flags/rests/dots/fingering per step ---- */
+    /* accidental state per hand: an accidental lasts through its measure;
+       returning to the key-signature pitch in the NEXT measure gets a
+       courtesy natural (the "missing ♮" case) */
+    const accTrack={rh:{inForce:{},last:{},measure:0},
+                    lh:{inForce:{},last:{},measure:0}};
     function handSVG(step,h,xC,stepIdx){
       const parts=[];
       const clef=h==="rh"?"treble":"bass";
@@ -208,10 +216,21 @@ const PLNotation=(()=>{
       const off=notes.map(()=>0);
       for(let i=1;i<notes.length;i++)
         if(dias[i]-dias[i-1]===1&&off[i-1]===0&&off[i]===0) off[i-1]=-13;
+      const tr=accTrack[h], mIdx=measureOf[stepIdx];
+      if(mIdx!==tr.measure){
+        tr.last=(mIdx===tr.measure+1)?tr.inForce:{};
+        tr.inForce={}; tr.measure=mIdx;
+      }
       notes.forEach((p,i)=>{
         const nx=xC+off[i];
         ledgerSVG(parts,nx,PLPitch.dia(p),clef,y0);
-        if(p.acc!==PLPitch.sigAccFor(score.sig,p.letter)) parts.push(accSVG(xC-22,ys[i],p.acc));
+        const key=p.letter+p.oct;
+        const expected=(key in tr.inForce)?tr.inForce[key]:PLPitch.sigAccFor(score.sig,p.letter);
+        const carry=tr.last[key];
+        if(p.acc!==expected) parts.push(accSVG(xC-22,ys[i],p.acc));
+        else if(!(key in tr.inForce)&&carry!==undefined&&carry!==p.acc)
+          parts.push(accSVG(xC-22,ys[i],p.acc));   /* courtesy (e.g. ♮ after ♯) */
+        tr.inForce[key]=p.acc;
         parts.push(nd==="w"
           ?`<ellipse class="note hollow" cx="${nx}" cy="${ys[i]}" rx="10.5" ry="6.5"/>`
           :`<ellipse class="note${hollow?" hollow":""}" cx="${nx}" cy="${ys[i]}" rx="9" ry="6.5" transform="rotate(-14 ${nx} ${ys[i]})"/>`);

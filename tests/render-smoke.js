@@ -128,6 +128,7 @@ ok("broken study: 15 dots on the 5 blocked chords",count(bb,/class="dot"/g)===15
   ok("triad qualities: 5 steps",count(tq,/class="nstep"/g)===5);
   ok("C view: 1 sharp (G#) + 3 flats (Eb Eb Gb)",
      count(tq,/♯/g)===1&&count(tq,/♭/g)===3);
+  ok("courtesy natural on the G after Caug",count(tq,/♮/g)===1);
   ok("double sharp rendered in F#",/𝄪/.test(svgFor("F#","rh",null,"triad-qualities")));
   ok("double flats rendered in Gb",count(svgFor("Gb","rh",null,"triad-qualities"),/𝄫/g)>=2);
   PLEx.allKeys("triad-qualities").forEach(k=>["rh","lh","ht"].forEach(h=>{

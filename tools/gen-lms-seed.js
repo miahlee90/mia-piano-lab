@@ -22,7 +22,7 @@ PLLessons.list().forEach((l,i)=>{
   const item=i+1, lbd=JSON.stringify(l.exercises);
   sql+="insert into curriculum_items(course_id,item_id,unit,label,title,route,lbd_ids,lbd_count,has_quiz,status,version) values "+
        "('piano-lab',"+item+","+l.unit+",$q$"+l.label+"$q$,$q$"+t(l.titleKey)+"$q$,"+
-       "$q$index.html?lesson="+l.id+"$q$,'"+lbd+"'::jsonb,"+l.exercises.length+",false,'active',1) "+
+       "$q$app.html?lesson="+l.id+"$q$,'"+lbd+"'::jsonb,"+l.exercises.length+",false,'active',1) "+
        "on conflict (course_id,item_id) do update set unit=excluded.unit,label=excluded.label,"+
        "title=excluded.title,route=excluded.route,lbd_ids=excluded.lbd_ids,lbd_count=excluded.lbd_count,"+
        "has_quiz=excluded.has_quiz,status=excluded.status,version=excluded.version;\n";

@@ -6,11 +6,11 @@ progressions in every written key. Original educational product: **no
 textbook content is included or reproduced.** Reference materials live in
 `reference/`, which is **gitignored and must never be committed**.
 
-Static site — no build step, no external dependencies. Open `index.html` over
+Static site — no build step, no external dependencies. Open `app.html` (the practice app) or `index.html` (the landing page) over
 http(s). Web MIDI needs Chrome/Edge on https or localhost.
 
 Cache busting: every `<script>`/`<link>` tag carries `?v=NNN`. BUMP this in
-`index.html` and `lessons.html` (single search-and-replace) whenever js/css
+`app.html` and `lessons.html` (single search-and-replace) whenever js/css
 files change, or browsers may mix stale and fresh files.
 
 ## Architecture

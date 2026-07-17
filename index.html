@@ -4,131 +4,86 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Piano Lab</title>
-<link rel="stylesheet" href="css/style.css?v=058">
+<script>
+/* old links & LMS routes point at index.html?lesson=… — forward them to the app */
+if(/[?&]lesson=/.test(location.search)) location.replace("app.html"+location.search);
+</script>
+<style>
+:root{
+  --primary:#533afd; --brand-dark:#1c1e54; --ink:#0d253d; --muted:#5b6472;
+  --bg:#f6f0e2; --card:#fff; --hairline:#e7ddc8;
+  --gold:#ffd166; --pink:#f96bee;
+  --shadow-2:0 10px 30px rgba(0,55,112,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+a{text-decoration:none;color:inherit}
+
+.hero{color:#fff;text-align:left;position:relative;overflow:hidden;
+  display:flex;align-items:center;min-height:36vh;padding:44px 16px;
+  background:linear-gradient(135deg,#12143c 0%,#22246e 55%,#3a2fae 100%)}
+.hero::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='900' height='260' viewBox='0 0 900 260' preserveAspectRatio='xMaxYMid slice'><defs><radialGradient id='glow' cx='0.68' cy='0.2' r='0.55'><stop offset='0' stop-color='%237fb4ff' stop-opacity='0.10'/><stop offset='1' stop-color='%237fb4ff' stop-opacity='0'/></radialGradient><radialGradient id='vig' cx='0.42' cy='0.4' r='0.85'><stop offset='0.6' stop-color='%23070926' stop-opacity='0'/><stop offset='1' stop-color='%23070926' stop-opacity='0.38'/></radialGradient><linearGradient id='wk' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23767cbe'/><stop offset='0.45' stop-color='%23c3c8ef'/><stop offset='1' stop-color='%23f0f2ff'/></linearGradient><linearGradient id='bk' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%2305060f'/><stop offset='0.18' stop-color='%23343a68'/><stop offset='0.4' stop-color='%230b0d24'/><stop offset='1' stop-color='%2305060f'/></linearGradient><linearGradient id='amb' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%230a0c2e' stop-opacity='0.6'/><stop offset='0.55' stop-color='%230a0c2e' stop-opacity='0.15'/><stop offset='1' stop-color='%230a0c2e' stop-opacity='0'/></linearGradient><linearGradient id='fadeG' x1='0' y1='0' x2='1' y2='0.6'><stop offset='0' stop-color='%23000000' stop-opacity='0'/><stop offset='0.35' stop-color='%23ffffff' stop-opacity='0.3'/><stop offset='0.7' stop-color='%23ffffff' stop-opacity='0.9'/><stop offset='1' stop-color='%23ffffff'/></linearGradient><mask id='fade'><rect x='330' y='-80' width='700' height='420' fill='url(%23fadeG)'/></mask></defs><rect width='900' height='260' fill='url(%23glow)'/><g stroke='%23ffffff' stroke-opacity='0.08' stroke-width='1.4' transform='rotate(-6 400 130)'><line x1='20' y1='96' x2='740' y2='96'/><line x1='20' y1='107' x2='740' y2='107'/><line x1='20' y1='118' x2='740' y2='118'/><line x1='20' y1='129' x2='740' y2='129'/><line x1='20' y1='140' x2='740' y2='140'/></g><g fill='%23ffffff' fill-opacity='0.09' stroke='%23ffffff' stroke-opacity='0.09' stroke-width='2.2' transform='rotate(-6 400 130)'><ellipse cx='130' cy='108' rx='8' ry='5.6' transform='rotate(-18 130 108)'/><line x1='137' y1='106' x2='137' y2='72'/><ellipse cx='240' cy='130' rx='8' ry='5.6' transform='rotate(-18 240 130)'/><line x1='247' y1='128' x2='247' y2='94'/><ellipse cx='330' cy='96' rx='8' ry='5.6' transform='rotate(-18 330 96)'/><line x1='323' y1='98' x2='323' y2='132'/><ellipse cx='470' cy='118' rx='8' ry='5.6' transform='rotate(-18 470 118)'/><line x1='477' y1='116' x2='477' y2='82'/><ellipse cx='600' cy='104' rx='8' ry='5.6' transform='rotate(-18 600 104)'/><line x1='593' y1='106' x2='593' y2='140'/><ellipse cx='690' cy='126' rx='8' ry='5.6' transform='rotate(-18 690 126)'/><line x1='697' y1='124' x2='697' y2='90'/></g><g transform='rotate(-30 900 320)' mask='url(%23fade)'><rect x='470' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='519' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='568' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='617' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='666' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='715' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='764' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='813' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='862' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='911' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='960' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='1009' y='-30' width='46' height='360' rx='4' fill='url(%23wk)'/><rect x='503' y='-30' width='29' height='215' rx='3.5' fill='url(%23bk)'/><rect x='552' y='-30' width='29' height='215' rx='3.5' fill='url(%23bk)'/><rect x='650' y='-30' width='29' height='215' rx='3.5' fill='url(%23bk)'/><rect x='699' y='-30' width='29' height='215' rx='3.5' fill='url(%23bk)'/><rect x='748' y='-30' width='29' height='215' rx='3.5' fill='url(%23bk)'/><rect x='846' y='-30' width='29' height='215' rx='3.5' fill='url(%23bk)'/><rect x='895' y='-30' width='29' height='215' rx='3.5' fill='url(%23bk)'/><rect x='993' y='-30' width='29' height='215' rx='3.5' fill='url(%23bk)'/><rect x='1042' y='-30' width='29' height='215' rx='3.5' fill='url(%23bk)'/><rect x='460' y='-30' width='640' height='380' fill='url(%23amb)'/></g><rect width='900' height='260' fill='url(%23vig)'/></svg>") right center/cover no-repeat}
+.hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:
+  radial-gradient(40% 90% at 85% 10%,rgba(249,107,238,.25),transparent 65%),
+  radial-gradient(35% 80% at 12% 100%,rgba(255,209,102,.16),transparent 60%)}
+.hero .inner{max-width:860px;margin:0 auto;width:100%;position:relative;z-index:1}
+.hero .eyebrow{font-size:13.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:rgba(255,255,255,.65);margin-bottom:10px}
+.hero h1{font-size:2rem;font-weight:800;letter-spacing:-.6px;margin-bottom:12px}
+.hero h1::after{content:"";display:block;width:64px;height:5px;border-radius:3px;
+  background:linear-gradient(90deg,var(--gold),var(--pink));margin:12px 0 0}
+.hero p{max-width:600px;margin:0 0 24px;color:rgba(255,255,255,.88)}
+.hero .btns{display:flex;gap:12px;justify-content:flex-start;flex-wrap:wrap}
+.hero .btns a{display:inline-block;background:var(--gold);color:var(--brand-dark);font-weight:800;
+  padding:14px 30px;border-radius:9999px;box-shadow:0 6px 20px rgba(255,209,102,.35);
+  transition:transform .12s,box-shadow .2s}
+.hero .btns a:hover{background:#ffc247;transform:translateY(-2px);box-shadow:0 10px 26px rgba(255,209,102,.45)}
+.hero .btns a.ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.6);box-shadow:none}
+
+main{max-width:860px;margin:0 auto;padding:16px 16px 40px}
+.how{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:18px}
+.card{background:var(--card);border:1px solid var(--hairline);border-radius:14px;box-shadow:var(--shadow-2);
+  padding:20px 20px 18px;text-align:center}
+.card h2{font-size:1.1rem;font-weight:800;color:var(--brand-dark)}
+.card h2::after{content:"";display:block;width:42px;height:4px;border-radius:2px;
+  background:linear-gradient(90deg,var(--primary),var(--gold));margin:7px auto 0}
+.card p{margin-top:10px;color:var(--muted);font-size:14px}
+.wide{margin-top:16px;text-align:left}
+.wide h2::after{margin-left:0}
+.wide p{margin-top:8px}
+footer{text-align:center;padding:4px 16px 28px;color:var(--muted);font-size:14px}
+footer a{color:var(--primary);font-weight:600}
+@media(max-width:560px){ .hero h1{font-size:1.55rem} .hero{min-height:0} }
+</style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><g id="miaShape">
-  <g class="armL"><line x1="42" y1="86" x2="26" y2="100" stroke="#EFCB4F" stroke-width="9" stroke-linecap="round"/></g>
-  <path d="M34 92 Q28 60 32 40 Q38 14 60 14 Q82 14 88 40 Q92 60 86 92 Q82 98 78 94 L76 60 Q74 42 60 42 Q46 42 44 60 L42 94 Q38 98 34 92 Z" fill="#3A2B24"/>
-  <path d="M32 130 Q30 82 60 78 Q90 82 88 130 Z" fill="#EFCB4F"/>
-  <rect x="50" y="72" width="20" height="9" rx="4" fill="#e0ba3e"/>
-  <path d="M46 100 Q60 106 74 100 M44 114 Q60 120 76 114" fill="none" stroke="#e0ba3e" stroke-width="2"/>
-  <g><rect x="14" y="96" width="21" height="27" rx="2.5" fill="#6D55B8"/><rect x="14" y="96" width="4" height="27" rx="2" fill="#57448f"/><text x="19" y="116" font-size="15" fill="#fff" font-family="serif">&#119070;</text></g>
-  <circle cx="60" cy="50" r="23" fill="#FFDCB8"/>
-  <path d="M38 52 Q34 20 60 18 Q86 20 82 52 Q80 34 66 30 Q56 28 48 34 Q40 40 38 52 Z" fill="#3A2B24"/>
-  <path class="browL" d="M44 38 Q50 35.5 55 38" fill="none" stroke="#4a382e" stroke-width="2.2" stroke-linecap="round"/>
-  <path class="browR" d="M65 38 Q70 35.5 76 38" fill="none" stroke="#4a382e" stroke-width="2.2" stroke-linecap="round"/>
-  <circle cx="51" cy="49" r="3" fill="#2B2B2B"/><circle cx="69" cy="49" r="3" fill="#2B2B2B"/>
-  <circle cx="52.2" cy="47.9" r="1" fill="#fff"/><circle cx="70.2" cy="47.9" r="1" fill="#fff"/>
-  <circle cx="51" cy="49" r="8.5" fill="none" stroke="#6b5340" stroke-width="2"/>
-  <circle cx="69" cy="49" r="8.5" fill="none" stroke="#6b5340" stroke-width="2"/>
-  <line x1="59.5" y1="49" x2="60.5" y2="49" stroke="#6b5340" stroke-width="2"/>
-  <line x1="42.5" y1="48" x2="38" y2="46" stroke="#6b5340" stroke-width="2"/>
-  <line x1="77.5" y1="48" x2="82" y2="46" stroke="#6b5340" stroke-width="2"/>
-  <circle cx="45" cy="58" r="3" fill="#f6b8a0" opacity=".55"/><circle cx="75" cy="58" r="3" fill="#f6b8a0" opacity=".55"/>
-  <path class="mouth-smile" d="M53 61 Q60 67 67 61" fill="none" stroke="#a3542f" stroke-width="2.6" stroke-linecap="round"/>
-  <g class="armR"><line x1="78" y1="86" x2="97" y2="98" stroke="#EFCB4F" stroke-width="9" stroke-linecap="round"/><circle cx="99" cy="99" r="4.5" fill="#FFDCB8"/></g>
-</g></defs></svg>
-<header class="pl-header">
+<div class="hero">
   <div class="inner">
-    <h1 id="appName"></h1>
-    <span class="sub" data-i18n="app.subtitle"></span>
-    <a class="hdr-link" href="lessons.html" data-i18n="toc.title"></a>
-    <a class="hdr-link" href="student.html" data-i18n="prog.myProgress"></a>
-    <a class="hdr-link" href="teacher.html" data-i18n="nav.instructor"></a>
-    <span class="midi-chip" id="midiChip" data-i18n="midi.init"></span>
+    <div class="eyebrow">Mia Music Studio</div>
+    <h1>🎹 Piano Lab</h1>
+    <p>Master piano technique by playing — with Mia, your guide. Five-finger patterns, scales, chords, inversions and arpeggios in all keys, with a Synthesia-style waterfall and a MIDI keyboard that hears every note you play.</p>
+    <div class="btns">
+      <a href="app.html">▶ Start practicing</a>
+      <a class="ghost" href="lessons.html">All lessons</a>
+      <a class="ghost" href="student.html">My progress</a>
+    </div>
   </div>
-</header>
-<main class="pl-main">
-  <section class="lesson-head card">
-    <div class="crumb" id="lessonCrumb"></div>
-    <h2 id="lessonTitle"></h2>
-    <p class="goal" id="lessonGoal"></p>
-    <p class="desc" id="lessonDesc"></p>
-    <div class="mia-strip mia-strip-sm">
-      <svg class="mia-avatar" viewBox="10 8 100 126" aria-hidden="true"><use href="#miaShape"/></svg>
-      <div class="mia-bubble" id="formulaChip"></div>
-    </div>
-  </section>
-  <section class="pl-controls card">
-    <div class="ctl-row ctl-row-3col">
-      <label><span data-i18n="ui.lesson"></span><select id="selLesson"></select></label>
-      <label class="mid"><span data-i18n="ui.key"></span><select id="selKey"></select></label>
-      <label id="exWrap"><span data-i18n="ui.exercise"></span><select id="selEx"></select></label>
-    </div>
-    <div class="ctl-row">
-      <label class="tempo"><span data-i18n="ui.tempo"></span>
-        <input type="range" id="tempo" min="40" max="144" step="4" value="72">
-        <b>♩=<span id="tempoVal">72</span></b></label>
-      <label class="chk"><input type="checkbox" id="chkLoop"><span data-i18n="ui.loop"></span></label>
-      <label class="chk"><input type="checkbox" id="chkMet"><span data-i18n="ui.metronome"></span></label>
-      <label class="chk"><input type="checkbox" id="chkSound" checked><span data-i18n="ui.sound"></span></label>
-      <label class="chk"><input type="checkbox" id="chkFing" checked><span data-i18n="ui.fingering"></span></label>
-      <label class="chk"><input type="checkbox" id="chkFall" checked><span data-i18n="ui.fall"></span></label>
-      <label class="chk" id="guideWrap"><input type="checkbox" id="chkGuide"><span data-i18n="ui.guide"></span></label>
-      <label class="tempo" id="tolWrap"><span data-i18n="ui.tolerance"></span>
-        <input type="range" id="tol" min="80" max="400" step="20" value="180">
-        <b><span id="tolVal">180</span> ms</b></label>
-    </div>
-  </section>
-
-  <h2 id="exTitle" class="ex-title"></h2>
-  <section id="score" class="score-wrap card" aria-label="Musical score"></section>
-  <div class="play-strip">
-    <div class="transport">
-      <button id="btnRestart" data-i18n-title="ui.restart">⏮</button>
-      <button id="btnPlay" class="big" data-i18n-title="ui.play">▶</button>
-      <button id="btnStop" data-i18n-title="ui.stop">⏹</button>
-      <button id="btnPrev" data-i18n-title="ui.prev">◀</button>
-      <button id="btnNext" data-i18n-title="ui.next">▶|</button>
-      <button id="btnStart" class="big start" data-i18n="ui.start"></button>
-    </div>
-    <div class="seg" id="segHand" role="group" aria-label="Hands"></div>
-    <div class="seg" id="segMode" role="group" aria-label="Mode"></div>
+</div>
+<main>
+  <div class="how">
+    <div class="card"><h2>👀 Learn</h2><p>Watch and listen first — the score and keys light up while Mia plays it for you.</p></div>
+    <div class="card"><h2>🎹 Practice</h2><p>You play, the app reacts — green means correct, and it patiently waits for you.</p></div>
+    <div class="card"><h2>⏱ Test</h2><p>A count-in, then play in tempo with fewer hints — your accuracy is recorded.</p></div>
   </div>
-  <div class="mia-strip">
-    <svg class="mia-avatar" viewBox="10 8 100 126" aria-hidden="true"><use href="#miaShape"/></svg>
-    <div class="mia-bubble" id="fbText" aria-live="polite"></div>
+  <div class="card wide">
+    <h2>Best with a MIDI keyboard</h2>
+    <p>Connect a digital piano by USB and open the site in Chrome or Edge — every note you play is checked in real time. No keyboard? You can still learn with the on-screen piano.</p>
   </div>
-  <section id="kbd" class="kbd-wrap" aria-label="Piano keyboard"></section>
-
-  <section class="card prog-card">
-    <h3 data-i18n="prog.title"></h3>
-    <div id="progList"></div>
-  </section>
-
-  <details class="pl-setup card" id="teacherPanel">
-    <summary data-i18n="teacher.title"></summary>
-    <p data-i18n="teacher.keys"></p>
-    <div id="teacherKeys" class="tkeys"></div>
-    <p style="margin-top:14px"><label class="chk"><input type="checkbox" id="chkFingEdit"><span data-i18n="ui.fingerEdit"></span></label></p>
-  </details>
-
-  <details class="pl-setup card">
-    <summary data-i18n="setup.title"></summary>
-    <p class="local-note" data-i18n="setup.local"></p>
-    <p data-i18n="setup.p1"></p>
-    <p data-i18n="setup.p2"></p>
-    <p data-i18n="setup.p3"></p>
-    <p data-i18n="setup.p4"></p>
-  </details>
 </main>
-<script src="js/config.js?v=058"></script>
-<script src="locales/en.js?v=058"></script>
-<script src="js/i18n.js?v=058"></script>
-<script src="js/pitch.js?v=058"></script>
-<script src="js/exercises.js?v=058"></script>
-<script src="js/lessons.js?v=058"></script>
-<script src="js/curriculum.js?v=058"></script>
-<script src="js/lms.js?v=058"></script>
-<script src="js/notation.js?v=058"></script>
-<script src="js/piano.js?v=058"></script>
-<script src="js/fall.js?v=058"></script>
-<script src="js/audio.js?v=058"></script>
-<script src="js/midi.js?v=058"></script>
-<script src="js/player.js?v=058"></script>
-<script src="js/practice.js?v=058"></script>
-<script src="js/progress.js?v=058"></script>
-<script src="js/app.js?v=058"></script>
+<footer>
+  <a href="student.html">Student sign-in</a> &nbsp;·&nbsp;
+  <a href="teacher.html">Instructor sign-in</a>
+</footer>
 </body>
 </html>

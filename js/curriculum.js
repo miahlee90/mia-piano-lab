@@ -13,7 +13,7 @@ const PL_CURRICULUM=(()=>{
   const pages=lessons.map((l,i)=>({
     item:i+1, id:l.id, label:l.label, unit:l.unit,
     title:(typeof PLI18N!=="undefined")?PLI18N.t(l.titleKey):l.titleKey,
-    route:"index.html?lesson="+l.id,
+    route:"app.html?lesson="+l.id,
     lbdIds:l.exercises.slice(), lbdCount:l.exercises.length,
     hasQuiz:false, status:"active", version:1
   }));

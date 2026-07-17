@@ -267,6 +267,7 @@ const PLEx=(()=>{
     id:"scale-minor-1oct", category:"scale", mode:"minor", masterTonic:"A",
     titleKey:"ex.scaleMinor1", time:[4,4], octaves:1, difficulty:2, enabled:true,
     scaleFingering:"1oct", minorForm:"harmonic",
+    formula:["W","H","W","W","H","A2","H"], formulaNoteKey:"lesson.l5n1.raised",
     tempo:{default:72,min:40,max:120},
     register:{rh:{shiftDownFrom:12},lh:{shiftDownFrom:12}},
     steps:(function(){
@@ -285,6 +286,7 @@ const PLEx=(()=>{
       id:"scale-minor-2oct", category:"scale", mode:"minor", masterTonic:"A",
       titleKey:"ex.scaleMinor2", time:[4,4], octaves:2, difficulty:3, enabled:true,
       scaleFingering:"2oct", minorForm:"harmonic",
+      formula:["W","H","W","W","H","A2","H"], formulaNoteKey:"lesson.l5n1.raised",
       tempo:{default:72,min:40,max:120},
       register:{rh:{shiftDownFrom:12},lh:{shiftDownFrom:12}},
       steps:seq.map((sp,i)=>({
@@ -293,6 +295,43 @@ const PLEx=(()=>{
         fr:[1], fl:[1], roman:null
       }))
     };
+  })();
+
+  /* Unit 5 — natural and melodic forms (instructor 2026-07-17). All three
+     minor forms share the standard minor fingering table. Melodic is
+     asymmetric — raised 6th/7th ascending, natural form descending — so its
+     steps are written out explicitly. */
+  (function(){
+    const oct=sp=>sp.replace(/\d/,n=>n-1);
+    function mk(id,title,form,formula,noteKey,steps,twoOct){
+      MASTERS[id]={id,category:"scale",mode:"minor",masterTonic:"A",
+        titleKey:title,time:[4,4],octaves:twoOct?2:1,difficulty:twoOct?3:2,
+        enabled:true,scaleFingering:twoOct?"2oct":"1oct",minorForm:form,
+        formula,formulaNoteKey:noteKey,
+        tempo:{default:72,min:40,max:120},
+        register:{rh:{shiftDownFrom:12},lh:{shiftDownFrom:12}},
+        steps:steps.map((sp,i)=>({
+          d:(twoOct&&(i===14||i===steps.length-1))?"h":"q",
+          rh:[sp],lh:[oct(sp)],fr:[1],fl:[1],roman:null}))};
+    }
+    const natUp1=["A3","B3","C4","D4","E4","F4","G4","A4"];
+    const melUp1=["A3","B3","C4","D4","E4","F#4","G#4","A4"];
+    const natDown1=natUp1.slice().reverse();
+    mk("scale-minor-nat-1oct","ex.scaleMinorNat1","natural",
+       ["W","H","W","W","H","W","W"],"lesson.l5.natural",
+       natUp1.concat(natDown1));
+    mk("scale-minor-mel-1oct","ex.scaleMinorMel1","melodic",
+       ["W","H","W","W","W","W","H"],"lesson.l5.melodic",
+       melUp1.concat(natDown1));
+    const natUp2=natUp1.concat(["B4","C5","D5","E5","F5","G5","A5"]);
+    const melUp2=melUp1.concat(["B4","C5","D5","E5","F#5","G#5","A5"]);
+    const natDown2=natUp2.slice().reverse();
+    mk("scale-minor-nat-2oct","ex.scaleMinorNat2","natural",
+       ["W","H","W","W","H","W","W"],"lesson.l5.natural",
+       natUp2.concat(natDown2),true);
+    mk("scale-minor-mel-2oct","ex.scaleMinorMel2","melodic",
+       ["W","H","W","W","W","W","H"],"lesson.l5.melodic",
+       melUp2.concat(natDown2),true);
   })();
 
   /* Unit 4.2 master (instructor 2026-07-17): two octaves in quarters,
@@ -423,7 +462,11 @@ const PLEx=(()=>{
     "scale-major-1oct":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "scale-major-2oct":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "scale-minor-1oct":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
-    "scale-minor-2oct":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"]
+    "scale-minor-2oct":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
+    "scale-minor-nat-1oct":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
+    "scale-minor-mel-1oct":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
+    "scale-minor-nat-2oct":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
+    "scale-minor-mel-2oct":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"]
   };
 
   /* teacher key enable/disable (per exercise), stored on this device.

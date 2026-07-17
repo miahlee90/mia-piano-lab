@@ -32,6 +32,7 @@
     endSession(); PLPlayer.stop();
     score=PLEx.expand(st.ex,st.key);
     $("#exTitle").textContent=t(score.titleKey)+" — "+keyName(st.key,score.mode);
+    updateFormulaRef();
     notation=PLNotation.render($("#score"),score,st.hand,
       {showFingering: st.showFing && st.mode!=="test"});
     wireFingerEdit();
@@ -255,7 +256,7 @@
       fillKeysRef(); rebuild(); renderTeacherKeys();
     });
   }
-  let fillKeysRef=()=>{};
+  let fillKeysRef=()=>{}, updateFormulaRef=()=>{};
 
   function boot(){
     document.title=PL_CONFIG.APP_NAME;
@@ -264,6 +265,21 @@
 
     /* lesson framing — all text/data from lessons.js + locales, none hardcoded */
     const exSel=$("#selEx"), lsSel=$("#selLesson");
+    function renderFormula(f,noteKey,degrees){
+      const long=f.map(x=>t("formula."+x)).join(" – ");
+      const parts=[`${t("formula.pattern")} <b>${f.join("–")}</b> `+
+                   `<span class="pattern-long">(${long})</span>`];
+      if(degrees) parts.push(t("formula.degrees"));
+      parts.push(t(noteKey));
+      $("#formulaChip").innerHTML=parts.join(" · ");
+    }
+    /* an exercise (e.g. a minor-scale FORM) may carry its own formula that
+       overrides the lesson's — refreshed on every exercise change */
+    updateFormulaRef=()=>{
+      const M=PLEx.MASTERS[st.ex];
+      if(M&&M.formula) renderFormula(M.formula,M.formulaNoteKey,false);
+      else if(lesson) renderFormula(lesson.formula,lesson.formulaNoteKey,lesson.showDegrees!==false);
+    };
     function applyLesson(L){
       lesson=L;
       lsSel.value=L.id;
@@ -273,12 +289,7 @@
       $("#lessonTitle").textContent=t(L.titleKey);
       $("#lessonGoal").textContent=t(L.goalKey);
       $("#lessonDesc").textContent=t(L.descKey);
-      const long=L.formula.map(x=>t("formula."+x)).join(" – ");
-      const parts=[`${t("formula.pattern")} <b>${L.formula.join("–")}</b> `+
-                   `<span class="pattern-long">(${long})</span>`];
-      if(L.showDegrees!==false) parts.push(t("formula.degrees"));
-      parts.push(t(L.formulaNoteKey));
-      $("#formulaChip").innerHTML=parts.join(" · ");
+      renderFormula(L.formula,L.formulaNoteKey,L.showDegrees!==false);
       exSel.innerHTML=L.exercises.map(id=>`<option value="${id}">${t(PLEx.MASTERS[id].titleKey)}</option>`).join("");
       /* one-exercise lessons don't need the Exercise selector */
       $("#exWrap").style.display=L.exercises.length>1?"":"none";

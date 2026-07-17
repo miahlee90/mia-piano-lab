@@ -334,6 +334,35 @@ eq("2-oct harm RH fingering restarts",HM2.steps.map(s=>s.fr[0]).slice(0,15),
   for(const k of PLEx.allKeys(ex)) PLEx.expand(ex,k);
 });
 
+/* ---- natural and melodic forms ---- */
+const NM=PLEx.expand("scale-minor-nat-1oct","A");
+eq("natural minor: no raised notes",NM.steps.map(s=>s.rh[0]).slice(0,8),
+   ["A3","B3","C4","D4","E4","F4","G4","A4"]);
+const MM=PLEx.expand("scale-minor-mel-1oct","A");
+eq("melodic ascending raises 6 and 7",MM.steps.map(s=>s.rh[0]).slice(0,8),
+   ["A3","B3","C4","D4","E4","F#4","G#4","A4"]);
+eq("melodic descending restores the natural form",MM.steps.map(s=>s.rh[0]).slice(8),
+   ["A4","G4","F4","E4","D4","C4","B3","A3"]);
+eq("C melodic asc has A-B naturals, desc Bb-Ab",
+   [PLEx.expand("scale-minor-mel-1oct","C").steps[5].rh[0],
+    PLEx.expand("scale-minor-mel-1oct","C").steps[6].rh[0],
+    PLEx.expand("scale-minor-mel-1oct","C").steps[9].rh[0],
+    PLEx.expand("scale-minor-mel-1oct","C").steps[10].rh[0]],
+   ["A4","B4","Bb4","Ab4"]);
+eq("D# melodic asc 6th is B# (never C)",
+   PLEx.expand("scale-minor-mel-1oct","D#").steps[5].rh[0],"B#4");
+const MM2=PLEx.expand("scale-minor-mel-2oct","A");
+eq("2-oct melodic: raised in both octaves, natural down",
+   [MM2.steps[12].rh[0],MM2.steps[13].rh[0],MM2.steps[16].rh[0],MM2.steps[17].rh[0]],
+   ["F#5","G#5","G5","F5"]);
+["scale-minor-nat-1oct","scale-minor-mel-1oct",
+ "scale-minor-nat-2oct","scale-minor-mel-2oct"].forEach(ex=>{
+  ok(ex+" enabled for 13 minors",PLEx.allKeys(ex).length===13);
+  for(const k of PLEx.allKeys(ex)) PLEx.expand(ex,k);
+});
+eq("lesson 5.1 offers all three forms",PLLessonsPeek("l5-1"),
+   ["scale-minor-nat-1oct","scale-minor-1oct","scale-minor-mel-1oct"]);
+
 /* ---- reference tables from the instructor's chart (future units) ---- */
 ok("harmonic-minor fingering: 13 minor keys",
    Object.keys(PLEx.REF.MINOR_SCALE_FINGERINGS).length===13);

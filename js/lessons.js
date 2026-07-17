@@ -97,7 +97,7 @@ const PLLessons=(()=>{
     },
     {
       id:"l5-1", unit:5, label:"5.1",
-      exercises:["scale-minor-1oct"],
+      exercises:["scale-minor-nat-1oct","scale-minor-1oct","scale-minor-mel-1oct"],
       titleKey:"lesson.l5n1.title",
       goalKey:"lesson.l5n1.goal",
       descKey:"lesson.l5n1.desc",
@@ -106,7 +106,7 @@ const PLLessons=(()=>{
     },
     {
       id:"l5-2", unit:5, label:"5.2",
-      exercises:["scale-minor-2oct"],
+      exercises:["scale-minor-nat-2oct","scale-minor-2oct","scale-minor-mel-2oct"],
       titleKey:"lesson.l5n2.title",
       goalKey:"lesson.l5n2.goal",
       descKey:"lesson.l5n2.desc",

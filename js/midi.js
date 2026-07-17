@@ -32,10 +32,16 @@ const PLMidi=(()=>{
       status=(typeof isSecureContext!=="undefined"&&!isSecureContext)?"insecure":"unsupported";
       notify(); return;
     }
+    status="init"; notify();
+    /* Chrome/Edge gate MIDI behind a permission popup; while it is
+       unanswered the promise just hangs — surface that to the user */
+    const pend=setTimeout(()=>{ if(status==="init"){ status="prompt"; notify(); } },2500);
     navigator.requestMIDIAccess({sysex:false}).then(
-      a=>{ access=a; attach(); a.onstatechange=attach; },
-      ()=>{ status="denied"; notify(); });
+      a=>{ clearTimeout(pend); access=a; attach(); a.onstatechange=attach; },
+      ()=>{ clearTimeout(pend); status="denied"; notify(); });
   }
-  return {init,status:()=>status};
+  /* re-run the permission request (bound to a user click on the chip) */
+  function retry(){ if(handler) init(handler,onStatus); }
+  return {init,retry,status:()=>status};
 })();
 if(typeof module!=="undefined") module.exports=PLMidi;

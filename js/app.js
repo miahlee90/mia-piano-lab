@@ -365,6 +365,8 @@
       const chip=$("#midiChip");
       chip.textContent= s.startsWith("on:") ? t("midi.on",{n:s.slice(3)}) : t("midi."+s);
     });
+    $("#midiChip").style.cursor="pointer";
+    $("#midiChip").onclick=()=>PLMidi.retry();
 
     /* ?lesson=<id> deep link from the All Lessons index */
     const want=new URLSearchParams(location.search).get("lesson");

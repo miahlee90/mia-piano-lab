@@ -75,6 +75,28 @@ const PLEx=(()=>{
         {d:"w", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"}
       ]
     },
+    "prog-broken-1-5":{
+      /* instructor-specified (2026-07-17): 3/4 broken-then-blocked study.
+         m1 broken I (quarters) | m2 blocked I (dotted half) | m3 broken V7 |
+         m4 blocked V7 | m5 I | m6 V7 | m7 I */
+      id:"prog-broken-1-5", category:"progression", mode:"major", masterTonic:"C",
+      titleKey:"ex.progBroken151", time:[3,4], octaves:1, difficulty:2, enabled:true,
+      tempo:{default:80,min:40,max:112},
+      register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
+      steps:[
+        {d:"q",  rh:["C4"], lh:["C3"], fr:[1], fl:[5], roman:"I"},
+        {d:"q",  rh:["E4"], lh:["E3"], fr:[3], fl:[3], roman:null},
+        {d:"q",  rh:["G4"], lh:["G3"], fr:[5], fl:[1], roman:null},
+        {d:"h.", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"},
+        {d:"q",  rh:["B3"], lh:["B2"], fr:[1], fl:[5], roman:"V7"},
+        {d:"q",  rh:["F4"], lh:["F3"], fr:[4], fl:[2], roman:null},
+        {d:"q",  rh:["G4"], lh:["G3"], fr:[5], fl:[1], roman:null},
+        {d:"h.", rh:["B3","F4","G4"], lh:["B2","F3","G3"], fr:[1,4,5], fl:[5,2,1], roman:"V7"},
+        {d:"h.", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"},
+        {d:"h.", rh:["B3","F4","G4"], lh:["B2","F3","G3"], fr:[1,4,5], fl:[5,2,1], roman:"V7"},
+        {d:"h.", rh:["C4","E4","G4"], lh:["C3","E3","G3"], fr:[1,3,5], fl:[5,3,1], roman:"I"}
+      ]
+    },
     "prog-1-4-1":{
       id:"prog-1-4-1", category:"progression", mode:"major", masterTonic:"C",
       titleKey:"ex.prog141", time:[4,4], octaves:1, difficulty:2, enabled:true,
@@ -169,6 +191,7 @@ const PLEx=(()=>{
        D# minor and Eb minor are SEPARATE written keys */
     "ff-minor":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
     "prog-1-5-1":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "prog-broken-1-5":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "prog-1-4-1":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "prog-1-4-5-1":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "scale-major-1oct":["C","G"]

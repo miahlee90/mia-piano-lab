@@ -12,6 +12,7 @@ const I18N_EN={
   "unit.1":"Five-Finger Patterns",
   "unit.2":"Chord Progressions",
   "ex.prog151":"I–V7–I Progression",
+  "ex.progBroken151":"Broken & Blocked — I and V7",
   "ex.prog141":"I–IV–I Progression",
   "ex.prog1451":"I–IV–I–V7–I Progression",
   "lesson.l2n1.title":"The I–V7–I Progression",

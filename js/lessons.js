@@ -31,7 +31,7 @@ const PLLessons=(()=>{
     },
     {
       id:"l2-1", unit:2, label:"2.1",
-      exercises:["prog-1-5-1"],
+      exercises:["prog-1-5-1","prog-broken-1-5"],
       titleKey:"lesson.l2n1.title",
       goalKey:"lesson.l2n1.goal",
       descKey:"lesson.l2n1.desc",

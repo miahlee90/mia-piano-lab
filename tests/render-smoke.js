@@ -74,7 +74,12 @@ ok("9 whole-note heads",count(p51,/class="note hollow"/g)===9);
   const cx0=[...step0.matchAll(/ellipse[^>]*cx="([\d.]+)"/g)].map(m=>+m[1]);
   ok("triad stays in one column",new Set(cx0).size===1);
 }
-["prog-1-5-1","prog-1-4-1","prog-1-4-5-1"].forEach(ex=>
+const bb=svgFor("C","rh",null,"prog-broken-1-5");
+ok("broken study: 11 steps",count(bb,/class="nstep"/g)===11);
+ok("broken study: 7 bars (6 mid + thin final)",count(bb,/class="barline"/g)===7);
+ok("broken study: 15 dots on the 5 blocked chords",count(bb,/class="dot"/g)===15);
+
+["prog-1-5-1","prog-broken-1-5","prog-1-4-1","prog-1-4-5-1"].forEach(ex=>
   PLEx.allKeys(ex).forEach(k=>["rh","lh","ht"].forEach(h=>{
     const svg=svgFor(k,h,null,ex);
     ok("no clipped coords "+ex+" "+k+" "+h,!/="-/.test(svg));

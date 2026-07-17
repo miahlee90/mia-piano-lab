@@ -168,10 +168,25 @@ eq("full cadence romans",PLEx.expand("prog-1-4-5-1","C").steps.map(s=>s.roman),
    ["I","IV","I","V7","I"]);
 eq("A major progression drops an octave",PLEx.expand("prog-1-5-1","A").steps[0].rh,
    ["A3","C#4","E4"]);
-["prog-1-5-1","prog-1-4-1","prog-1-4-5-1"].forEach(ex=>{
+["prog-1-5-1","prog-broken-1-5","prog-1-4-1","prog-1-4-5-1"].forEach(ex=>{
   ok(ex+" enabled for all 13 majors",PLEx.allKeys(ex).length===13);
   for(const k of PLEx.allKeys(ex)) PLEx.expand(ex,k);   /* throws on bad data */
 });
+
+/* ---- broken & blocked study (instructor spec: 3/4, 7 measures) ---- */
+const BB=PLEx.expand("prog-broken-1-5","C");
+eq("broken study: 3/4",BB.time,[3,4]);
+eq("broken study: 11 steps",BB.steps.length,11);
+eq("broken study: 21 beats (7 bars of 3/4)",
+   BB.steps.reduce((a,s)=>a+PLNot.beatsOf(s.d),0),21);
+eq("m1 broken I",BB.steps.slice(0,3).map(s=>s.rh[0]),["C4","E4","G4"]);
+eq("m1 broken fingering",BB.steps.slice(0,3).map(s=>s.fr[0]),[1,3,5]);
+eq("m3 broken V7",BB.steps.slice(4,7).map(s=>s.rh[0]),["B3","F4","G4"]);
+eq("m2 blocked I is a dotted half",[BB.steps[3].d,BB.steps[3].rh],["h.",["C4","E4","G4"]]);
+eq("roman sequence",BB.steps.map(s=>s.roman).filter(Boolean),["I","I","V7","V7","I","V7","I"]);
+eq("broken V7 in F# keeps E#",PLEx.expand("prog-broken-1-5","F#").steps[4].rh,["E#4"]);
+eq("lesson 2.1 has two exercises",PLLessons.get("l2-1").exercises,
+   ["prog-1-5-1","prog-broken-1-5"]);
 
 /* ---- teacher key enable/disable ---- */
 PLEx.setKeyEnabled("ff-major","B",false);

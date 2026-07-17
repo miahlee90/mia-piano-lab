@@ -334,6 +334,35 @@ const PLEx=(()=>{
        melUp2.concat(natDown2),true);
   })();
 
+  /* Unit 6 — arpeggios (root position). Fingering from the instructor's
+     chart tables (ARP_FINGERINGS_MAJOR/MINOR — 7 values = 2-oct ascent;
+     the 1-oct ascent is values 1,2,3 + the last). Top note repeated, as in
+     every other unit. 1-oct = 8 quarters (2 bars of 4/4); 2-oct = 3/4 with
+     the peak and final root held as dotted halves. */
+  (function(){
+    const oct=sp=>sp.replace(/\d/,n=>n-1);
+    function mk(id,title,mode,noteKey,up,twoOct,shiftFrom){
+      const seq=up.concat(up.slice().reverse());
+      MASTERS[id]={id,category:"arpeggio",mode,masterTonic:mode==="minor"?"A":"C",
+        titleKey:title,time:twoOct?[3,4]:[4,4],octaves:twoOct?2:1,
+        difficulty:twoOct?3:2,enabled:true,arpFingering:twoOct?"2oct":"1oct",
+        formula:["1","3","5","8"],formulaNoteKey:noteKey,
+        tempo:{default:72,min:40,max:120},
+        register:{rh:{shiftDownFrom:shiftFrom},lh:{shiftDownFrom:shiftFrom}},
+        steps:seq.map((sp,i)=>({
+          d:(twoOct&&(i===up.length-1||i===seq.length-1))?"h.":"q",
+          rh:[sp],lh:[oct(sp)],fr:[1],fl:[1],roman:null}))};
+    }
+    mk("arp-major-1oct","ex.arpMaj1","major","lesson.l6.maj",
+       ["C4","E4","G4","C5"],false,9);
+    mk("arp-major-2oct","ex.arpMaj2","major","lesson.l6.maj",
+       ["C4","E4","G4","C5","E5","G5","C6"],true,9);
+    mk("arp-minor-1oct","ex.arpMin1","minor","lesson.l6.min",
+       ["A3","C4","E4","A4"],false,12);
+    mk("arp-minor-2oct","ex.arpMin2","minor","lesson.l6.min",
+       ["A3","C4","E4","A4","C5","E5","A5"],true,12);
+  })();
+
   /* Unit 4.2 master (instructor 2026-07-17): two octaves in quarters,
      4/4 × 8 bars, top tonic REPEATED and held a half note at each peak:
      CDEF | GABC | DEFG | AB C(h) | CBAG | FEDC | BAGF | ED C(h).
@@ -466,7 +495,11 @@ const PLEx=(()=>{
     "scale-minor-nat-1oct":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
     "scale-minor-mel-1oct":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
     "scale-minor-nat-2oct":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
-    "scale-minor-mel-2oct":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"]
+    "scale-minor-mel-2oct":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
+    "arp-major-1oct":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "arp-major-2oct":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "arp-minor-1oct":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
+    "arp-minor-2oct":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"]
   };
 
   /* teacher key enable/disable (per exercise), stored on this device.
@@ -540,6 +573,19 @@ const PLEx=(()=>{
       const fr=scaleFingerSeq(M.scaleFingering,T.rh,"rh");
       const fl=scaleFingerSeq(M.scaleFingering,T.lh,"lh");
       steps.forEach((s,i)=>{ if(s.rh.length) s.fr=[fr[i]]; if(s.lh.length) s.fl=[fl[i]]; });
+    }
+    /* arpeggios: per-key fingering from the chart tables */
+    if(M.arpFingering){
+      const ATBL=M.mode==="minor"?ARP_FINGERINGS_MINOR:ARP_FINGERINGS_MAJOR;
+      const T=ATBL[tonic];
+      if(T){
+        const seq=t7=>{
+          const asc=M.arpFingering==="1oct"?[t7[0],t7[1],t7[2],t7[6]]:t7.slice();
+          return asc.concat(asc.slice().reverse());
+        };
+        const fr=seq(T.rh), fl=seq(T.lh);
+        steps.forEach((s,i)=>{ if(s.rh.length) s.fr=[fr[i]]; if(s.lh.length) s.fl=[fl[i]]; });
+      }
     }
     applyOverride(steps,(DATA_FINGERING_OVERRIDES[exId]||{})[tonic]);
     applyOverride(steps,(localOverrides()[exId]||{})[tonic]);

@@ -11,7 +11,8 @@ const PLLessons=(()=>{
     {unit:2, nameKey:"unit.2"},         /* Chord Progressions */
     {unit:3, nameKey:"unit.3"},         /* Triad Qualities (before scales) */
     {unit:4, nameKey:"unit.4"},         /* Major Scales */
-    {unit:5, nameKey:"unit.5"}          /* Minor Scales (harmonic demo form) */
+    {unit:5, nameKey:"unit.5"},         /* Minor Scales (three forms) */
+    {unit:6, nameKey:"unit.6"}          /* Arpeggios */
   ];
   const LESSONS=[
     {
@@ -112,6 +113,24 @@ const PLLessons=(()=>{
       descKey:"lesson.l5n2.desc",
       formula:["W","H","W","W","H","A2","H"], showDegrees:false,
       formulaNoteKey:"lesson.l5n1.raised"
+    },
+    {
+      id:"l6-1", unit:6, label:"6.1",
+      exercises:["arp-major-1oct","arp-minor-1oct"],
+      titleKey:"lesson.l6n1.title",
+      goalKey:"lesson.l6n1.goal",
+      descKey:"lesson.l6n1.desc",
+      formula:["1","3","5","8"], showDegrees:false,
+      formulaNoteKey:"lesson.l6.maj"
+    },
+    {
+      id:"l6-2", unit:6, label:"6.2",
+      exercises:["arp-major-2oct","arp-minor-2oct"],
+      titleKey:"lesson.l6n2.title",
+      goalKey:"lesson.l6n2.goal",
+      descKey:"lesson.l6n2.desc",
+      formula:["1","3","5","8"], showDegrees:false,
+      formulaNoteKey:"lesson.l6.maj"
     }
   ];
   return { list:()=>LESSONS,

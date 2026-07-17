@@ -139,6 +139,17 @@ ok("broken study: 15 dots on the 5 blocked chords",count(bb,/class="dot"/g)===15
     })));
 }
 
+/* ---- Unit 6: arpeggios ---- */
+{
+  const ar2=svgFor("C","rh",null,"arp-major-2oct");
+  ok("arp 2-oct: 14 steps",count(ar2,/class="nstep"/g)===14);
+  ok("arp 2-oct: two dotted halves",count(ar2,/class="dot"/g)===2);
+  ["arp-major-1oct","arp-major-2oct","arp-minor-1oct","arp-minor-2oct"].forEach(ex=>
+    PLEx.allKeys(ex).forEach(k=>["rh","lh","ht"].forEach(h=>{
+      ok("no clipped coords "+ex+" "+k+" "+h,!/="-/.test(svgFor(k,h,null,ex)));
+    })));
+}
+
 /* ---- Unit 3: triad qualities — accidentals incl. double sharps/flats ---- */
 {
   const tq=svgFor("C","rh",null,"triad-qualities");

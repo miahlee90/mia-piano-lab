@@ -200,9 +200,9 @@ eq("demo transposes with ties intact",PLEx.expand("engine-demo","D").steps[9].rh
 /* ---- curriculum structure (Unit.Lesson labels, Fundamentals style) ---- */
 const PLLessons=require("../js/lessons.js");
 eq("lesson labels",PLLessons.list().map(l=>l.label),
-   ["1.1","1.2","2.1","2.2","2.3","3.1","3.2","4.1","4.2","5.1","5.2"]);
-eq("lesson units",PLLessons.list().map(l=>l.unit),[1,1,2,2,2,3,3,4,4,5,5]);
-eq("units defined",PLLessons.units().map(u=>u.unit),[1,2,3,4,5]);
+   ["1.1","1.2","2.1","2.2","2.3","3.1","3.2","4.1","4.2","5.1","5.2","6.1","6.2"]);
+eq("lesson units",PLLessons.list().map(l=>l.unit),[1,1,2,2,2,3,3,4,4,5,5,6,6]);
+eq("units defined",PLLessons.units().map(u=>u.unit),[1,2,3,4,5,6]);
 ok("every lesson's exercises exist",
    PLLessons.list().every(l=>l.exercises.every(id=>PLEx.MASTERS[id])));
 
@@ -362,6 +362,29 @@ eq("2-oct melodic: raised in both octaves, natural down",
 });
 eq("lesson 5.1 offers all three forms",PLLessonsPeek("l5-1"),
    ["scale-minor-nat-1oct","scale-minor-1oct","scale-minor-mel-1oct"]);
+
+/* ---- Unit 6: arpeggios ---- */
+const AR=PLEx.expand("arp-major-1oct","C");
+eq("C major arpeggio 1-oct (top repeated)",AR.steps.map(s=>s.rh[0]),
+   ["C4","E4","G4","C5","C5","G4","E4","C4"]);
+eq("arp 1-oct RH fingering",AR.steps.map(s=>s.fr[0]),[1,2,3,5,5,3,2,1]);
+eq("arp 1-oct LH fingering",AR.steps.map(s=>s.fl[0]),[5,4,2,1,1,2,4,5]);
+eq("Db arpeggio uses the 412 pattern",
+   PLEx.expand("arp-major-1oct","Db").steps.map(s=>s.fr[0]).slice(0,4),[4,1,2,4]);
+const AR2=PLEx.expand("arp-major-2oct","C");
+eq("arp 2-oct: 14 steps, 6 bars of 3/4",
+   [AR2.steps.length,AR2.steps.reduce((a,s)=>a+(s.d==="h."?3:1),0)],[14,18]);
+eq("arp 2-oct peak held (dotted half)",[AR2.steps[6].rh[0],AR2.steps[6].d],["C6","h."]);
+eq("arp 2-oct RH fingering",AR2.steps.map(s=>s.fr[0]),
+   [1,2,3,1,2,3,5,5,3,2,1,3,2,1]);
+const ARM=PLEx.expand("arp-minor-1oct","A");
+eq("A minor arpeggio notes",ARM.steps.map(s=>s.rh[0]).slice(0,4),["A3","C4","E4","A4"]);
+eq("Bb minor arpeggio uses 231",
+   PLEx.expand("arp-minor-2oct","Bb").steps.map(s=>s.fr[0]).slice(0,7),[2,3,1,2,3,1,2]);
+["arp-major-1oct","arp-major-2oct","arp-minor-1oct","arp-minor-2oct"].forEach(ex=>{
+  ok(ex+" enabled for 13 keys",PLEx.allKeys(ex).length===13);
+  for(const k of PLEx.allKeys(ex)) PLEx.expand(ex,k);
+});
 
 /* ---- reference tables from the instructor's chart (future units) ---- */
 ok("harmonic-minor fingering: 13 minor keys",

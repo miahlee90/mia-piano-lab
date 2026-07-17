@@ -13,7 +13,7 @@ const PLLessons=(()=>{
   const LESSONS=[
     {
       id:"l1-1", unit:1, label:"1.1",
-      exercises:["ff-major"],
+      exercises:["ff-major","ff-major-broken"],
       titleKey:"lesson.l1n1.title",
       goalKey:"lesson.l1n1.goal",
       descKey:"lesson.l1n1.desc",
@@ -22,7 +22,7 @@ const PLLessons=(()=>{
     },
     {
       id:"l1-2", unit:1, label:"1.2",
-      exercises:["ff-minor"],
+      exercises:["ff-minor","ff-minor-broken"],
       titleKey:"lesson.l1n2.title",
       goalKey:"lesson.l1n2.goal",
       descKey:"lesson.l1n2.desc",

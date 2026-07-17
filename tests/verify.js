@@ -107,6 +107,27 @@ for(const k in EXPECT){
 eq("13 keys in suggested-progression order",PLEx.allKeys("ff-major"),
    ["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"]);
 
+/* ---- pattern + broken triad (instructor spec: CDEF|GFED|CEGE|C) ---- */
+const FB=PLEx.expand("ff-major-broken","C");
+eq("broken-triad ex: 13 steps",FB.steps.length,13);
+eq("broken-triad measure",FB.steps.slice(8,12).map(s=>s.rh[0]),["C4","E4","G4","E4"]);
+eq("broken-triad fingering",FB.steps.slice(8,12).map(s=>s.fr[0]),[1,3,5,3]);
+eq("broken-triad beats = 4 bars of 4/4",
+   FB.steps.reduce((a,s)=>a+({w:4,h:2,q:1})[s.d],0),16);
+eq("broken-triad in F#",PLEx.expand("ff-major-broken","F#").steps.slice(8,12).map(s=>s.rh[0]),
+   ["F#4","A#4","C#5","A#4"]);
+const FBm=PLEx.expand("ff-minor-broken","A");
+eq("minor broken-triad measure",FBm.steps.slice(8,12).map(s=>s.rh[0]),["A3","C4","E4","C4"]);
+eq("minor broken-triad in D# keeps E#",
+   PLEx.expand("ff-minor-broken","D#").steps[1].rh,["E#4"]);
+["ff-major-broken","ff-minor-broken"].forEach(ex=>{
+  ok(ex+" enabled for 13 keys",PLEx.allKeys(ex).length===13);
+  for(const k of PLEx.allKeys(ex)) PLEx.expand(ex,k);
+});
+eq("lesson 1.1 exercises",PLLessonsPeek("l1-1"),["ff-major","ff-major-broken"]);
+eq("lesson 1.2 exercises",PLLessonsPeek("l1-2"),["ff-minor","ff-minor-broken"]);
+function PLLessonsPeek(id){ return require("../js/lessons.js").get(id).exercises; }
+
 /* ---- Lesson 2: minor five-finger — all 13 written minor keys ---- */
 const AM=PLEx.expand("ff-minor","A");
 eq("A minor RH (A3 start)",AM.steps.slice(0,5).map(s=>s.rh[0]),["A3","B3","C4","D4","E4"]);

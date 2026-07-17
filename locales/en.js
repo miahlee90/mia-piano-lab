@@ -5,6 +5,7 @@ const I18N_EN={
   "app.subtitle":"Interactive piano technique practice",
   "ex.ffMajor":"Major Five-Finger Pattern",
   "ex.ffMinor":"Minor Five-Finger Pattern",
+  "ex.ffBroken":"Pattern + Broken Triad",
   "ui.lesson":"Lesson",
   "ex.scaleMajor1":"Major Scale — One Octave",
   "ex.engineDemo":"Engine Demo — Rhythm Elements",

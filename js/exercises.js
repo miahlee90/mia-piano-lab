@@ -38,6 +38,29 @@ const PLEx=(()=>{
         {d:"w", rh:["C4"], lh:["C3"], fr:[1], fl:[5], roman:null}
       ]
     },
+    "ff-major-broken":{
+      /* instructor-specified (2026-07-17): pattern + broken triad.
+         CDEF | GFED | CEGE | C(whole) */
+      id:"ff-major-broken", category:"five-finger", mode:"major", masterTonic:"C",
+      titleKey:"ex.ffBroken", time:[4,4], octaves:1, difficulty:2, enabled:true,
+      tempo:{default:72,min:40,max:120},
+      register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
+      steps:[
+        {d:"q", rh:["C4"], lh:["C3"], fr:[1], fl:[5], roman:null},
+        {d:"q", rh:["D4"], lh:["D3"], fr:[2], fl:[4], roman:null},
+        {d:"q", rh:["E4"], lh:["E3"], fr:[3], fl:[3], roman:null},
+        {d:"q", rh:["F4"], lh:["F3"], fr:[4], fl:[2], roman:null},
+        {d:"q", rh:["G4"], lh:["G3"], fr:[5], fl:[1], roman:null},
+        {d:"q", rh:["F4"], lh:["F3"], fr:[4], fl:[2], roman:null},
+        {d:"q", rh:["E4"], lh:["E3"], fr:[3], fl:[3], roman:null},
+        {d:"q", rh:["D4"], lh:["D3"], fr:[2], fl:[4], roman:null},
+        {d:"q", rh:["C4"], lh:["C3"], fr:[1], fl:[5], roman:null},
+        {d:"q", rh:["E4"], lh:["E3"], fr:[3], fl:[3], roman:null},
+        {d:"q", rh:["G4"], lh:["G3"], fr:[5], fl:[1], roman:null},
+        {d:"q", rh:["E4"], lh:["E3"], fr:[3], fl:[3], roman:null},
+        {d:"w", rh:["C4"], lh:["C3"], fr:[1], fl:[5], roman:null}
+      ]
+    },
     "ff-minor":{
       id:"ff-minor", category:"five-finger", mode:"minor", masterTonic:"A",
       titleKey:"ex.ffMinor", time:[4,4], octaves:1, difficulty:1, enabled:true,
@@ -56,6 +79,28 @@ const PLEx=(()=>{
         {d:"q", rh:["D4"], lh:["D3"], fr:[4], fl:[2], roman:null},
         {d:"q", rh:["C4"], lh:["C3"], fr:[3], fl:[3], roman:null},
         {d:"q", rh:["B3"], lh:["B2"], fr:[2], fl:[4], roman:null},
+        {d:"w", rh:["A3"], lh:["A2"], fr:[1], fl:[5], roman:null}
+      ]
+    },
+    "ff-minor-broken":{
+      /* minor form of the pattern + broken triad: ABCD | EDCB | ACEC | A */
+      id:"ff-minor-broken", category:"five-finger", mode:"minor", masterTonic:"A",
+      titleKey:"ex.ffBroken", time:[4,4], octaves:1, difficulty:2, enabled:true,
+      tempo:{default:72,min:40,max:120},
+      register:{rh:{shiftDownFrom:12},lh:{shiftDownFrom:12}},
+      steps:[
+        {d:"q", rh:["A3"], lh:["A2"], fr:[1], fl:[5], roman:null},
+        {d:"q", rh:["B3"], lh:["B2"], fr:[2], fl:[4], roman:null},
+        {d:"q", rh:["C4"], lh:["C3"], fr:[3], fl:[3], roman:null},
+        {d:"q", rh:["D4"], lh:["D3"], fr:[4], fl:[2], roman:null},
+        {d:"q", rh:["E4"], lh:["E3"], fr:[5], fl:[1], roman:null},
+        {d:"q", rh:["D4"], lh:["D3"], fr:[4], fl:[2], roman:null},
+        {d:"q", rh:["C4"], lh:["C3"], fr:[3], fl:[3], roman:null},
+        {d:"q", rh:["B3"], lh:["B2"], fr:[2], fl:[4], roman:null},
+        {d:"q", rh:["A3"], lh:["A2"], fr:[1], fl:[5], roman:null},
+        {d:"q", rh:["C4"], lh:["C3"], fr:[3], fl:[3], roman:null},
+        {d:"q", rh:["E4"], lh:["E3"], fr:[5], fl:[1], roman:null},
+        {d:"q", rh:["C4"], lh:["C3"], fr:[3], fl:[3], roman:null},
         {d:"w", rh:["A3"], lh:["A2"], fr:[1], fl:[5], roman:null}
       ]
     },
@@ -187,6 +232,8 @@ const PLEx=(()=>{
      it is data that the instructor confirms per key. */
   const KEYS_ENABLED={
     "ff-major":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "ff-major-broken":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "ff-minor-broken":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
     /* minor progression mirrors the major one via relative minors;
        D# minor and Eb minor are SEPARATE written keys */
     "ff-minor":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],

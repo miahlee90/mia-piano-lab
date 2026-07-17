@@ -75,6 +75,8 @@ b,strong{font-weight:600}
 .ctl-row-3col label:first-child{justify-self:start}
 .ctl-row-3col .mid{justify-self:center}
 .ctl-row-3col #exWrap{justify-self:end}
+/* row 2: hand + mode segments gathered in the center */
+.ctl-row-center{justify-content:center;gap:26px}
 .ctl-row label{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--muted)}
 .ctl-row select{font:inherit;font-size:14px;padding:7px 10px;border:1px solid var(--hairline-input);
   border-radius:9px;background:#fff;color:var(--ink)}

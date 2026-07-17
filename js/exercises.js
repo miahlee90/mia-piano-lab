@@ -236,9 +236,8 @@ const PLEx=(()=>{
       scaleFingering:"1oct",
       tempo:{default:72,min:40,max:120},
       register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
-      /* original 4-bar design: up, down, hold the tonic.
-         Master fingering (thumb crossings) is the standard C/G pattern —
-         RH 123 12345, LH 54321 321. */
+      /* instructor (2026-07-17): CDEF | GABC | CBAG | FEDC — the top tonic
+         is REPEATED at the start of the descent; 16 quarters = 4 full bars */
       steps:[
         {d:"q", rh:["C4"], lh:["C3"], fr:[1], fl:[5], roman:null},
         {d:"q", rh:["D4"], lh:["D3"], fr:[2], fl:[4], roman:null},
@@ -248,13 +247,14 @@ const PLEx=(()=>{
         {d:"q", rh:["A4"], lh:["A3"], fr:[3], fl:[3], roman:null},
         {d:"q", rh:["B4"], lh:["B3"], fr:[4], fl:[2], roman:null},
         {d:"q", rh:["C5"], lh:["C4"], fr:[5], fl:[1], roman:null},
+        {d:"q", rh:["C5"], lh:["C4"], fr:[5], fl:[1], roman:null},
         {d:"q", rh:["B4"], lh:["B3"], fr:[4], fl:[2], roman:null},
         {d:"q", rh:["A4"], lh:["A3"], fr:[3], fl:[3], roman:null},
         {d:"q", rh:["G4"], lh:["G3"], fr:[2], fl:[1], roman:null},
         {d:"q", rh:["F4"], lh:["F3"], fr:[1], fl:[2], roman:null},
         {d:"q", rh:["E4"], lh:["E3"], fr:[3], fl:[3], roman:null},
         {d:"q", rh:["D4"], lh:["D3"], fr:[2], fl:[4], roman:null},
-        {d:"h", rh:["C4"], lh:["C3"], fr:[1], fl:[5], roman:null}
+        {d:"q", rh:["C4"], lh:["C3"], fr:[1], fl:[5], roman:null}
       ]
     }
   };
@@ -351,8 +351,10 @@ const PLEx=(()=>{
   };
 
   function scaleFingerSeq(form,a8,hand){
+    /* 1-oct: the top tonic repeats (CDEF|GABC|CBAG|FEDC) → full mirror.
+       2-oct: top played once → mirror without repeating the peak. */
+    if(form==="1oct") return a8.concat(a8.slice().reverse());
     const mir=a=>a.concat(a.slice(0,-1).reverse());
-    if(form==="1oct") return mir(a8);
     if(hand==="rh"){ const a7=a8.slice(0,7); return mir(a7.concat(a7,[a8[7]])); }
     return mir(a8.concat(a8.slice(1)));
   }

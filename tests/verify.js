@@ -252,19 +252,19 @@ ok("teacher can re-enable a key",PLEx.keysFor("ff-major").includes("B"));
 /* ---- major scale, one octave (C and G share master fingering) ---- */
 const SC=PLEx.expand("scale-major-1oct","C");
 const SG=PLEx.expand("scale-major-1oct","G");
-eq("C scale RH notes",SC.steps.map(s=>s.rh[0]),
-   ["C4","D4","E4","F4","G4","A4","B4","C5","B4","A4","G4","F4","E4","D4","C4"]);
+eq("C scale notes (top tonic repeated)",SC.steps.map(s=>s.rh[0]),
+   ["C4","D4","E4","F4","G4","A4","B4","C5","C5","B4","A4","G4","F4","E4","D4","C4"]);
 eq("C scale RH fingering (thumb crossings)",SC.steps.map(s=>s.fr[0]),
-   [1,2,3,1,2,3,4,5,4,3,2,1,3,2,1]);
+   [1,2,3,1,2,3,4,5,5,4,3,2,1,3,2,1]);
 eq("C scale LH fingering",SC.steps.map(s=>s.fl[0]),
-   [5,4,3,2,1,3,2,1,2,3,1,2,3,4,5]);
+   [5,4,3,2,1,3,2,1,1,2,3,1,2,3,4,5]);
 eq("G scale has F#5",SG.steps[6].rh[0],"F#5");
 eq("G scale LH one octave below RH",SG.steps[0].lh[0],"G3");
 eq("scale beats = 4 measures of 4/4",
    SC.steps.reduce((a,s)=>a+({w:4,h:2,q:1})[s.d],0),16);
 
 /* ---- Unit 4: per-key STANDARD scale fingering (never transposed) ---- */
-const SEQ=(a)=>a.concat(a.slice(0,-1).reverse());
+const SEQ=(a)=>a.concat(a.slice().reverse());   /* top tonic repeats (1-oct) */
 const FEXP={
   F :{rh:[1,2,3,4,1,2,3,4], lh:[5,4,3,2,1,3,2,1]},
   Bb:{rh:[4,1,2,3,1,2,3,4], lh:[3,2,1,4,3,2,1,3]},

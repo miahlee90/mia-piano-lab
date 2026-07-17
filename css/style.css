@@ -81,6 +81,8 @@ b,strong{font-weight:600}
 .tempo b{font-feature-settings:"tnum";color:var(--ink)}
 .chk input{width:16px;height:16px;accent-color:var(--primary)}
 .transport{display:flex;align-items:center;gap:10px}
+/* transport left, hand+mode segments pushed to the right edge */
+#segHand{margin-left:auto}
 .transport button{font:inherit;font-weight:700;cursor:pointer;border:1px solid var(--hairline);
   border-radius:9999px;background:#fff;color:var(--primary);min-width:46px;min-height:42px;
   font-size:17px;transition:transform .12s,box-shadow .2s}

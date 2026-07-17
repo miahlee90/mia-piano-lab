@@ -10,8 +10,12 @@ const PLAudio=(()=>{
   function ensure(){
     if(!ctx){
       ctx=new (window.AudioContext||window.webkitAudioContext)();
-      master=ctx.createGain(); master.gain.value=.9;
+      master=ctx.createGain(); master.gain.value=.8;
+      /* gentle safety limiter — default compressor settings pump audibly
+         when two hands play together */
       const comp=ctx.createDynamicsCompressor();
+      comp.threshold.value=-18; comp.knee.value=24; comp.ratio.value=4;
+      comp.attack.value=.005; comp.release.value=.12;
       master.connect(comp); comp.connect(ctx.destination);
     }
     if(ctx.state==="suspended") ctx.resume();
@@ -21,15 +25,20 @@ const PLAudio=(()=>{
     if(!on) return;
     ensure();
     if(active.has(m)) return;            /* duplicate-trigger guard */
-    const t=ctx.currentTime, f=freq(m), v=Math.min(1,(vel||90)/127)*.4;
+    const t=ctx.currentTime, f=freq(m), v=Math.min(1,(vel||90)/127)*.34;
+    /* low notes: longer attack (a 4ms ramp is shorter than one cycle down
+       there and clicks) and a stronger 2nd harmonic instead of raw sine
+       level — pure low sine at speaking volume rattles small speakers */
+    const att=f<200?.014:.005;
+    const h2=f<180?.3:.12;
     const g=ctx.createGain();
     const lp=ctx.createBiquadFilter(); lp.type="lowpass";
-    lp.frequency.value=Math.min(6000,f*6); lp.Q.value=.5;
+    lp.frequency.value=Math.min(6000,Math.max(700,f*5)); lp.Q.value=.4;
     const o1=ctx.createOscillator(); o1.type="sine";     o1.frequency.value=f;
     const o2=ctx.createOscillator(); o2.type="triangle"; o2.frequency.value=f*2;
-    const g2=ctx.createGain(); g2.gain.value=.12;
+    const g2=ctx.createGain(); g2.gain.value=h2;
     g.gain.setValueAtTime(0,t);
-    g.gain.linearRampToValueAtTime(v,t+.004);
+    g.gain.linearRampToValueAtTime(v,t+att);
     g.gain.exponentialRampToValueAtTime(Math.max(v*.08,.0006),t+1.6);
     o1.connect(g); o2.connect(g2); g2.connect(g); g.connect(lp); lp.connect(master);
     o1.start(t); o2.start(t);

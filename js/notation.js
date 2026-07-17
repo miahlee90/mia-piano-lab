@@ -161,6 +161,7 @@ const PLNotation=(()=>{
       beatAcc+=beatsOf(s.d);
       if(beatAcc>=score.time[0]-1e-6&&i<score.steps.length-1){ bars.push(x); x+=16; beatAcc=0; }
     });
+    const endX=x+14.5;   /* right edge of the final thick barline */
     const W=x+26;
 
     /* ---- pass 2: beam geometry per hand ---- */
@@ -268,7 +269,8 @@ const PLNotation=(()=>{
     const head=[], body=[];
     for(const h of hands){
       const y0=h==="rh"?geo.yT:geo.yB;
-      for(let i=0;i<5;i++) head.push(`<line class="staffline" x1="${LEFT}" y1="${y0+i*GAP}" x2="${W-6}" y2="${y0+i*GAP}"/>`);
+      /* staff lines stop exactly at the final barline — no tail past it */
+      for(let i=0;i<5;i++) head.push(`<line class="staffline" x1="${LEFT}" y1="${y0+i*GAP}" x2="${endX}" y2="${y0+i*GAP}"/>`);
       clefSVG(head,h==="rh"?"treble":"bass",y0);
       keysigSVG(head,h==="rh"?"treble":"bass",y0,score.sig);
       timeSVG(head,y0,xTime,score.time);

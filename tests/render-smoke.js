@@ -93,6 +93,16 @@ ok("broken study: 15 dots on the 5 blocked chords",count(bb,/class="dot"/g)===15
     ok("fingering not clipped "+ex+" "+k+" "+h,!fy.length||Math.min(...fy)>=12);
   })));
 
+/* LH chord fingering stacks read top-down 1..5 (1 = top note, instructor) */
+{
+  const lhSvg=svgFor("C","lh",null,"prog-1-5-1");
+  const s0=/<g class="nstep" data-i="0">([\s\S]*?)<\/g>/.exec(lhSvg)[1];
+  const fings=[...s0.matchAll(/class="fing fing-lh"[^>]*y="([\d.]+)"[^>]*>(\d)</g)]
+    .map(m=>({y:+m[1],f:m[2]})).sort((a,b)=>a.y-b.y);
+  ok("LH stack: 1 on top, 5 at the bottom",
+     fings.map(x=>x.f).join("")==="135");
+}
+
 /* ---- rhythm elements (hidden engine-demo exercise) ---- */
 const demo=svgFor("C","rh",null,"engine-demo");
 ok("demo: 12 steps",count(demo,/class="nstep"/g)===12);

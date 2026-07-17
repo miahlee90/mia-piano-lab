@@ -201,11 +201,13 @@ const PLNotation=(()=>{
       const notes=sps.map(PLPitch.parse);
       const ys=notes.map(p=>yFor(p,clef,y0));
       const nd=normD(step.d), hollow=(nd==="w"||nd==="h");
-      /* chords containing a second: the upper note of the pair is offset to
-         the right, as in engraved notation (notes are LOW→HIGH in data) */
+      /* chords containing a second: the LOWER note of the pair is offset to
+         the LEFT (instructor rule) — the other notes keep the main column,
+         so chord columns stay aligned across the score */
       const dias=notes.map(p=>PLPitch.dia(p));
       const off=notes.map(()=>0);
-      for(let i=1;i<notes.length;i++) if(dias[i]-dias[i-1]===1&&!off[i-1]) off[i]=13;
+      for(let i=1;i<notes.length;i++)
+        if(dias[i]-dias[i-1]===1&&off[i-1]===0&&off[i]===0) off[i-1]=-13;
       notes.forEach((p,i)=>{
         const nx=xC+off[i];
         ledgerSVG(parts,nx,PLPitch.dia(p),clef,y0);

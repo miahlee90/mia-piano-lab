@@ -70,6 +70,9 @@ ok("9 whole-note heads",count(p51,/class="note hollow"/g)===9);
   const step1=/<g class="nstep" data-i="1">([\s\S]*?)<\/g>/.exec(p51)[1];
   const cxs=[...step1.matchAll(/ellipse[^>]*cx="([\d.]+)"/g)].map(m=>+m[1]);
   ok("V7 second-interval offset",new Set(cxs).size===2&&Math.abs(Math.max(...cxs)-Math.min(...cxs)-13)<0.01);
+  /* notes are in data order B,F,G — the F (lower of the second) must sit
+     LEFT of the main column; B and G stay aligned */
+  ok("second's lower note offset LEFT",cxs[1]<cxs[0]&&cxs[0]===cxs[2]);
   const step0=/<g class="nstep" data-i="0">([\s\S]*?)<\/g>/.exec(p51)[1];
   const cx0=[...step0.matchAll(/ellipse[^>]*cx="([\d.]+)"/g)].map(m=>+m[1]);
   ok("triad stays in one column",new Set(cx0).size===1);

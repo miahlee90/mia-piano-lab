@@ -9,6 +9,10 @@ textbook content is included or reproduced.** Reference materials live in
 Static site — no build step, no external dependencies. Open `index.html` over
 http(s). Web MIDI needs Chrome/Edge on https or localhost.
 
+Cache busting: every `<script>`/`<link>` tag carries `?v=NNN`. BUMP this in
+`index.html` and `lessons.html` (single search-and-replace) whenever js/css
+files change, or browsers may mix stale and fresh files.
+
 ## Architecture
 - `js/pitch.js` — spelled-pitch math. Pitches are always written spellings
   (`E#4`, `Cb5`); transposition is by written interval, which preserves

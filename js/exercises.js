@@ -334,6 +334,102 @@ const PLEx=(()=>{
        melUp2.concat(natDown2),true);
   })();
 
+  /* Unit 2 minor progressions (instructor 2026-07-17): every progression
+     gets its minor twin. The V7 in minor uses the RAISED 7th (harmonic
+     dominant) — A minor: G#-D-E. Same shapes/fingering as the major twins. */
+  MASTERS["prog-m-1-5-1"]={
+    id:"prog-m-1-5-1", category:"progression", mode:"minor", masterTonic:"A",
+    titleKey:"ex.prog151m", time:[4,4], octaves:1, difficulty:2, enabled:true,
+    formula:["i","V7","i"], formulaNoteKey:"lesson.l2.minorV7",
+    tempo:{default:80,min:40,max:112},
+    register:{rh:{shiftDownFrom:12},lh:{shiftDownFrom:12}},
+    steps:[
+      {d:"w", rh:["A3","C4","E4"],  lh:["A2","C3","E3"],  fr:[1,3,5], fl:[5,3,1], roman:"i"},
+      {d:"w", rh:["G#3","D4","E4"], lh:["G#2","D3","E3"], fr:[1,4,5], fl:[5,2,1], roman:"V7"},
+      {d:"w", rh:["A3","C4","E4"],  lh:["A2","C3","E3"],  fr:[1,3,5], fl:[5,3,1], roman:"i"}
+    ]
+  };
+  MASTERS["prog-m-broken-1-5"]={
+    id:"prog-m-broken-1-5", category:"progression", mode:"minor", masterTonic:"A",
+    titleKey:"ex.progBroken151m", time:[3,4], octaves:1, difficulty:2, enabled:true,
+    formula:["i","V7","i"], formulaNoteKey:"lesson.l2.minorV7",
+    tempo:{default:80,min:40,max:112},
+    register:{rh:{shiftDownFrom:12},lh:{shiftDownFrom:12}},
+    steps:[
+      {d:"q",  rh:["A3"], lh:["A2"], fr:[1], fl:[5], roman:"i"},
+      {d:"q",  rh:["C4"], lh:["C3"], fr:[3], fl:[3], roman:null},
+      {d:"q",  rh:["E4"], lh:["E3"], fr:[5], fl:[1], roman:null},
+      {d:"h.", rh:["A3","C4","E4"], lh:["A2","C3","E3"], fr:[1,3,5], fl:[5,3,1], roman:"i"},
+      {d:"q",  rh:["G#3"], lh:["G#2"], fr:[1], fl:[5], roman:"V7"},
+      {d:"q",  rh:["D4"],  lh:["D3"],  fr:[4], fl:[2], roman:null},
+      {d:"q",  rh:["E4"],  lh:["E3"],  fr:[5], fl:[1], roman:null},
+      {d:"h.", rh:["G#3","D4","E4"], lh:["G#2","D3","E3"], fr:[1,4,5], fl:[5,2,1], roman:"V7"},
+      {d:"h.", rh:["A3","C4","E4"],  lh:["A2","C3","E3"],  fr:[1,3,5], fl:[5,3,1], roman:"i"},
+      {d:"h.", rh:["G#3","D4","E4"], lh:["G#2","D3","E3"], fr:[1,4,5], fl:[5,2,1], roman:"V7"},
+      {d:"h.", rh:["A3","C4","E4"],  lh:["A2","C3","E3"],  fr:[1,3,5], fl:[5,3,1], roman:"i"}
+    ]
+  };
+  MASTERS["prog-m-1-4-1"]={
+    id:"prog-m-1-4-1", category:"progression", mode:"minor", masterTonic:"A",
+    titleKey:"ex.prog141m", time:[4,4], octaves:1, difficulty:2, enabled:true,
+    formula:["i","iv","i"], formulaNoteKey:"lesson.l2.minorIv",
+    tempo:{default:80,min:40,max:112},
+    register:{rh:{shiftDownFrom:12},lh:{shiftDownFrom:12}},
+    steps:[
+      {d:"w", rh:["A3","C4","E4"], lh:["A2","C3","E3"], fr:[1,3,5], fl:[5,3,1], roman:"i"},
+      {d:"w", rh:["A3","D4","F4"], lh:["A2","D3","F3"], fr:[1,3,5], fl:[5,2,1], roman:"iv"},
+      {d:"w", rh:["A3","C4","E4"], lh:["A2","C3","E3"], fr:[1,3,5], fl:[5,3,1], roman:"i"}
+    ]
+  };
+  MASTERS["prog-m-1-4-5-1"]={
+    id:"prog-m-1-4-5-1", category:"progression", mode:"minor", masterTonic:"A",
+    titleKey:"ex.prog1451m", time:[4,4], octaves:1, difficulty:3, enabled:true,
+    formula:["i","iv","i","V7","i"], formulaNoteKey:"lesson.l2.minorV7",
+    tempo:{default:80,min:40,max:112},
+    register:{rh:{shiftDownFrom:12},lh:{shiftDownFrom:12}},
+    steps:[
+      {d:"w", rh:["A3","C4","E4"],  lh:["A2","C3","E3"],  fr:[1,3,5], fl:[5,3,1], roman:"i"},
+      {d:"w", rh:["A3","D4","F4"],  lh:["A2","D3","F3"],  fr:[1,3,5], fl:[5,2,1], roman:"iv"},
+      {d:"w", rh:["A3","C4","E4"],  lh:["A2","C3","E3"],  fr:[1,3,5], fl:[5,3,1], roman:"i"},
+      {d:"w", rh:["G#3","D4","E4"], lh:["G#2","D3","E3"], fr:[1,4,5], fl:[5,2,1], roman:"V7"},
+      {d:"w", rh:["A3","C4","E4"],  lh:["A2","C3","E3"],  fr:[1,3,5], fl:[5,3,1], roman:"i"}
+    ]
+  };
+  /* Lesson 2.4 (instructor): the extended progression. LH walks the bass
+     (C-A-F-F-G-G-C / A-F-D-D-E-E-A), RH voice-leads with minimal motion. */
+  MASTERS["prog-ext-major"]={
+    id:"prog-ext-major", category:"progression", mode:"major", masterTonic:"C",
+    titleKey:"ex.progExtMaj", time:[4,4], octaves:1, difficulty:3, enabled:true,
+    formula:["I","vi","IV","ii6","I6/4","V7","I"], formulaNoteKey:"lesson.l2.ext",
+    tempo:{default:76,min:40,max:112},
+    register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
+    steps:[
+      {d:"w", rh:["E4","G4","C5"], lh:["C3"], fr:[1,2,5], fl:[1], roman:"I"},
+      {d:"w", rh:["E4","A4","C5"], lh:["A2"], fr:[1,2,5], fl:[3], roman:"vi"},
+      {d:"w", rh:["F4","A4","C5"], lh:["F2"], fr:[1,3,5], fl:[5], roman:"IV"},
+      {d:"w", rh:["F4","A4","D5"], lh:["F2"], fr:[1,2,5], fl:[5], roman:"ii6"},
+      {d:"w", rh:["G4","C5","E5"], lh:["G2"], fr:[1,3,5], fl:[4], roman:"I6/4"},
+      {d:"w", rh:["G4","B4","F5"], lh:["G2"], fr:[1,2,5], fl:[4], roman:"V7"},
+      {d:"w", rh:["G4","C5","E5"], lh:["C3"], fr:[1,3,5], fl:[1], roman:"I"}
+    ]
+  };
+  MASTERS["prog-ext-minor"]={
+    id:"prog-ext-minor", category:"progression", mode:"minor", masterTonic:"A",
+    titleKey:"ex.progExtMin", time:[4,4], octaves:1, difficulty:3, enabled:true,
+    formula:["i","VI","iv","ii°6","i6/4","V7","i"], formulaNoteKey:"lesson.l2.extMinor",
+    tempo:{default:76,min:40,max:112},
+    register:{rh:{shiftDownFrom:12},lh:{shiftDownFrom:12}},
+    steps:[
+      {d:"w", rh:["C4","E4","A4"],  lh:["A2"], fr:[1,2,5], fl:[1], roman:"i"},
+      {d:"w", rh:["C4","F4","A4"],  lh:["F2"], fr:[1,2,5], fl:[3], roman:"VI"},
+      {d:"w", rh:["D4","F4","A4"],  lh:["D2"], fr:[1,3,5], fl:[5], roman:"iv"},
+      {d:"w", rh:["D4","F4","B4"],  lh:["D2"], fr:[1,2,5], fl:[5], roman:"ii°6"},
+      {d:"w", rh:["E4","A4","C5"],  lh:["E2"], fr:[1,3,5], fl:[4], roman:"i6/4"},
+      {d:"w", rh:["E4","G#4","D5"], lh:["E2"], fr:[1,2,5], fl:[4], roman:"V7"},
+      {d:"w", rh:["E4","A4","C5"],  lh:["A2"], fr:[1,3,5], fl:[1], roman:"i"}
+    ]
+  };
+
   /* Unit 7 — inversions.
      7.1: the same triad rearranged — Root | 1st | 2nd | Root(8) | 2nd | 1st |
      Root, whole notes, standard fingering RH 135/125/135, LH 531/531/521.
@@ -608,6 +704,12 @@ const PLEx=(()=>{
     "ff-minor":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
     "prog-1-5-1":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "prog-broken-1-5":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "prog-m-1-5-1":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
+    "prog-m-broken-1-5":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
+    "prog-m-1-4-1":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
+    "prog-m-1-4-5-1":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
+    "prog-ext-major":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
+    "prog-ext-minor":["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"],
     "prog-1-4-1":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "prog-1-4-5-1":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "triad-qualities":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],

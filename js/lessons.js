@@ -37,7 +37,7 @@ const PLLessons=(()=>{
     },
     {
       id:"l2-1", unit:2, label:"2.1",
-      exercises:["prog-1-5-1","prog-broken-1-5"],
+      exercises:["prog-1-5-1","prog-m-1-5-1","prog-broken-1-5","prog-m-broken-1-5"],
       titleKey:"lesson.l2n1.title",
       goalKey:"lesson.l2n1.goal",
       descKey:"lesson.l2n1.desc",
@@ -46,7 +46,7 @@ const PLLessons=(()=>{
     },
     {
       id:"l2-2", unit:2, label:"2.2",
-      exercises:["prog-1-4-1"],
+      exercises:["prog-1-4-1","prog-m-1-4-1"],
       titleKey:"lesson.l2n2.title",
       goalKey:"lesson.l2n2.goal",
       descKey:"lesson.l2n2.desc",
@@ -55,12 +55,21 @@ const PLLessons=(()=>{
     },
     {
       id:"l2-3", unit:2, label:"2.3",
-      exercises:["prog-1-4-5-1"],
+      exercises:["prog-1-4-5-1","prog-m-1-4-5-1"],
       titleKey:"lesson.l2n3.title",
       goalKey:"lesson.l2n3.goal",
       descKey:"lesson.l2n3.desc",
       formula:["I","IV","I","V7","I"], showDegrees:false,
       formulaNoteKey:"lesson.l2n3.motion"
+    },
+    {
+      id:"l2-4", unit:2, label:"2.4",
+      exercises:["prog-ext-major","prog-ext-minor"],
+      titleKey:"lesson.l2n4.title",
+      goalKey:"lesson.l2n4.goal",
+      descKey:"lesson.l2n4.desc",
+      formula:["I","vi","IV","ii6","I6/4","V7","I"], showDegrees:false,
+      formulaNoteKey:"lesson.l2.ext"
     },
     {
       id:"l3-1", unit:3, label:"3.1",

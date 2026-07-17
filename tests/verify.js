@@ -152,6 +152,35 @@ ok("D# minor uses E# (never F)",DSM.steps.some(s=>s.rh[0]==="E#4"));
 eq("13 minor keys in progression order",PLEx.allKeys("ff-minor"),
    ["A","E","D","B","G","F#","C","C#","F","G#","Bb","D#","Eb"]);
 
+/* ---- Unit 2 minor progressions + extended progression ---- */
+const PM=PLEx.expand("prog-m-1-5-1","A");
+eq("minor i-V7-i chords",PM.steps.map(s=>s.rh),
+   [["A3","C4","E4"],["G#3","D4","E4"],["A3","C4","E4"]]);
+eq("minor romans lowercase",PM.steps.map(s=>s.roman),["i","V7","i"]);
+eq("D minor V7 raises to C#",PLEx.expand("prog-m-1-5-1","D").steps[1].rh,
+   ["C#4","G4","A4"]);
+eq("Eb minor V7 raises to D natural",PLEx.expand("prog-m-1-5-1","Eb").steps[1].rh,
+   ["D4","Ab4","Bb4"]);
+eq("minor iv chord",PLEx.expand("prog-m-1-4-1","A").steps[1].rh,["A3","D4","F4"]);
+const EXT=PLEx.expand("prog-ext-major","C");
+eq("extended progression romans",EXT.steps.map(s=>s.roman),
+   ["I","vi","IV","ii6","I6/4","V7","I"]);
+eq("extended bass walk",EXT.steps.map(s=>s.lh[0]),
+   ["C3","A2","F2","F2","G2","G2","C3"]);
+eq("extended bass fingering",EXT.steps.map(s=>s.fl[0]),[1,3,5,5,4,4,1]);
+const EXTm=PLEx.expand("prog-ext-minor","A");
+eq("extended minor romans",EXTm.steps.map(s=>s.roman),
+   ["i","VI","iv","ii°6","i6/4","V7","i"]);
+eq("extended minor V7 has G#",EXTm.steps[5].rh,["E4","G#4","D5"]);
+["prog-m-1-5-1","prog-m-broken-1-5","prog-m-1-4-1","prog-m-1-4-5-1",
+ "prog-ext-major","prog-ext-minor"].forEach(ex=>{
+  ok(ex+" enabled for 13 keys",PLEx.allKeys(ex).length===13);
+  for(const k of PLEx.allKeys(ex)) PLEx.expand(ex,k);
+});
+eq("lesson 2.1 has major+minor pairs",PLLessonsPeek("l2-1").length,4);
+eq("lesson 2.4 has both modes",PLLessonsPeek("l2-4"),
+   ["prog-ext-major","prog-ext-minor"]);
+
 /* ---- Unit 3: triad qualities (M - aug - M - m - dim on one root) ---- */
 const TQ=PLEx.expand("triad-qualities","C");
 eq("qualities in C",TQ.steps.map(s=>s.rh),
@@ -200,10 +229,10 @@ eq("demo transposes with ties intact",PLEx.expand("engine-demo","D").steps[9].rh
 /* ---- curriculum structure (Unit.Lesson labels, Fundamentals style) ---- */
 const PLLessons=require("../js/lessons.js");
 eq("lesson labels",PLLessons.list().map(l=>l.label),
-   ["1.1","1.2","2.1","2.2","2.3","3.1","3.2","4.1","4.2","5.1","5.2",
+   ["1.1","1.2","2.1","2.2","2.3","2.4","3.1","3.2","4.1","4.2","5.1","5.2",
     "6.1","6.2","7.1","7.2","8.1","8.2","8.3","8.4","8.5"]);
 eq("lesson units",PLLessons.list().map(l=>l.unit),
-   [1,1,2,2,2,3,3,4,4,5,5,6,6,7,7,8,8,8,8,8]);
+   [1,1,2,2,2,2,3,3,4,4,5,5,6,6,7,7,8,8,8,8,8]);
 eq("units defined",PLLessons.units().map(u=>u.unit),[1,2,3,4,5,6,7,8]);
 ok("every lesson's exercises exist",
    PLLessons.list().every(l=>l.exercises.every(id=>PLEx.MASTERS[id])));
@@ -243,8 +272,8 @@ eq("m3 broken V7",BB.steps.slice(4,7).map(s=>s.rh[0]),["B3","F4","G4"]);
 eq("m2 blocked I is a dotted half",[BB.steps[3].d,BB.steps[3].rh],["h.",["C4","E4","G4"]]);
 eq("roman sequence",BB.steps.map(s=>s.roman).filter(Boolean),["I","I","V7","V7","I","V7","I"]);
 eq("broken V7 in F# keeps E#",PLEx.expand("prog-broken-1-5","F#").steps[4].rh,["E#4"]);
-eq("lesson 2.1 has two exercises",PLLessons.get("l2-1").exercises,
-   ["prog-1-5-1","prog-broken-1-5"]);
+eq("lesson 2.1 pairs major and minor",PLLessons.get("l2-1").exercises,
+   ["prog-1-5-1","prog-m-1-5-1","prog-broken-1-5","prog-m-broken-1-5"]);
 
 /* ---- teacher key enable/disable ---- */
 PLEx.setKeyEnabled("ff-major","B",false);

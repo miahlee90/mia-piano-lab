@@ -164,6 +164,13 @@ ok("broken study: 15 dots on the 5 blocked chords",count(bb,/class="dot"/g)===15
     })));
 }
 
+/* ---- Unit 2 minor + extended progressions ---- */
+["prog-m-1-5-1","prog-m-broken-1-5","prog-m-1-4-1","prog-m-1-4-5-1",
+ "prog-ext-major","prog-ext-minor"].forEach(ex=>
+  PLEx.allKeys(ex).forEach(k=>["rh","lh","ht"].forEach(h=>{
+    ok("no clipped coords "+ex+" "+k+" "+h,!/="-/.test(svgFor(k,h,null,ex)));
+  })));
+
 /* ---- Unit 8: more scales ---- */
 {
   const ch=svgFor("C","rh",null,"chromatic-1oct");

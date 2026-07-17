@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Piano Lab</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="pl-header">
+  <div class="inner">
+    <h1 id="appName"></h1>
+    <span class="sub" data-i18n="app.subtitle"></span>
+    <span class="midi-chip" id="midiChip" data-i18n="midi.init"></span>
+  </div>
+</header>
+<main class="pl-main">
+  <section class="pl-controls card">
+    <div class="ctl-row">
+      <label><span data-i18n="ui.exercise"></span><select id="selEx"></select></label>
+      <label><span data-i18n="ui.key"></span><select id="selKey"></select></label>
+      <div class="seg" id="segHand" role="group" aria-label="Hands"></div>
+      <div class="seg" id="segMode" role="group" aria-label="Mode"></div>
+    </div>
+    <div class="ctl-row">
+      <label class="tempo"><span data-i18n="ui.tempo"></span>
+        <input type="range" id="tempo" min="40" max="144" step="4" value="72">
+        <b>♩=<span id="tempoVal">72</span></b></label>
+      <label class="chk"><input type="checkbox" id="chkLoop"><span data-i18n="ui.loop"></span></label>
+      <label class="chk"><input type="checkbox" id="chkMet"><span data-i18n="ui.metronome"></span></label>
+      <label class="chk"><input type="checkbox" id="chkSound" checked><span data-i18n="ui.sound"></span></label>
+      <label class="chk"><input type="checkbox" id="chkFing" checked><span data-i18n="ui.fingering"></span></label>
+      <label class="chk"><input type="checkbox" id="chkFingEdit"><span data-i18n="ui.fingerEdit"></span></label>
+      <label class="tempo" id="tolWrap"><span data-i18n="ui.tolerance"></span>
+        <input type="range" id="tol" min="80" max="400" step="20" value="180">
+        <b><span id="tolVal">180</span> ms</b></label>
+    </div>
+    <div class="ctl-row transport">
+      <button id="btnRestart" data-i18n-title="ui.restart">⏮</button>
+      <button id="btnPlay" class="big" data-i18n-title="ui.play">▶</button>
+      <button id="btnStop" data-i18n-title="ui.stop">⏹</button>
+      <button id="btnPrev" data-i18n-title="ui.prev">◀</button>
+      <button id="btnNext" data-i18n-title="ui.next">▶|</button>
+      <button id="btnStart" class="big start" data-i18n="ui.start"></button>
+    </div>
+  </section>
+
+  <h2 id="exTitle" class="ex-title"></h2>
+  <section id="score" class="score-wrap card" aria-label="Musical score"></section>
+  <section id="kbd" class="kbd-wrap" aria-label="Piano keyboard"></section>
+
+  <section class="pl-panels">
+    <div class="card"><h3 data-i18n="fb.title"></h3><p id="fbText"></p></div>
+    <div class="card"><h3 data-i18n="prog.title"></h3><div id="progList"></div></div>
+  </section>
+
+  <details class="pl-setup card">
+    <summary data-i18n="setup.title"></summary>
+    <p data-i18n="setup.p1"></p>
+    <p data-i18n="setup.p2"></p>
+    <p data-i18n="setup.p3"></p>
+    <p data-i18n="setup.p4"></p>
+  </details>
+</main>
+<script src="js/config.js"></script>
+<script src="locales/en.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/pitch.js"></script>
+<script src="js/exercises.js"></script>
+<script src="js/notation.js"></script>
+<script src="js/piano.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/midi.js"></script>
+<script src="js/player.js"></script>
+<script src="js/practice.js"></script>
+<script src="js/progress.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

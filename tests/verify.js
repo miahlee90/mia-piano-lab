@@ -1,0 +1,84 @@
+/* Piano Lab — logic verification harness (runs under node / Electron-as-node).
+   Usage:  ELECTRON_RUN_AS_NODE=1 <electron> tests/verify.js
+   Proves the acceptance-critical invariants of the data layer:
+   enharmonic written keys stay distinct, spelling is theoretically correct,
+   MIDI validation maps enharmonics to the same physical keys, and fingering
+   overrides apply cleanly. */
+const PLPitch=require("../js/pitch.js");   global.PLPitch=PLPitch;
+global.localStorage={getItem:()=>null,setItem:()=>{},removeItem:()=>{}};
+const PLEx=require("../js/exercises.js");
+
+let fails=0, tests=0;
+function eq(name,got,want){
+  tests++;
+  const g=JSON.stringify(got), w=JSON.stringify(want);
+  if(g!==w){ fails++; console.log("  FAIL "+name+"\n    got  "+g+"\n    want "+w); }
+}
+function ok(name,cond){ tests++; if(!cond){ fails++; console.log("  FAIL "+name); } }
+
+/* ---- pitch basics ---- */
+eq("midi C4",PLPitch.midi("C4"),60);
+eq("midi Cb4 = B3",PLPitch.midi("Cb4"),59);
+eq("midi E#4 = F4",PLPitch.midi("E#4"),65);
+eq("midi F#4 == Gb4",PLPitch.midi("F#4"),PLPitch.midi("Gb4"));
+
+/* ---- written-interval transposition preserves spelling ---- */
+const fs=PLPitch.keyInterval("F#","C"), gb=PLPitch.keyInterval("Gb","C");
+eq("C->F# interval",fs,{ls:3,ss:6});
+eq("C->Gb interval",gb,{ls:4,ss:6});
+eq("3rd of F# is A# (never Bb)",PLPitch.str(PLPitch.transpose("E4",fs.ls,fs.ss)),"A#4");
+eq("7th of F# is E# (never F)",PLPitch.str(PLPitch.transpose("B3",fs.ls,fs.ss)),"E#4");
+eq("4th of Gb is Cb (never B)",PLPitch.str(PLPitch.transpose("F4",gb.ls,gb.ss)),"Cb5");
+
+/* ---- all 13 written major + 13 written minor keys expandable ---- */
+for(const k in PLPitch.MAJOR_KEYS){
+  const s=PLPitch.transpose("C4",PLPitch.keyInterval(k,"C").ls,PLPitch.keyInterval(k,"C").ss);
+  ok("major tonic spelling "+k, (s.letter+({"-1":"b","1":"#","0":"","2":"##","-2":"bb"})[s.acc])===k);
+}
+for(const k in PLPitch.MINOR_KEYS){
+  const iv=PLPitch.keyInterval(k,"A");
+  const s=PLPitch.transpose("A3",iv.ls,iv.ss);
+  ok("minor tonic spelling "+k, (s.letter+({"-1":"b","1":"#","0":"","2":"##","-2":"bb"})[s.acc])===k);
+}
+
+/* ---- key signatures ---- */
+eq("F# major: 6 sharps",PLPitch.MAJOR_KEYS["F#"].sig,6);
+eq("Gb major: 6 flats",PLPitch.MAJOR_KEYS["Gb"].sig,-6);
+eq("D# minor: 6 sharps",PLPitch.MINOR_KEYS["D#"].sig,6);
+eq("Eb minor: 6 flats",PLPitch.MINOR_KEYS["Eb"].sig,-6);
+eq("sig 6 accidentals",PLPitch.sigAccidentals(6).map(a=>a.letter),["F","C","G","D","A","E"]);
+eq("sig -6 accidentals",PLPitch.sigAccidentals(-6).map(a=>a.letter),["B","E","A","D","G","C"]);
+
+/* ---- vertical prototype: C / F# / Gb five-finger ---- */
+const C=PLEx.expand("ff-major","C");
+const FS=PLEx.expand("ff-major","F#");
+const GB=PLEx.expand("ff-major","Gb");
+eq("C RH ascent",C.steps.slice(0,5).map(s=>s.rh[0]),["C4","D4","E4","F4","G4"]);
+eq("F# RH ascent",FS.steps.slice(0,5).map(s=>s.rh[0]),["F#4","G#4","A#4","B4","C#5"]);
+eq("Gb RH ascent",GB.steps.slice(0,5).map(s=>s.rh[0]),["Gb4","Ab4","Bb4","Cb5","Db5"]);
+ok("Gb never respelled to B",!GB.steps.some(s=>s.rh.concat(s.lh).some(sp=>sp.startsWith("B")&&!sp.startsWith("Bb"))));
+eq("F#/Gb same physical keys (RH)",
+   FS.steps.map(s=>s.rh.map(PLPitch.midi)), GB.steps.map(s=>s.rh.map(PLPitch.midi)));
+eq("F#/Gb same physical keys (LH)",
+   FS.steps.map(s=>s.lh.map(PLPitch.midi)), GB.steps.map(s=>s.lh.map(PLPitch.midi)));
+ok("F#/Gb different notation",JSON.stringify(FS.steps)!==JSON.stringify(GB.steps));
+eq("LH register drops for 6-semitone keys",GB.steps[0].lh,["Gb2"]);
+eq("C LH stays at C3",C.steps[0].lh,["C3"]);
+eq("chord step is a group of 3",C.steps[9].rh,["C4","E4","G4"]);
+eq("chord roman label",C.steps[9].roman,"I");
+
+/* ---- fingering: defaults + override precedence ---- */
+eq("RH default fingering",C.steps.slice(0,5).map(s=>s.fr[0]),[1,2,3,4,5]);
+eq("LH default fingering",C.steps.slice(0,5).map(s=>s.fl[0]),[5,4,3,2,1]);
+const ovSteps=PLEx.expand("ff-major","F#").steps;
+PLEx.applyOverride(ovSteps,{rh:{0:{0:2}},lh:{9:{2:2}}});
+eq("override RH step0",ovSteps[0].fr[0],2);
+eq("override LH chord top",ovSteps[9].fl[2],2);
+eq("override leaves others",ovSteps[1].fr[0],2===3?0:2); /* step1 default = 2 */
+
+/* ---- durations fill 4/4 measures ---- */
+const beats=C.steps.reduce((a,s)=>a+({w:4,h:2,q:1})[s.d],0);
+eq("total beats = 4 measures of 4/4",beats,16);
+
+console.log(fails? "FAILURES: "+fails+"/"+tests : "ALL PASS ("+tests+" checks)");
+process.exit(fails?1:0);

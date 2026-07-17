@@ -1,0 +1,110 @@
+/* Piano Lab — clean, professional, desktop-first. Score + keyboard are the
+   primary elements; controls stay compact. RH = blue, LH = amber everywhere. */
+:root{
+  --bg:#f4f5f7; --card:#fff; --line:#d8dce3; --ink:#1a2233; --muted:#5b6472;
+  --accent:#2456d6; --rh:#2563eb; --lh:#b45309;
+  --good:#16a34a; --bad:#dc2626; --done:#9ca3af;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.5 "Segoe UI",system-ui,-apple-system,sans-serif}
+.pl-header{background:#16213e;color:#fff}
+.pl-header .inner{max-width:1180px;margin:0 auto;padding:14px 20px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.pl-header h1{margin:0;font-size:22px;letter-spacing:.4px}
+.pl-header .sub{color:#aab6d3;font-size:13.5px}
+.midi-chip{margin-left:auto;font-size:12.5px;background:#25335c;color:#cdd8f0;
+  padding:5px 12px;border-radius:9999px}
+.pl-main{max-width:1180px;margin:0 auto;padding:14px 20px 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+
+/* controls */
+.pl-controls{display:flex;flex-direction:column;gap:10px}
+.ctl-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.ctl-row label{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--muted)}
+.ctl-row select{font-size:14px;padding:6px 8px;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--ink)}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:#fff;color:var(--muted);padding:7px 14px;font-size:13.5px;cursor:pointer;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button.on{background:var(--accent);color:#fff}
+.seg button:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tempo input[type=range]{width:150px;accent-color:var(--accent)}
+.chk input{width:16px;height:16px;accent-color:var(--accent)}
+.transport{gap:8px}
+.transport button{min-width:44px;min-height:40px;font-size:17px;border:1px solid var(--line);
+  border-radius:8px;background:#fff;color:var(--ink);cursor:pointer}
+.transport button.big{min-width:60px;font-size:19px}
+.transport button.start{background:var(--accent);color:#fff;border-color:var(--accent);font-size:15.5px;font-weight:700;padding:0 22px}
+.transport button:disabled{opacity:.35;cursor:default}
+
+.ex-title{margin:16px 2px 8px;font-size:19px}
+
+/* score */
+.score-wrap{overflow-x:auto;padding:10px 14px}
+.pl-score{display:block;min-width:640px;max-width:980px;width:100%;height:auto;margin:0 auto}
+.pl-score .staffline,.pl-score .ledger{stroke:#28303f;stroke-width:1.1}
+.pl-score .ledger{stroke-width:1.6}
+.pl-score .stem{stroke:#111826;stroke-width:1.7}
+.pl-score .barline{stroke:#28303f;stroke-width:1.4}
+.pl-score .barfinal{fill:#28303f}
+.pl-score .brace{fill:none;stroke:#28303f;stroke-width:3.4}
+.pl-score .clef-stroke{fill:none;stroke:#111826;stroke-width:3.1;stroke-linecap:round}
+.pl-score .clef-path{fill:#111826}
+.pl-score .clefdot{fill:#111826}
+.pl-score .acc,.pl-score .tsig{fill:#111826;font-family:"Segoe UI Symbol","Times New Roman",serif}
+.pl-score .tsig{font-weight:800;font-family:Georgia,serif}
+.pl-score .note{fill:#111826;stroke:#111826;stroke-width:1.6}
+.pl-score .note.hollow{fill:#fff}
+.pl-score .fing{font:800 15px "Segoe UI",sans-serif}
+.pl-score .fing-rh{fill:var(--rh)}
+.pl-score .fing-lh{fill:var(--lh)}
+.pl-score .fing.editable{cursor:pointer;text-decoration:underline}
+.pl-score .roman{font:700 19px Georgia,serif;fill:#33405c}
+.nstep.st-current .note{fill:var(--accent);stroke:var(--accent)}
+.nstep.st-current .note.hollow{fill:#dbe6ff}
+.nstep.st-current .stem{stroke:var(--accent)}
+.nstep.st-cursor .note{stroke:var(--accent);stroke-width:2.6}
+.nstep.st-correct .note{fill:var(--good);stroke:var(--good)}
+.nstep.st-correct .note.hollow{fill:#dcfce7}
+.nstep.st-wrong .note{fill:var(--bad);stroke:var(--bad)}
+.nstep.st-done .note{fill:var(--done);stroke:var(--done)}
+.nstep.st-done .note.hollow{fill:#f3f4f6}
+.nstep.st-done .stem{stroke:var(--done)}
+.nstep.st-done .fing{opacity:.45}
+
+/* keyboard */
+.kbd-wrap{margin-top:14px}
+.pl-kbd{position:relative;height:172px;border:1px solid var(--line);border-radius:8px;
+  background:#fff;overflow:hidden;user-select:none;touch-action:none}
+.pk{position:absolute;top:0;cursor:pointer}
+.pk-w{height:100%;background:#fff;border:1px solid #b9c0cc;border-top:0;border-radius:0 0 5px 5px}
+.pk-b{height:61%;background:#1c2230;border:1px solid #000;border-radius:0 0 4px 4px;z-index:2}
+.pk-lbl{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:10.5px;color:#8a93a3;pointer-events:none}
+.pk-w.k-target-rh{background:#dbeafe;box-shadow:inset 0 -5px 0 var(--rh)}
+.pk-b.k-target-rh{background:#3b6fe0;box-shadow:inset 0 -5px 0 #1e40af}
+.pk-w.k-target-lh{background:#fef0dc;box-shadow:inset 0 -5px 0 var(--lh)}
+.pk-b.k-target-lh{background:#c98a2e;box-shadow:inset 0 -5px 0 #92400e}
+.pk-w.k-correct{background:#bbf7d0}
+.pk-b.k-correct{background:#15803d}
+.pk-w.k-wrong{background:#fecaca}
+.pk-b.k-wrong{background:#b91c1c}
+.pk-w.k-pressed{background:#e2e8f0}
+.pk-b.k-pressed{background:#475569}
+.pk-w.k-pressed.k-target-rh{background:#bfdbfe}
+.pk-w.k-pressed.k-target-lh{background:#fde4c0}
+
+/* panels */
+.pl-panels{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;margin-top:14px}
+.pl-panels h3{margin:0 0 6px;font-size:15px}
+#fbText{margin:4px 0;min-height:40px;color:var(--muted)}
+#fbText b{color:var(--ink)}
+#progList table{width:100%;border-collapse:collapse;font-size:13px}
+#progList th,#progList td{border-bottom:1px solid #eef0f4;padding:4px 6px;text-align:left;color:var(--muted)}
+#progList th{color:var(--ink)}
+.pl-setup{margin-top:14px;color:var(--muted);font-size:13.5px}
+.pl-setup summary{cursor:pointer;font-weight:700;color:var(--ink)}
+.pl-setup p{margin:8px 0 0}
+
+@media(max-width:900px){
+  .pl-panels{grid-template-columns:1fr}
+  .pl-kbd{height:130px}
+}

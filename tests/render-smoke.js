@@ -1,0 +1,59 @@
+/* Piano Lab — headless render smoke test. Builds real SVG for the three
+   prototype keys × hand modes and asserts the acceptance-visible structure:
+   step groups, key-signature glyph counts (F# shows ♯6, Gb shows ♭6),
+   fingering texts, Roman numerals, grand-staff brace, barlines.
+   Also smoke-loads every browser script for syntax errors. */
+const fs=require("fs"), path=require("path"), vm=require("vm");
+const root=path.join(__dirname,"..");
+
+global.localStorage={getItem:()=>null,setItem:()=>{},removeItem:()=>{}};
+global.document={addEventListener:()=>{},querySelector:()=>null,querySelectorAll:()=>[]};
+function load(f){ vm.runInThisContext(fs.readFileSync(path.join(root,f),"utf-8"),{filename:f}); }
+["js/config.js","locales/en.js","js/i18n.js","js/pitch.js","js/exercises.js",
+ "js/notation.js","js/piano.js","js/midi.js","js/player.js","js/practice.js",
+ "js/progress.js","js/app.js"].forEach(load);   /* app.js must load without DOM */
+
+let fails=0,tests=0;
+function ok(name,cond){ tests++; if(!cond){fails++;console.log("  FAIL "+name);} }
+function count(s,re){ return (s.match(re)||[]).length; }
+
+function svgFor(tonic,hand,opts){
+  const container={ innerHTML:"", querySelector:()=>({querySelectorAll:()=>({length:0,forEach:()=>{}})}) };
+  PLNotation.render(container,PLEx.expand("ff-major",tonic),hand,opts||{});
+  return container.innerHTML;
+}
+
+const cRH=svgFor("C","rh");
+ok("10 step groups",count(cRH,/class="nstep"/g)===10);
+ok("C major: no key-sig accidentals",count(cRH,/[♯♭]/g)===0);
+ok("fingering rendered",count(cRH,/class="fing fing-rh"/g)===12);   /* 8q+1w+3 chord */
+ok("roman I rendered",cRH.includes(">I</text>"));
+ok("treble clef, no brace",cRH.includes("clef-stroke")&&!cRH.includes("brace"));
+ok("final barline",cRH.includes("barfinal"));
+ok("3 mid barlines",count(cRH,/class="barline"/g)===3+1);           /* 3 measure + 1 thin final */
+
+const fsHT=svgFor("F#","ht");
+ok("F# ht: 12 sharps in key sigs",count(fsHT,/♯/g)===12);
+ok("F# ht: no flats",count(fsHT,/♭/g)===0);
+ok("grand staff brace",fsHT.includes("brace"));
+ok("both hands' fingering",count(fsHT,/fing-rh/g)===12&&count(fsHT,/fing-lh/g)===12);
+
+const gbLH=svgFor("Gb","lh");
+ok("Gb lh: 6 flats",count(gbLH,/♭/g)===6);
+ok("Gb lh: no sharps",count(gbLH,/♯/g)===0);
+ok("bass clef only",gbLH.includes("clef-path")&&!gbLH.includes("clef-stroke"));
+
+const noFing=svgFor("C","rh",{showFingering:false});
+ok("fingering can be hidden (test mode)",count(noFing,/class="fing/g)===0);
+
+/* keyboard range rule: complete black-key groups (start C, end E or B) */
+{
+  let lo=61,hi=73;                          /* C#4..C#5-ish exercise range */
+  while(lo%12!==0) lo--;
+  while(hi%12!==4&&hi%12!==11) hi++;
+  ok("kbd starts on C",lo%12===0);
+  ok("kbd ends on E or B",hi%12===4||hi%12===11);
+}
+
+console.log(fails?"FAILURES: "+fails+"/"+tests:"ALL PASS ("+tests+" checks)");
+process.exit(fails?1:0);

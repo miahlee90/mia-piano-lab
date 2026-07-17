@@ -279,6 +279,58 @@ const PLEx=(()=>{
     "F#":{rh:[2,3,4,1,2,3,1,2], lh:[4,3,2,1,3,2,1,4]},
     "Gb":{rh:[2,3,4,1,2,3,1,2], lh:[4,3,2,1,3,2,1,4]}
   };
+  /* HARMONIC MINOR scale fingering — instructor's reference chart
+     (2026-07-17), ascending one octave per hand. Used by the upcoming
+     minor-scales unit; D# and Eb minor share fingering (same keys). */
+  const MINOR_SCALE_FINGERINGS={
+    A :{rh:[1,2,3,1,2,3,4,5], lh:[5,4,3,2,1,3,2,1]},
+    E :{rh:[1,2,3,1,2,3,4,5], lh:[5,4,3,2,1,3,2,1]},
+    B :{rh:[1,2,3,1,2,3,4,5], lh:[4,3,2,1,4,3,2,1]},
+    "F#":{rh:[3,4,1,2,3,1,2,3], lh:[4,3,2,1,3,2,1,4]},
+    "C#":{rh:[3,4,1,2,3,1,2,3], lh:[3,2,1,4,3,2,1,3]},
+    "G#":{rh:[3,4,1,2,3,1,2,3], lh:[3,2,1,4,3,2,1,3]},
+    "D#":{rh:[3,1,2,3,4,1,2,3], lh:[2,1,4,3,2,1,3,2]},
+    "Eb":{rh:[3,1,2,3,4,1,2,3], lh:[2,1,4,3,2,1,3,2]},
+    "Bb":{rh:[4,1,2,3,1,2,3,4], lh:[2,1,3,2,1,4,3,2]},
+    F :{rh:[1,2,3,4,1,2,3,4], lh:[5,4,3,2,1,3,2,1]},
+    C :{rh:[1,2,3,1,2,3,4,5], lh:[5,4,3,2,1,3,2,1]},
+    G :{rh:[1,2,3,1,2,3,4,5], lh:[5,4,3,2,1,3,2,1]},
+    D :{rh:[1,2,3,1,2,3,4,5], lh:[5,4,3,2,1,3,2,1]}
+  };
+  /* ARPEGGIO fingering (root position, two octaves ascending: 1-3-5 ×2 +
+     top root = 7 values) — instructor's reference chart. For the upcoming
+     arpeggio unit. */
+  const ARP_FINGERINGS_MAJOR={
+    C :{rh:[1,2,3,1,2,3,5], lh:[5,4,2,1,4,2,1]},
+    G :{rh:[1,2,3,1,2,3,5], lh:[5,4,2,1,4,2,1]},
+    F :{rh:[1,2,3,1,2,3,5], lh:[5,4,2,1,4,2,1]},
+    D :{rh:[1,2,3,1,2,3,5], lh:[5,3,2,1,3,2,1]},
+    A :{rh:[1,2,3,1,2,3,5], lh:[5,3,2,1,3,2,1]},
+    E :{rh:[1,2,3,1,2,3,5], lh:[5,3,2,1,3,2,1]},
+    B :{rh:[1,2,3,1,2,3,5], lh:[5,3,2,1,3,2,1]},
+    "F#":{rh:[1,2,3,1,2,3,5], lh:[5,3,2,1,3,2,1]},
+    "Gb":{rh:[1,2,3,1,2,3,5], lh:[5,3,2,1,3,2,1]},
+    "Db":{rh:[4,1,2,4,1,2,4], lh:[2,1,4,2,1,4,2]},
+    "Ab":{rh:[4,1,2,4,1,2,4], lh:[2,1,4,2,1,4,2]},
+    "Eb":{rh:[4,1,2,4,1,2,4], lh:[2,1,4,2,1,4,2]},
+    "Bb":{rh:[4,1,2,4,1,2,4], lh:[3,2,1,3,2,1,3]}
+  };
+  const ARP_FINGERINGS_MINOR={
+    A :{rh:[1,2,3,1,2,3,5], lh:[5,4,2,1,4,2,1]},
+    E :{rh:[1,2,3,1,2,3,5], lh:[5,4,2,1,4,2,1]},
+    B :{rh:[1,2,3,1,2,3,5], lh:[5,4,2,1,4,2,1]},
+    F :{rh:[1,2,3,1,2,3,5], lh:[5,4,2,1,4,2,1]},
+    C :{rh:[1,2,3,1,2,3,5], lh:[5,4,2,1,4,2,1]},
+    G :{rh:[1,2,3,1,2,3,5], lh:[5,4,2,1,4,2,1]},
+    D :{rh:[1,2,3,1,2,3,5], lh:[5,4,2,1,4,2,1]},
+    "F#":{rh:[4,1,2,4,1,2,4], lh:[2,1,4,2,1,4,2]},
+    "C#":{rh:[4,1,2,4,1,2,4], lh:[2,1,4,2,1,4,2]},
+    "G#":{rh:[4,1,2,4,1,2,4], lh:[2,1,4,2,1,4,2]},
+    "D#":{rh:[1,2,3,1,2,3,5], lh:[5,3,2,1,3,2,1]},
+    "Eb":{rh:[1,2,3,1,2,3,5], lh:[5,3,2,1,3,2,1]},
+    "Bb":{rh:[2,3,1,2,3,1,2], lh:[3,2,1,3,2,1,3]}
+  };
+
   function scaleFingerSeq(form,a8,hand){
     const mir=a=>a.concat(a.slice(0,-1).reverse());
     if(form==="1oct") return mir(a8);
@@ -396,6 +448,8 @@ const PLEx=(()=>{
   }
 
   return {MASTERS,expand,list,keysFor,allKeys,keyEnabled,setKeyEnabled,
-          applyOverride,setLocalFingering,clearLocalFingering};
+          applyOverride,setLocalFingering,clearLocalFingering,
+          REF:{SCALE_FINGERINGS,MINOR_SCALE_FINGERINGS,
+               ARP_FINGERINGS_MAJOR,ARP_FINGERINGS_MINOR}};
 })();
 if(typeof module!=="undefined") module.exports=PLEx;

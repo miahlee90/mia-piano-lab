@@ -283,5 +283,19 @@ eq("2-oct ends on the tonic with the start finger",
    [S2.steps[28].rh[0],S2.steps[28].fr[0],S2.steps[28].fl[0]],["C4",1,5]);
 for(const k of PLEx.allKeys("scale-major-2oct")) PLEx.expand("scale-major-2oct",k);
 
+/* ---- reference tables from the instructor's chart (future units) ---- */
+ok("harmonic-minor fingering: 13 minor keys",
+   Object.keys(PLEx.REF.MINOR_SCALE_FINGERINGS).length===13);
+ok("major arpeggio fingering: 13 keys",
+   Object.keys(PLEx.REF.ARP_FINGERINGS_MAJOR).length===13);
+ok("minor arpeggio fingering: 13 keys",
+   Object.keys(PLEx.REF.ARP_FINGERINGS_MINOR).length===13);
+ok("ref tables: 8 values per scale hand, 7 per arpeggio hand",
+   Object.values(PLEx.REF.MINOR_SCALE_FINGERINGS).every(t=>t.rh.length===8&&t.lh.length===8)&&
+   Object.values(PLEx.REF.ARP_FINGERINGS_MAJOR).every(t=>t.rh.length===7&&t.lh.length===7)&&
+   Object.values(PLEx.REF.ARP_FINGERINGS_MINOR).every(t=>t.rh.length===7&&t.lh.length===7));
+eq("D#m and Ebm share harmonic-minor fingering",
+   PLEx.REF.MINOR_SCALE_FINGERINGS["D#"],PLEx.REF.MINOR_SCALE_FINGERINGS["Eb"]);
+
 console.log(fails? "FAILURES: "+fails+"/"+tests : "ALL PASS ("+tests+" checks)");
 process.exit(fails?1:0);

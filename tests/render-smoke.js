@@ -96,14 +96,18 @@ ok("broken study: 15 dots on the 5 blocked chords",count(bb,/class="dot"/g)===15
     ok("fingering not clipped "+ex+" "+k+" "+h,!fy.length||Math.min(...fy)>=12);
   })));
 
-/* LH chord fingering stacks read top-down 1..5 (1 = top note, instructor) */
+/* fingering stacks (instructor): RH high number on top, LH high number at
+   the bottom */
 {
-  const lhSvg=svgFor("C","lh",null,"prog-1-5-1");
-  const s0=/<g class="nstep" data-i="0">([\s\S]*?)<\/g>/.exec(lhSvg)[1];
-  const fings=[...s0.matchAll(/class="fing fing-lh"[^>]*y="([\d.]+)"[^>]*>(\d)</g)]
-    .map(m=>({y:+m[1],f:m[2]})).sort((a,b)=>a.y-b.y);
+  const grab=(svg,cls)=>{
+    const s0=/<g class="nstep" data-i="0">([\s\S]*?)<\/g>/.exec(svg)[1];
+    return [...s0.matchAll(new RegExp('class="fing '+cls+'"[^>]*y="([\\d.]+)"[^>]*>(\\d)<',"g"))]
+      .map(m=>({y:+m[1],f:m[2]})).sort((a,b)=>a.y-b.y).map(x=>x.f).join("");
+  };
   ok("LH stack: 1 on top, 5 at the bottom",
-     fings.map(x=>x.f).join("")==="135");
+     grab(svgFor("C","lh",null,"prog-1-5-1"),"fing-lh")==="135");
+  ok("RH stack: 5 on top, 1 at the bottom",
+     grab(svgFor("C","rh",null,"prog-1-5-1"),"fing-rh")==="531");
 }
 
 /* ---- Unit 4: major scales ---- */

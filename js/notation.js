@@ -236,10 +236,11 @@ const PLNotation=(()=>{
       }
       if(showFing){
         const fingers=h==="rh"?step.fr:step.fl;
-        /* stacks read top-down in NOTE order for both hands: highest note's
-           finger on top — RH shows 1/3/5, LH shows 1/3/5 (1 = top note) */
+        /* instructor rule: RH stacks put the HIGH finger number on top
+           (5/3/1 top-down), LH puts the high number at the bottom
+           (1/3/5 top-down) */
         const order=notes.map((p,i)=>({i,d:PLPitch.dia(p)}))
-                         .sort((a,b)=>b.d-a.d);
+                         .sort((a,b)=>h==="rh"?a.d-b.d:b.d-a.d);
         const base=h==="rh"
           ? Math.min(Math.min(...ys)-16, y0-12)
           : Math.max(Math.max(...ys)+22, y0+4*GAP+22);

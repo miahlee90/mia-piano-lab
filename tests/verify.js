@@ -144,6 +144,14 @@ eq("dotted quarter counts 1.5 beats",PLNot.beatsOf("q."),1.5);
 eq("16th counts .25 beats",PLNot.beatsOf("16"),.25);
 eq("demo transposes with ties intact",PLEx.expand("engine-demo","D").steps[9].rh,["A4"]);
 
+/* ---- curriculum structure (Unit.Lesson labels, Fundamentals style) ---- */
+const PLLessons=require("../js/lessons.js");
+eq("lesson labels",PLLessons.list().map(l=>l.label),["1.1","1.2"]);
+eq("both lessons in unit 1",PLLessons.list().map(l=>l.unit),[1,1]);
+eq("one unit defined",PLLessons.units().map(u=>u.unit),[1]);
+ok("every lesson's exercises exist",
+   PLLessons.list().every(l=>l.exercises.every(id=>PLEx.MASTERS[id])));
+
 /* ---- teacher key enable/disable ---- */
 PLEx.setKeyEnabled("ff-major","B",false);
 ok("teacher can disable a key",!PLEx.keysFor("ff-major").includes("B"));

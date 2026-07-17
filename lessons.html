@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Lessons · Piano Lab</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="pl-header">
+  <div class="inner">
+    <h1 id="appName"></h1>
+    <span class="sub" data-i18n="toc.title"></span>
+    <a class="hdr-link" href="index.html" data-i18n="toc.home"></a>
+  </div>
+</header>
+<main class="pl-main">
+  <p class="toc-progress" id="tocProg"></p>
+  <div id="tocList"></div>
+</main>
+<script src="js/config.js"></script>
+<script src="locales/en.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/pitch.js"></script>
+<script src="js/exercises.js"></script>
+<script src="js/lessons.js"></script>
+<script src="js/progress.js"></script>
+<script>
+/* All Lessons index — Music Fundamentals style: unit groups, per-lesson
+   progress badges (every key × hand combination counts), deep links into
+   the practice screen. */
+(function(){
+  document.title=PLI18N.t("toc.title")+" · "+PL_CONFIG.APP_NAME;
+  document.getElementById("appName").textContent=PL_CONFIG.APP_NAME;
+  PLI18N.apply();
+  function lessonStats(l){
+    const ex=l.exercises[0], keys=PLEx.keysFor(ex);
+    const total=keys.length*3;
+    let done=0;
+    keys.forEach(k=>["rh","lh","ht"].forEach(h=>{
+      if(PLProgress.status(ex,k,h)==="completed") done++;
+    }));
+    return {done,total};
+  }
+  const lessons=PLLessons.list();
+  const completedLessons=lessons.filter(l=>{const s=lessonStats(l);return s.total&&s.done===s.total;}).length;
+  document.getElementById("tocProg").textContent=
+    t("toc.progress",{d:completedLessons,n:lessons.length});
+  let html="";
+  PLLessons.units().forEach(u=>{
+    const ls=lessons.filter(l=>l.unit===u.unit);
+    html+=`<div class="unit-group open">
+      <div class="unit-head" onclick="this.parentElement.classList.toggle('open')">
+        <span>Unit ${u.unit} — ${t(u.nameKey)}</span><span>▾</span></div>
+      <div class="unit-body">`+
+      ls.map(l=>{
+        const s=lessonStats(l);
+        const badge=s.done===s.total?`<span class="toc-done">${t("toc.complete")}</span>`
+          :s.done?`<span class="toc-part">${Math.round(100*s.done/s.total)}%</span>`:"";
+        return `<a class="lesson-link" href="index.html?lesson=${l.id}">
+          <span><span class="lnum">${l.label}</span>${t(l.titleKey)}</span>${badge}</a>`;
+      }).join("")+`</div></div>`;
+  });
+  document.getElementById("tocList").innerHTML=html;
+})();
+</script>
+</body>
+</html>

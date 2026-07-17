@@ -266,9 +266,10 @@
     const exSel=$("#selEx"), lsSel=$("#selLesson");
     function applyLesson(L){
       lesson=L;
+      lsSel.value=L.id;
       st.ex=L.exercises[0];
       st.key=PLEx.keysFor(st.ex)[0];
-      $("#lessonCrumb").textContent=t("lesson.crumb",{l:L.level,n:L.lesson});
+      $("#lessonCrumb").textContent=t("lesson.crumb",{u:L.unit,l:L.label});
       $("#lessonTitle").textContent=t(L.titleKey);
       $("#lessonGoal").textContent=t(L.goalKey);
       $("#lessonDesc").textContent=t(L.descKey);
@@ -283,7 +284,7 @@
       fillKeys(); applyTempoBounds(); renderTeacherKeys(); rebuild();
     }
     lsSel.innerHTML=PLLessons.list().map(l=>
-      `<option value="${l.id}">${l.level}.${l.lesson} — ${t(l.titleKey)}</option>`).join("");
+      `<option value="${l.id}">${l.label} — ${t(l.titleKey)}</option>`).join("");
     lsSel.onchange=()=>applyLesson(PLLessons.get(lsSel.value));
     exSel.onchange=()=>{ st.ex=exSel.value; fillKeys(); applyTempoBounds(); renderTeacherKeys(); rebuild(); };
     function fillKeys(){
@@ -335,7 +336,9 @@
       chip.textContent= s.startsWith("on:") ? t("midi.on",{n:s.slice(3)}) : t("midi."+s);
     });
 
-    applyLesson(PLLessons.current());
+    /* ?lesson=<id> deep link from the All Lessons index */
+    const want=new URLSearchParams(location.search).get("lesson");
+    applyLesson(PLLessons.get(want)||PLLessons.current());
   }
   document.addEventListener("DOMContentLoaded",boot);
 })();

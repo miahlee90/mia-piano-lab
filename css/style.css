@@ -139,7 +139,9 @@ b,strong{font-weight:600}
 .pl-kbd{border:1px solid var(--hairline);border-radius:var(--radius);
   box-shadow:var(--shadow);background:#fff;overflow-x:auto;
   user-select:none;touch-action:pan-x;padding:0 2px}
-.pl-kbd-inner{position:relative;height:212px;margin:0 auto}
+.pl-kbd-inner{position:relative;margin:0 auto}
+.pl-fall{display:block;width:100%;height:170px}
+.pl-keys{position:relative;height:212px}
 .pk{position:absolute;top:0;cursor:pointer}
 .pk-w{height:100%;background:#fff;border:1px solid #cfc4a6;border-top:0;border-radius:0 0 5px 5px}
 .pk-b{height:61%;background:#232748;border:1px solid #101228;border-radius:0 0 4px 4px;z-index:2}
@@ -165,10 +167,16 @@ b,strong{font-weight:600}
 .pk-w.k-pressed.k-target-rh{background:#d6d0ff}
 .pk-w.k-pressed.k-target-lh{background:#f8e2b8}
 
-/* feedback line (between score and keyboard) */
-.fb-line{margin:12px 2px 0;min-height:22px;font-size:14px;color:var(--muted);text-align:center}
-.fb-line b{color:var(--ink)}
-.fb-line:empty{display:none}
+/* Mia + feedback bubble (between score and keyboard) */
+.mia-strip{display:flex;align-items:center;gap:12px;margin:14px 2px 0}
+.mia-avatar{width:64px;height:78px;flex:none;filter:drop-shadow(0 2px 4px rgba(0,55,112,.18))}
+.mia-bubble{position:relative;flex:1;background:#fff;border:1px solid var(--hairline);
+  border-radius:12px;box-shadow:var(--shadow);padding:11px 16px;
+  font-size:14px;color:var(--muted);min-height:20px}
+.mia-bubble::before{content:"";position:absolute;left:-7px;top:50%;
+  transform:translateY(-50%) rotate(45deg);width:12px;height:12px;background:#fff;
+  border-left:1px solid var(--hairline);border-bottom:1px solid var(--hairline)}
+.mia-bubble b{color:var(--ink)}
 
 /* progress card — full width */
 .prog-card h3{margin:0 0 10px;font-size:1.05rem;font-weight:800;color:var(--brand-dark)}
@@ -194,5 +202,6 @@ b,strong{font-weight:600}
 .local-note{font-weight:700;color:var(--ink)}
 
 @media(max-width:900px){
-  .pl-kbd-inner{height:160px}
+  .pl-keys{height:160px}
+  .pl-fall{height:130px}
 }

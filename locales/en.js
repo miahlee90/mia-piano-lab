@@ -33,6 +33,7 @@ const I18N_EN={
   "ui.sound":"App sound",
   "ui.tolerance":"Timing tolerance",
   "ui.fingering":"Show fingering",
+  "ui.fall":"Falling notes",
   "ui.fingerEdit":"Edit fingering",
   "ui.play":"Play",
   "ui.pause":"Pause",

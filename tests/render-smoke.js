@@ -10,8 +10,8 @@ global.localStorage={getItem:()=>null,setItem:()=>{},removeItem:()=>{}};
 global.document={addEventListener:()=>{},querySelector:()=>null,querySelectorAll:()=>[]};
 function load(f){ vm.runInThisContext(fs.readFileSync(path.join(root,f),"utf-8"),{filename:f}); }
 ["js/config.js","locales/en.js","js/i18n.js","js/pitch.js","js/exercises.js",
- "js/lessons.js","js/notation.js","js/piano.js","js/midi.js","js/player.js",
- "js/practice.js","js/progress.js","js/app.js"].forEach(load);   /* app.js must load without DOM */
+ "js/lessons.js","js/notation.js","js/piano.js","js/fall.js","js/midi.js",
+ "js/player.js","js/practice.js","js/progress.js","js/app.js"].forEach(load);   /* app.js must load without DOM */
 
 let fails=0,tests=0;
 function ok(name,cond){ tests++; if(!cond){fails++;console.log("  FAIL "+name);} }

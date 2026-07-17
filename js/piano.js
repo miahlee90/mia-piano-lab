@@ -29,7 +29,10 @@ const PLPiano=(()=>{
         frag.push(`<div class="pk pk-b" data-midi="${m+1}" style="left:${(i+1)*KW-BW/2}px;width:${BW}px">`+
                   `<span class="pk-fing"></span></div>`);
     });
-    container.innerHTML=`<div class="pl-kbd"><div class="pl-kbd-inner" style="width:${whites.length*KW}px">${frag.join("")}</div></div>`;
+    const innerW=whites.length*KW;
+    container.innerHTML=`<div class="pl-kbd"><div class="pl-kbd-inner" style="width:${innerW}px">`+
+      `<canvas class="pl-fall" width="${innerW}" height="170"></canvas>`+
+      `<div class="pl-keys">${frag.join("")}</div></div></div>`;
     const keys={};
     container.querySelectorAll(".pk").forEach(k=>{
       keys[+k.dataset.midi]=k;
@@ -52,7 +55,14 @@ const PLPiano=(()=>{
       keys[m].classList.remove("k-target-rh","k-target-lh","k-correct","k-wrong","k-done"); }
     function clearAll(){ clearTargets(); for(const m in keys) keys[m].classList.remove("k-pressed"); }
     function flash(midi,cls,ms){ set(midi,cls,true); setTimeout(()=>set(midi,cls,false),ms||350); }
-    return {set,setGuide,flash,clearTargets,clearAll,lo,hi,
+    /* pixel rect of a key inside the inner strip — used by the waterfall */
+    function keyRect(midi){
+      const k=keys[midi]; if(!k) return null;
+      return {x:parseFloat(k.style.left),w:parseFloat(k.style.width),
+              black:k.classList.contains("pk-b")};
+    }
+    return {set,setGuide,flash,clearTargets,clearAll,lo,hi,keyRect,
+            canvas:container.querySelector(".pl-fall"),
             setPressed:(m,on)=>set(m,"k-pressed",on)};
   }
   return {render,name:m=>NAMES[m%12]+(Math.floor(m/12)-1)};

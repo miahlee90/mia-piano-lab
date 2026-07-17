@@ -6,7 +6,7 @@
   const $=s=>document.querySelector(s);
   const st={ ex:"ff-major", key:"C", hand:"rh", mode:"learn",
              tempo:72, loop:false, metronome:false, sound:true,
-             showFing:true, fingerEdit:false, tolMs:180 };
+             showFing:true, fingerEdit:false, fall:true, tolMs:180 };
   let lesson=null, score=null, notation=null, piano=null, cur=-1, countTimer=null;
 
   /* ---------- helpers ---------- */
@@ -38,6 +38,8 @@
     const r=scoreRange();
     piano=PLPiano.render($("#kbd"),{lowMidi:r.lo,highMidi:r.hi,onKey:onScreenKey});
     applyFingerGuide();
+    PLFall.attach(piano.canvas,piano.keyRect);
+    PLFall.load(fallEvents(),()=>PLPlayer.beatPos());
     PLPlayer.load({ steps:score.steps, timeTop:score.time[0], pickup:score.pickup,
       tempo:()=>st.tempo, loop:()=>st.loop, metronome:()=>st.metronome,
       onStep:playerStep, onState:transport, onEnd:()=>{ if(cur>=0) notation.setStepState(cur,"done"); } });
@@ -66,6 +68,32 @@
     stepTargets(i).forEach(x=>piano.set(x.midi,"k-target-"+x.hand,true));
     cur=i;
   }
+  /* note events for the waterfall: absolute start beat + duration, ties
+     merged, per selected hand */
+  function fallEvents(){
+    const evts=[]; let beat=0;
+    const hs=st.hand==="ht"?["rh","lh"]:[st.hand];
+    score.steps.forEach((s,i)=>{
+      for(const h of hs){
+        const prev=score.steps[i-1];
+        s[h].forEach(sp=>{
+          if(prev){ const pt=h==="rh"?prev.rhT:prev.lhT;
+            if(prev[h].some((ps,j)=>pt&&pt[j]&&ps===sp)) return; }
+          let beats=PLNotation.beatsOf(s.d), j=i;
+          for(;;){
+            const tt=h==="rh"?score.steps[j].rhT:score.steps[j].lhT;
+            const ix=score.steps[j][h].indexOf(sp), nx=score.steps[j+1];
+            if(tt&&ix>=0&&tt[ix]&&nx&&nx[h].includes(sp)){ beats+=PLNotation.beatsOf(nx.d); j++; }
+            else break;
+          }
+          evts.push({midi:PLPitch.midi(sp),hand:h,beat,beats});
+        });
+      }
+      beat+=PLNotation.beatsOf(s.d);
+    });
+    return evts;
+  }
+
   /* sound one step: ties extend the duration and tied-in notes are not
      retriggered (one application sound per written note) */
   function soundStep(i){
@@ -194,9 +222,12 @@
     $("#btnStart").style.display=learn?"none":"";
     $("#btnStart").textContent=busy?t("ui.restart"):t("ui.start");
     $("#chkLoop").disabled=!learn;
+    $("#chkFall").disabled=!learn;
     $("#tolWrap").style.display=st.mode==="test"?"":"none";
     /* test mode: the keyboard disappears — score reading only */
     $("#kbd").style.display=st.mode==="test"?"none":"";
+    /* waterfall canvas shows only in Learn mode (and when enabled) */
+    if(piano&&piano.canvas) piano.canvas.style.display=(learn&&st.fall)?"":"none";
   }
   function transport(state){
     $("#btnPlay").textContent=state==="play"?"⏸":"▶";
@@ -204,6 +235,11 @@
        highlights so the score doesn't begin gray */
     if(state==="play"&&PLPlayer.beatPos()===0){
       notation.clearStates(); piano.clearTargets(); cur=-1;
+    }
+    if(st.mode==="learn"&&st.fall){
+      if(state==="play") PLFall.play();
+      else if(state==="pause") PLFall.pause();
+      else PLFall.stop();
     }
   }
 
@@ -269,6 +305,7 @@
     $("#chkMet").onchange=e=>st.metronome=e.target.checked;
     $("#chkSound").onchange=e=>{ st.sound=e.target.checked; PLAudio.setSound(st.sound); };
     $("#chkFing").onchange=e=>{ st.showFing=e.target.checked; rebuild(); };
+    $("#chkFall").onchange=e=>{ st.fall=e.target.checked; updateControls(); if(!st.fall) PLFall.stop(); };
     $("#chkFingEdit").onchange=e=>{ st.fingerEdit=e.target.checked;
       if(st.fingerEdit) fb(t("fb.fingerEditHint"));
       rebuild(); };

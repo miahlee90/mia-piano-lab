@@ -38,6 +38,32 @@ const PLEx=(()=>{
         {d:"w", rh:["C4"], lh:["C3"], fr:[1], fl:[5], roman:null}
       ]
     },
+    "engine-demo":{
+      /* NOT a lesson — hidden reference exercise that exercises every rhythm
+         element the renderer/player supports (8th/16th + beams, dotted
+         quarter, per-hand rests, tie, pickup). Kept enabled:false; the test
+         harness renders it, and future lessons copy these step shapes.
+         A note spelling ending in "~" is tied to the same pitch in the NEXT
+         step. An empty rh/lh array is a rest for that hand. */
+      id:"engine-demo", category:"demo", mode:"major", masterTonic:"C",
+      titleKey:"ex.engineDemo", time:[4,4], pickup:1, octaves:1, difficulty:0,
+      enabled:false, tempo:{default:60,min:40,max:120},
+      register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},
+      steps:[
+        {d:"q",  rh:["G4"],  lh:[],          fr:[2], fl:[],  roman:null},
+        {d:"8",  rh:["C4"],  lh:["C3"],      fr:[1], fl:[5], roman:null},
+        {d:"8",  rh:["D4"],  lh:[],          fr:[2], fl:[],  roman:null},
+        {d:"q",  rh:[],      lh:["E3"],      fr:[],  fl:[3], roman:null},
+        {d:"16", rh:["E4"],  lh:[],          fr:[3], fl:[],  roman:null},
+        {d:"16", rh:["F4"],  lh:[],          fr:[4], fl:[],  roman:null},
+        {d:"16", rh:["G4"],  lh:[],          fr:[5], fl:[],  roman:null},
+        {d:"16", rh:["E4"],  lh:[],          fr:[3], fl:[],  roman:null},
+        {d:"q",  rh:["F4"],  lh:["F3"],      fr:[4], fl:[2], roman:null},
+        {d:"q.", rh:["G4~"], lh:["G3"],      fr:[5], fl:[1], roman:null},
+        {d:"8",  rh:["G4"],  lh:[],          fr:[5], fl:[],  roman:null},
+        {d:"h",  rh:["C4"],  lh:["C3","G3"], fr:[1], fl:[5,1], roman:"I"}
+      ]
+    },
     "scale-major-1oct":{
       /* engine demo — becomes a later lesson; hidden from the Lesson 1 screen */
       id:"scale-major-1oct", category:"scale", mode:"major", masterTonic:"C",
@@ -134,16 +160,21 @@ const PLEx=(()=>{
     const oShift={ rh:(ss>=M.register.rh.shiftDownFrom)?-1:0,
                    lh:(ss>=M.register.lh.shiftDownFrom)?-1:0 };
     const tr=(sp,hand)=>PLPitch.str(PLPitch.addOctave(PLPitch.transpose(sp,ls,ss),oShift[hand]));
+    /* "~" suffix on a spelling = tied to the same pitch in the next step;
+       stripped here into the rhT/lhT boolean arrays */
+    const strip=a=>a.map(x=>x.replace(/~$/,""));
+    const ties=a=>a.map(x=>/~$/.test(x));
     const steps=M.steps.map(s=>({
-      d:s.d, roman:s.roman,
-      rh:s.rh.map(sp=>tr(sp,"rh")),
-      lh:s.lh.map(sp=>tr(sp,"lh")),
-      fr:s.fr.slice(), fl:s.fl.slice()
+      d:s.d, roman:s.roman||null,
+      rh:strip(s.rh).map(sp=>tr(sp,"rh")),
+      lh:strip(s.lh).map(sp=>tr(sp,"lh")),
+      rhT:ties(s.rh), lhT:ties(s.lh),
+      fr:(s.fr||[]).slice(), fl:(s.fl||[]).slice()
     }));
     applyOverride(steps,(DATA_FINGERING_OVERRIDES[exId]||{})[tonic]);
     applyOverride(steps,(localOverrides()[exId]||{})[tonic]);
     return { id:exId, tonic, mode:M.mode, sig:K.sig, time:M.time,
-             tempo:M.tempo, titleKey:M.titleKey, steps };
+             pickup:M.pickup||0, tempo:M.tempo, titleKey:M.titleKey, steps };
   }
 
   function list(){ return Object.values(MASTERS).filter(m=>m.enabled); }

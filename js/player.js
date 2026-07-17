@@ -1,44 +1,58 @@
-/* Piano Lab — playback engine for Learn / demonstration mode. Beat-based
-   scheduler with drift correction; fires onStep at each step boundary and an
-   optional metronome tick every beat. Sounding/highlighting is done by the
-   caller (app.js) so this stays UI-free. */
+/* Piano Lab — playback engine for Learn / demonstration mode. v2: event-list
+   scheduler on fractional beats (eighth/sixteenth notes, dotted values,
+   pickup measures), with drift correction against performance.now().
+   Metronome ticks land on integer beats with the accent phased by the
+   pickup. Sounding/highlighting is done by the caller (app.js). */
 const PLPlayer=(()=>{
-  let S=null, timer=null, playing=false, beat=0, startBeats=[], total=0;
+  let S=null, timer=null, playing=false, evIdx=0, elapsed=0, t0=0, EV=[], total=0;
 
   function load(opts){
     stop();
-    S=opts;   /* {steps,timeTop,tempo(),loop(),metronome(),onStep(i),onState(s)} */
-    startBeats=[]; total=0;
-    S.steps.forEach(st=>{ startBeats.push(total); total+=PLNotation.BEATS[st.d]; });
+    S=opts;   /* {steps,timeTop,pickup,tempo(),loop(),metronome(),onStep(i),onState(s),onEnd()} */
+    EV=[]; total=0;
+    const starts=[];
+    S.steps.forEach(s=>{ starts.push(total); total+=PLNotation.beatsOf(s.d); });
+    const phase=(S.timeTop-(S.pickup||0))%S.timeTop;
+    for(let b=0;b<Math.ceil(total-1e-6);b++)
+      EV.push({t:b,tick:true,accent:((b+phase)%S.timeTop)===0});
+    starts.forEach((t,i)=>EV.push({t,step:i}));
+    EV.push({t:total,end:true});
+    EV.sort((a,b)=>a.t-b.t||((a.tick?0:1)-(b.tick?0:1)));   /* tick before note */
   }
   const spb=()=>60000/S.tempo();
-  let t0=0, beatsDone=0;
   function schedule(){
-    const due=t0+beatsDone*spb();
-    timer=setTimeout(fire,Math.max(0,due-performance.now()));
+    const ev=EV[evIdx];
+    timer=setTimeout(fire,Math.max(0,t0+ev.t*spb()-performance.now()));
   }
   function fire(){
     if(!playing) return;
-    if(beat>=total){
-      if(S.loop()){ beat=0; }
-      else{ playing=false; S.onState("stop"); if(S.onEnd) S.onEnd(); return; }
+    const ev=EV[evIdx];
+    if(ev.end){
+      if(S.loop()){ t0=performance.now(); evIdx=0; schedule(); return; }
+      playing=false; evIdx=EV.length; elapsed=0;
+      S.onState("stop"); if(S.onEnd) S.onEnd(); return;
     }
-    if(S.metronome()) PLAudio.tick(beat%S.timeTop===0);
-    const i=startBeats.indexOf(beat);
-    if(i>=0) S.onStep(i,PLNotation.BEATS[S.steps[i].d]*spb());
-    beat++; beatsDone++;
-    schedule();
+    if(ev.tick){ if(S.metronome()) PLAudio.tick(ev.accent); }
+    else S.onStep(ev.step);
+    evIdx++; schedule();
   }
   function play(){
     if(!S||playing) return;
     PLAudio.ensure();
-    if(beat>=total) beat=0;      /* pressing Play after the end = replay */
-    playing=true; t0=performance.now(); beatsDone=0;
-    S.onState("play"); fire();
+    if(evIdx>=EV.length){ evIdx=0; elapsed=0; }   /* replay after the end */
+    playing=true;
+    t0=performance.now()-elapsed*spb();
+    S.onState("play"); schedule();
   }
-  function pause(){ if(!playing) return; clearTimeout(timer); playing=false; S.onState("pause"); }
-  function stop(){ clearTimeout(timer); playing=false; beat=0; if(S) S.onState("stop"); }
+  function pause(){
+    if(!playing) return;
+    clearTimeout(timer);
+    elapsed=(performance.now()-t0)/spb();
+    playing=false; S.onState("pause");
+  }
+  function stop(){ clearTimeout(timer); playing=false; evIdx=0; elapsed=0; if(S) S.onState("stop"); }
   function restart(){ stop(); play(); }
-  return {load,play,pause,stop,restart,isPlaying:()=>playing,beatPos:()=>beat};
+  return {load,play,pause,stop,restart,isPlaying:()=>playing,
+          beatPos:()=>playing?(performance.now()-t0)/spb():elapsed};
 })();
 if(typeof module!=="undefined") module.exports=PLPlayer;

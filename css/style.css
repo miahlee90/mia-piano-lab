@@ -109,6 +109,14 @@ b,strong{font-weight:600}
 /* hollow (half/whole) noteheads: transparent center so staff lines show
    through the hole, as in engraved notation */
 .pl-score .note.hollow{fill:transparent;stroke-width:2.2}
+.pl-score .beam{fill:#16263e}
+.pl-score .flag{fill:none;stroke:#16263e;stroke-width:2.6;stroke-linecap:round}
+.pl-score .rest{fill:#16263e}
+.pl-score .rest-stroke{fill:none;stroke:#16263e;stroke-width:2}
+.pl-score .tie{fill:none;stroke:#16263e;stroke-width:1.8}
+.pl-score .dot{fill:#16263e}
+.nstep.st-current .flag{stroke:var(--primary)}
+.nstep.st-done .flag{stroke:var(--done)}
 .pl-score .fing{font:800 15px Inter,"Segoe UI",sans-serif}
 .pl-score .fing-rh{fill:var(--rh)}
 .pl-score .fing-lh{fill:var(--lh)}

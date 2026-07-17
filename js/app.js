@@ -38,7 +38,7 @@
     const r=scoreRange();
     piano=PLPiano.render($("#kbd"),{lowMidi:r.lo,highMidi:r.hi,onKey:onScreenKey});
     applyFingerGuide();
-    PLPlayer.load({ steps:score.steps, timeTop:score.time[0],
+    PLPlayer.load({ steps:score.steps, timeTop:score.time[0], pickup:score.pickup,
       tempo:()=>st.tempo, loop:()=>st.loop, metronome:()=>st.metronome,
       onStep:playerStep, onState:transport, onEnd:()=>{ if(cur>=0) notation.setStepState(cur,"done"); } });
     cur=-1;
@@ -66,16 +66,36 @@
     stepTargets(i).forEach(x=>piano.set(x.midi,"k-target-"+x.hand,true));
     cur=i;
   }
-  function playerStep(i,durMs){
-    showStep(i);
-    const seen=new Set();
-    stepTargets(i).forEach(x=>{ if(!seen.has(x.midi)){ seen.add(x.midi); PLAudio.blip(x.midi,durMs); } });
+  /* sound one step: ties extend the duration and tied-in notes are not
+     retriggered (one application sound per written note) */
+  function soundStep(i){
+    const spb=60000/st.tempo, s=score.steps[i], seen=new Set();
+    const hs=st.hand==="ht"?["rh","lh"]:[st.hand];
+    for(const h of hs){
+      const prev=score.steps[i-1];
+      s[h].forEach(sp=>{
+        const midi=PLPitch.midi(sp);
+        if(seen.has(midi)) return;
+        if(prev){ const pt=h==="rh"?prev.rhT:prev.lhT;
+          if(prev[h].some((ps,j)=>pt&&pt[j]&&ps===sp)) return; }
+        seen.add(midi);
+        let beats=PLNotation.beatsOf(s.d), j=i;
+        for(;;){
+          const tt=h==="rh"?score.steps[j].rhT:score.steps[j].lhT;
+          const ix=score.steps[j][h].indexOf(sp), nx=score.steps[j+1];
+          if(tt&&ix>=0&&tt[ix]&&nx&&nx[h].includes(sp)){ beats+=PLNotation.beatsOf(nx.d); j++; }
+          else break;
+        }
+        PLAudio.blip(midi,beats*spb);
+      });
+    }
   }
+  function playerStep(i){ showStep(i); soundStep(i); }
   function stepManual(dir){
     if(st.mode!=="learn"||PLPlayer.isPlaying()) return;
     const n=score.steps.length, i=Math.max(0,Math.min(n-1,cur+dir));
     if(i===cur&&dir!==0) return;
-    playerStep(i,60000/st.tempo*PLNotation.BEATS[score.steps[i].d]);
+    playerStep(i);
   }
 
   /* ---------- practice / test ---------- */
@@ -91,6 +111,7 @@
         fb(t("fb.waiting",{i:i+1,n:score.steps.length}));
       },
       onNote(midi,ok){ piano.flash(midi,ok?"k-correct":"k-wrong",ok?260:450); fb(ok?t("fb.correct"):t("fb.wrong")); },
+      onRestSkip(i){ notation.setStepState(i,"done"); },
       onStepDone(i){ notation.setStepState(i,"correct"); setTimeout(()=>{ if(!PLSession.isActive()||cur!==i) notation.setStepState(i,"done"); },280); },
       onFinish(sum){
         piano.clearTargets();

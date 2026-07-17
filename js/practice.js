@@ -28,11 +28,21 @@ const PLSession=(()=>{
   function start(opts){
     S=opts; active=true; idx=0; wrong=0; stepTimes=[]; downs.clear();
     startBeats=[]; totalBeats=0;
-    S.score.steps.forEach(st=>{ startBeats.push(totalBeats); totalBeats+=PLNotation.BEATS[st.d]; });
+    S.score.steps.forEach(st=>{ startBeats.push(totalBeats); totalBeats+=PLNotation.beatsOf(st.d); });
     begin();
   }
   function begin(){
     t0=performance.now();
+    advance();
+  }
+  /* rest steps (no target for the selected hand) are skipped automatically */
+  function advance(){
+    while(idx<S.score.steps.length&&targets(idx).size===0){
+      stepTimes[idx]=performance.now();
+      if(S.onRestSkip) S.onRestSkip(idx);
+      idx++;
+    }
+    if(idx>=S.score.steps.length) return finish();
     S.onTarget(idx,targets(idx));
   }
   /* test mode: caller runs the count-in, then calls markZero() at beat 0 */
@@ -49,8 +59,7 @@ const PLSession=(()=>{
     stepTimes[idx]=performance.now();
     S.onStepDone(idx);
     idx++;
-    if(idx>=S.score.steps.length) finish();
-    else S.onTarget(idx,targets(idx));
+    advance();
   }
 
   function finish(){
@@ -60,12 +69,14 @@ const PLSession=(()=>{
     let rhythmAcc=null;
     if(S.mode==="test"){
       const spb=60000/S.tempo;
-      let ok=0;
+      let ok=0,counted=0;
       for(let i=0;i<n;i++){
+        if(targets(i).size===0) continue;          /* rests aren't scored */
+        counted++;
         const expected=t0+startBeats[i]*spb;
         if(Math.abs(stepTimes[i]-expected)<=S.tolMs) ok++;
       }
-      rhythmAcc=ok/n;
+      rhythmAcc=counted?ok/counted:null;
     }
     S.onFinish({
       mode:S.mode, completed:true,

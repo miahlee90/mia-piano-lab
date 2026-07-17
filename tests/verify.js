@@ -107,6 +107,19 @@ for(const k in EXPECT){
 eq("13 keys in suggested-progression order",PLEx.allKeys("ff-major"),
    ["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"]);
 
+/* ---- rhythm-element data layer (engine-demo) ---- */
+const PLNot=require("../js/notation.js"); global.PLNotation=PLNot;
+const D=PLEx.expand("engine-demo","C");
+eq("demo total beats (pickup 1 + 4 + 4)",
+   D.steps.reduce((a,s)=>a+PLNot.beatsOf(s.d),0),9);
+eq("demo pickup carried",D.pickup,1);
+eq("tie flag set on the dotted quarter",D.steps[9].rhT,[true]);
+eq("tie suffix stripped from the spelling",D.steps[9].rh,["G4"]);
+ok("rest step has empty RH",D.steps[3].rh.length===0&&D.steps[3].lh.length===1);
+eq("dotted quarter counts 1.5 beats",PLNot.beatsOf("q."),1.5);
+eq("16th counts .25 beats",PLNot.beatsOf("16"),.25);
+eq("demo transposes with ties intact",PLEx.expand("engine-demo","D").steps[9].rh,["A4"]);
+
 /* ---- teacher key enable/disable ---- */
 PLEx.setKeyEnabled("ff-major","B",false);
 ok("teacher can disable a key",!PLEx.keysFor("ff-major").includes("B"));

@@ -17,9 +17,9 @@ let fails=0,tests=0;
 function ok(name,cond){ tests++; if(!cond){fails++;console.log("  FAIL "+name);} }
 function count(s,re){ return (s.match(re)||[]).length; }
 
-function svgFor(tonic,hand,opts){
+function svgFor(tonic,hand,opts,exId){
   const container={ innerHTML:"", querySelector:()=>({querySelectorAll:()=>({length:0,forEach:()=>{}})}) };
-  PLNotation.render(container,PLEx.expand("ff-major",tonic),hand,opts||{});
+  PLNotation.render(container,PLEx.expand(exId||"ff-major",tonic),hand,opts||{});
   return container.innerHTML;
 }
 
@@ -50,6 +50,20 @@ ok("fingering can be hidden (test mode)",count(noFing,/class="fing/g)===0);
 PLEx.allKeys("ff-major").forEach(k=>["rh","lh","ht"].forEach(h=>{
   ok("no clipped coords "+k+" "+h,!/="-/.test(svgFor(k,h)));
 }));
+
+/* ---- rhythm elements (hidden engine-demo exercise) ---- */
+const demo=svgFor("C","rh",null,"engine-demo");
+ok("demo: 12 steps",count(demo,/class="nstep"/g)===12);
+ok("beams drawn (8th pair + 16th group + secondary)",count(demo,/class="beam"/g)===3);
+ok("flag on the isolated 8th",count(demo,/class="flag"/g)===1);
+ok("quarter rest for the RH rest step",count(demo,/class="rest[" ]/g)>=1);
+ok("tie arc across the dotted quarter",count(demo,/class="tie"/g)===1);
+ok("dot on the dotted quarter",count(demo,/class="dot"/g)===1);
+ok("pickup: 2 mid barlines (after pickup + after m1)",count(demo,/class="barline"/g)===3);
+ok("demo not clipped",!/="-/.test(demo));
+const demoHT=svgFor("C","ht",null,"engine-demo");
+ok("demo grand staff renders",count(demoHT,/class="nstep"/g)===12&&demoHT.includes("brace"));
+ok("LH rests appear on the bass staff",count(demoHT,/class="rest/g)>count(demo,/class="rest/g));
 
 /* keyboard range rule: complete black-key groups (start C, end E or B) */
 {

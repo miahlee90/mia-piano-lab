@@ -37,6 +37,7 @@
     wireFingerEdit();
     const r=scoreRange();
     piano=PLPiano.render($("#kbd"),{lowMidi:r.lo,highMidi:r.hi,onKey:onScreenKey});
+    applyFingerGuide();
     PLPlayer.load({ steps:score.steps, timeTop:score.time[0],
       tempo:()=>st.tempo, loop:()=>st.loop, metronome:()=>st.metronome,
       onStep:playerStep, onState:transport, onEnd:()=>{ if(cur>=0) notation.setStepState(cur,"done"); } });
@@ -46,15 +47,23 @@
     updateControls();
   }
 
+  /* persistent finger-number guide on the keys (every pattern key, colored by
+     hand). Hidden in test mode and when Show fingering is off. */
+  function applyFingerGuide(){
+    if(!st.showFing||st.mode==="test"){ piano.setGuide([]); return; }
+    const seen={}, entries=[];
+    for(let i=0;i<score.steps.length;i++) stepTargets(i).forEach(x=>{
+      if(!seen[x.midi]){ seen[x.midi]=1; entries.push({midi:x.midi,f:x.f,hand:x.hand}); }
+    });
+    piano.setGuide(entries);
+  }
+
   /* ---------- learn / demonstration ---------- */
   function showStep(i,{sound,state}={}){
     if(cur>=0&&cur!==i) notation.setStepState(cur,"done");
     notation.setStepState(i,state||"current");
     piano.clearTargets();
-    stepTargets(i).forEach(x=>{
-      piano.set(x.midi,"k-target-"+x.hand,true);
-      if(st.showFing) piano.setFinger(x.midi,x.f);
-    });
+    stepTargets(i).forEach(x=>piano.set(x.midi,"k-target-"+x.hand,true));
     cur=i;
   }
   function playerStep(i,durMs){

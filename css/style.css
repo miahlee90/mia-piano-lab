@@ -106,8 +106,12 @@ body{margin:0;background:var(--bg);color:var(--ink);
 .pk-b{height:61%;background:#1c2230;border:1px solid #000;border-radius:0 0 4px 4px;z-index:2}
 .pk-lbl{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:10.5px;color:#8a93a3;pointer-events:none}
 .pk-fing{position:absolute;left:0;right:0;text-align:center;font-weight:800;pointer-events:none}
-.pk-w .pk-fing{bottom:22px;font-size:15px;color:#16213e}
-.pk-b .pk-fing{bottom:6px;font-size:13.5px;color:#fff}
+.pk-w .pk-fing{bottom:22px;font-size:15px}
+.pk-b .pk-fing{bottom:6px;font-size:13.5px}
+.pk-w .pk-fing-rh{color:var(--rh)}
+.pk-w .pk-fing-lh{color:var(--lh)}
+.pk-b .pk-fing-rh{color:#a8c7fa}
+.pk-b .pk-fing-lh{color:#fcd34d}
 .pk-w.k-target-rh{background:#dbeafe;box-shadow:inset 0 -5px 0 var(--rh)}
 .pk-b.k-target-rh{background:#3b6fe0;box-shadow:inset 0 -5px 0 #1e40af}
 .pk-w.k-target-lh{background:#fef0dc;box-shadow:inset 0 -5px 0 var(--lh)}

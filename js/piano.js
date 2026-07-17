@@ -37,15 +37,20 @@ const PLPiano=(()=>{
     });
     const STATES=["k-target-rh","k-target-lh","k-correct","k-wrong","k-done","k-pressed"];
     function set(midi,cls,on){ const k=keys[midi]; if(k) k.classList.toggle(cls,!!on); }
-    /* finger number shown ON the key while it is a target (recommendation
-       only — never something MIDI can verify) */
-    function setFinger(midi,f){ const k=keys[midi]; if(k) k.querySelector(".pk-fing").textContent=f??""; }
-    function clearTargets(){ for(const m in keys){
-      keys[m].classList.remove("k-target-rh","k-target-lh","k-correct","k-wrong","k-done");
-      keys[m].querySelector(".pk-fing").textContent=""; } }
+    /* persistent finger-number guide ON the keys (recommendation only — never
+       something MIDI can verify). entries=[{midi,f,hand}] */
+    function setGuide(entries){
+      for(const m in keys){ const s=keys[m].querySelector(".pk-fing");
+        s.textContent=""; s.classList.remove("pk-fing-rh","pk-fing-lh"); }
+      (entries||[]).forEach(e=>{ const k=keys[e.midi]; if(!k) return;
+        const s=k.querySelector(".pk-fing");
+        s.textContent=e.f??""; s.classList.add("pk-fing-"+e.hand); });
+    }
+    function clearTargets(){ for(const m in keys)
+      keys[m].classList.remove("k-target-rh","k-target-lh","k-correct","k-wrong","k-done"); }
     function clearAll(){ clearTargets(); for(const m in keys) keys[m].classList.remove("k-pressed"); }
     function flash(midi,cls,ms){ set(midi,cls,true); setTimeout(()=>set(midi,cls,false),ms||350); }
-    return {set,setFinger,flash,clearTargets,clearAll,lo,hi,
+    return {set,setGuide,flash,clearTargets,clearAll,lo,hi,
             setPressed:(m,on)=>set(m,"k-pressed",on)};
   }
   return {render,name:m=>NAMES[m%12]+(Math.floor(m/12)-1)};

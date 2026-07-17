@@ -61,6 +61,20 @@
     piano.setGuide(entries);
   }
 
+  /* keep the sounding position visible — hands are on the piano, so the
+     keyboard strip and the score scroll by themselves */
+  function autoScroll(i){
+    try{
+      if(piano&&piano.scrollToKeys) piano.scrollToKeys(stepTargets(i).map(x=>x.midi));
+      const g=notation&&notation.steps&&notation.steps[i], wrap=$("#score");
+      if(g&&wrap&&g.getBoundingClientRect&&wrap.scrollBy){
+        const r=g.getBoundingClientRect(), w=wrap.getBoundingClientRect();
+        if(r.left<w.left+40||r.right>w.right-40)
+          wrap.scrollBy({left:(r.left+r.right)/2-(w.left+w.right)/2,behavior:"smooth"});
+      }
+    }catch(e){}
+  }
+
   /* ---------- learn / demonstration ---------- */
   function showStep(i,{sound,state}={}){
     if(cur>=0&&cur!==i) notation.setStepState(cur,"done");
@@ -68,6 +82,7 @@
     piano.clearTargets();
     stepTargets(i).forEach(x=>piano.set(x.midi,"k-target-"+x.hand,true));
     cur=i;
+    autoScroll(i);
   }
   /* note events for the waterfall: absolute start beat + duration, ties
      merged, per selected hand */
@@ -135,7 +150,7 @@
     const begin=()=>PLSession.start({
       score, hand:st.hand, mode:st.mode, tempo:st.tempo, tolMs:st.tolMs,
       onTarget(i){
-        if(st.mode==="test"){ if(cur>=0) notation.setStepState(cur,"done"); notation.setStepState(i,"cursor"); cur=i; }
+        if(st.mode==="test"){ if(cur>=0) notation.setStepState(cur,"done"); notation.setStepState(i,"cursor"); cur=i; autoScroll(i); }
         else showStep(i);
         fb(t("fb.waiting",{i:i+1,n:score.steps.length}));
       },

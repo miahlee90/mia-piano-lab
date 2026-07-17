@@ -61,7 +61,20 @@ const PLPiano=(()=>{
       return {x:parseFloat(k.style.left),w:parseFloat(k.style.width),
               black:k.classList.contains("pk-b")};
     }
-    return {set,setGuide,flash,clearTargets,clearAll,lo,hi,keyRect,
+    /* auto-scroll so the given keys are visible (hands are busy playing —
+       the strip follows the music by itself) */
+    function scrollToKeys(midis){
+      const wrap=container.querySelector(".pl-kbd");
+      if(!wrap||!wrap.scrollTo) return;
+      let lo=Infinity,hi=-Infinity;
+      (midis||[]).forEach(m=>{ const r=keyRect(m);
+        if(r){ if(r.x<lo)lo=r.x; if(r.x+r.w>hi)hi=r.x+r.w; } });
+      if(lo>hi) return;
+      const pad=50;
+      if(lo<wrap.scrollLeft+pad||hi>wrap.scrollLeft+wrap.clientWidth-pad)
+        wrap.scrollTo({left:Math.max(0,(lo+hi)/2-wrap.clientWidth/2),behavior:"smooth"});
+    }
+    return {set,setGuide,flash,clearTargets,clearAll,lo,hi,keyRect,scrollToKeys,
             canvas:container.querySelector(".pl-fall"),
             setPressed:(m,on)=>set(m,"k-pressed",on)};
   }

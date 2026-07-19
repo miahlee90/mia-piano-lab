@@ -85,6 +85,14 @@ main{padding:36px 16px 8px}
 .how .card p{font-size:14.5px}
 .wide{margin-top:18px}
 footer{padding:26px 16px 44px}
+/* phones: scale the desktop hero back down (keep LAST in the cascade) */
+@media(max-width:640px){
+  .hero{min-height:0;padding:40px 18px 48px}
+  .hero h1{font-size:1.8rem}
+  .hero .tagline{font-size:1.15rem}
+  .hero .btns a{padding:12px 22px}
+  main{padding-top:26px}
+}
 </style>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>

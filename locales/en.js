@@ -246,6 +246,7 @@ const I18N_EN={
   "prog.title":"My progress",
   "prog.myProgress":"My progress",
   "nav.instructor":"Instructor",
+  "nav.studio":"Studio",
   "prog.none":"No attempts recorded yet on this device.",
   "prog.best":"best",
   "status.completed":"Completed",

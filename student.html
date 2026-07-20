@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Progress · Piano Lab</title>
-<link rel="stylesheet" href="css/style.css?v=063">
+<link rel="stylesheet" href="css/style.css?v=064">
 <style>
 .sd-wrap{max-width:900px;margin:0 auto;padding:0 20px 60px}
 .sd-card{background:#fff;border:1px solid var(--hairline);border-radius:12px;box-shadow:var(--shadow);padding:18px 20px;margin:14px 0}
@@ -31,61 +31,62 @@
 </head>
 <body>
 <header class="pl-header"><div class="inner">
-  <nav class="crumbs">🏠 <a href="https://miahlee90.github.io/">Mia Music Studio</a> › <a href="index.html">Piano Lab</a> › My Progress</nav>
+  <nav class="crumbs">🏠 <a href="https://miahlee90.github.io/">Mia Music Studio</a> › <a href="index.html">Piano Lab</a> › <span data-i18n="prog.myProgress"></span></nav>
   <h1 id="appName"></h1>
-  <span class="sub">My Progress</span>
+  <span class="sub" data-i18n="prog.myProgress"></span>
   <a class="hdr-link" href="lessons.html" data-i18n="toc.title"></a>
 </div></header>
-<main class="sd-wrap" id="app"><div class="sd-card">Loading…</div></main>
-<script src="js/config.js?v=063"></script>
-<script src="locales/en.js?v=063"></script>
-<script src="js/i18n.js?v=063"></script>
-<script src="js/lessons.js?v=063"></script>
-<script src="js/curriculum.js?v=063"></script>
-<script src="js/lms.js?v=063"></script>
+<main class="sd-wrap" id="app"><div class="sd-card" data-i18n="sd.loadingPage"></div></main>
+<script src="js/config.js?v=064"></script>
+<script src="locales/en.js?v=064"></script>
+<script src="locales/es.js?v=064"></script>
+<script src="js/i18n.js?v=064"></script>
+<script src="js/lessons.js?v=064"></script>
+<script src="js/curriculum.js?v=064"></script>
+<script src="js/lms.js?v=064"></script>
 <script>
 (function(){
-  document.title="My Progress · "+PL_CONFIG.APP_NAME;
+  document.title=t("prog.myProgress")+" · "+PL_CONFIG.APP_NAME;
   document.getElementById("appName").textContent=PL_CONFIG.APP_NAME;
+  document.documentElement.lang=PLI18N.lang();
   PLI18N.apply();
+  PLI18N.mountSwitcher();
   const app=document.getElementById("app");
-  const fmt=d=>d?new Date(d).toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"}):"";
+  const fmt=d=>d?new Date(d).toLocaleDateString(PLI18N.lang(),{year:"numeric",month:"long",day:"numeric"}):"";
   const pct=(a,b)=>b?Math.round(100*a/b):0;
 
   if(!PLTrack.enabled){
-    app.innerHTML=`<div class="sd-card"><h2>Not set up yet</h2>
-      <p>Online progress isn't configured on this site yet. You can still use every
-      lesson — your progress is saved on this device.</p></div>`; return;
+    app.innerHTML=`<div class="sd-card"><h2>${t("sd.notSetup.t")}</h2>
+      <p>${t("sd.notSetup.b")}</p></div>`; return;
   }
   if(!PLTrack.session()) return renderLogin();
   load();
 
   function renderLogin(msg){
-    app.innerHTML=`<div class="sd-card sd-login"><h2>Student Sign-in</h2>
-      <p>Enter the two codes your teacher gave you. No email needed — the codes work on any device.</p>
-      <label>Class Code<input id="cc" autocomplete="off" placeholder="e.g. QK7M2P"></label>
-      <label>Access Code<input id="ac" autocomplete="off" placeholder="e.g. ABCD-2345"></label>
+    app.innerHTML=`<div class="sd-card sd-login"><h2>${t("sd.signin")}</h2>
+      <p>${t("sd.codesHint")}</p>
+      <label>${t("sd.classCode")}<input id="cc" autocomplete="off" placeholder="${t("sd.ccPh")}"></label>
+      <label>${t("sd.accessCode")}<input id="ac" autocomplete="off" placeholder="${t("sd.acPh")}"></label>
       <p class="sd-err" id="err">${msg||""}</p>
-      <button id="go">Sign in</button></div>`;
+      <button id="go">${t("sd.signinBtn")}</button></div>`;
     document.getElementById("go").onclick=async()=>{
-      const b=document.getElementById("go"); b.disabled=true; b.textContent="Signing in…";
+      const b=document.getElementById("go"); b.disabled=true; b.textContent=t("sd.signingIn");
       try{
         const r=await PLTrack.login(document.getElementById("cc").value.trim(),
                                     document.getElementById("ac").value.trim());
         if(r.ok) load();
-        else { document.getElementById("err").textContent=r.message||"Sign-in failed."; b.disabled=false; b.textContent="Sign in"; }
-      }catch(e){ document.getElementById("err").textContent="Could not reach the server — check your internet connection."; b.disabled=false; b.textContent="Sign in"; }
+        else { document.getElementById("err").textContent=r.message||t("sd.failed"); b.disabled=false; b.textContent=t("sd.signinBtn"); }
+      }catch(e){ document.getElementById("err").textContent=t("sd.noServer"); b.disabled=false; b.textContent=t("sd.signinBtn"); }
     };
   }
   async function load(){
-    app.innerHTML=`<div class="sd-card">Loading your progress…</div>`;
+    app.innerHTML=`<div class="sd-card">${t("sd.loading")}</div>`;
     let data;
     try{ data=await PLTrack.progress(); }
-    catch(e){ app.innerHTML=`<div class="sd-card"><p class="sd-err">Could not load progress (offline?).
-        Your work is still recorded on this device and will sync automatically.</p>
-        <button onclick="location.reload()">Try again</button>
-        <button class="ghost" onclick="if(PLTrack.logout())location.reload()">Sign out</button></div>`; return; }
-    if(!data||!data.ok){ PLTrack.logout(false); return renderLogin("Session expired — please sign in again."); }
+    catch(e){ app.innerHTML=`<div class="sd-card"><p class="sd-err">${t("sd.offline")}</p>
+        <button onclick="location.reload()">${t("sd.tryAgain")}</button>
+        <button class="ghost" onclick="if(PLTrack.logout())location.reload()">${t("sd.signout")}</button></div>`; return; }
+    if(!data||!data.ok){ PLTrack.logout(false); return renderLogin(t("sd.expired")); }
     render(data);
   }
   function render(data){
@@ -96,15 +97,15 @@
     const cls=(data.classes&&data.classes[0])||{name:s.class};
     let html=`<div class="sd-card">
       <h2 style="margin:0 0 4px">${s.name} <span style="font-weight:400;color:var(--muted);font-size:14px">· ${cls.name} · ${PL_CURRICULUM.courseTitle}</span></h2>
-      <p style="margin:6px 0"><b>${doneCount} of ${pages.length}</b> lessons completed (${pct(doneCount,pages.length)}%)</p>
+      <p style="margin:6px 0">${t("sd.completedOf",{d:doneCount,n:pages.length,p:pct(doneCount,pages.length)})}</p>
       <div class="sd-bar"><div class="sd-fill" style="width:${pct(doneCount,pages.length)}%"></div></div>
-      <p style="margin:12px 0 0"><button class="ghost" onclick="if(PLTrack.logout())location.reload()">Sign out</button></p>
+      <p style="margin:12px 0 0"><button class="ghost" onclick="if(PLTrack.logout())location.reload()">${t("sd.signout")}</button></p>
     </div>`;
     PL_CURRICULUM.units.forEach(u=>{
       const ups=pages.filter(p=>p.unit===u.unit);
       const ud=ups.filter(p=>(P[p.item]||{}).status==="completed").length;
       html+=`<div class="sd-card sd-unit">
-        <h3 onclick="this.parentElement.classList.toggle('open')"><span>Unit ${u.unit} — ${u.title}</span>
+        <h3 onclick="this.parentElement.classList.toggle('open')"><span>${t("unit.label",{u:u.unit})} — ${u.title}</span>
           <span style="font-weight:600;color:var(--muted)">${ud}/${ups.length} · ${pct(ud,ups.length)}%</span></h3>
         <div class="sd-bar"><div class="sd-fill" style="width:${pct(ud,ups.length)}%"></div></div>
         <div class="sd-pages">`+
@@ -112,11 +113,11 @@
           const r=P[p.item]||{}; const st=r.status||"not_started";
           const icon=st==="completed"?'<span class="st sd-done">✅</span>':st==="in_progress"?'<span class="st sd-prog">🟡</span>':'<span class="st sd-not">⬜</span>';
           const doneEx=(r.lbdDone||[]).length;
-          const res=`Exercises finished: ${doneEx}/${p.lbdCount} · practiced ${r.lbdAttempts||0}×`;
+          const res=t("sd.exercises",{d:doneEx,n:p.lbdCount,a:r.lbdAttempts||0});
           return `<div class="sd-row">${icon}
             <span class="ttl"><b>${p.label}</b> ${p.title}</span>
-            <span class="res">${res}${r.completedAt?` · done ${fmt(r.completedAt)}`:""}</span>
-            <a href="${p.route}">${st==="completed"?"Review":"Practice"}</a></div>`;
+            <span class="res">${res}${r.completedAt?` · ${t("sd.done",{d:fmt(r.completedAt)})}`:""}</span>
+            <a href="${p.route}">${st==="completed"?t("sd.review"):t("sd.practice")}</a></div>`;
         }).join("")+`</div></div>`;
     });
     app.innerHTML=html;

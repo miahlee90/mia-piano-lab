@@ -11,7 +11,7 @@ global.document={addEventListener:()=>{},querySelector:()=>null,querySelectorAll
 global.window={addEventListener:()=>{}};   /* lms.js registers online/load handlers */
 global.crypto={randomUUID:()=>"00000000-0000-4000-8000-000000000000"};
 function load(f){ vm.runInThisContext(fs.readFileSync(path.join(root,f),"utf-8"),{filename:f}); }
-["js/config.js","locales/en.js","js/i18n.js","js/pitch.js","js/exercises.js",
+["js/config.js","locales/en.js","locales/es.js","js/i18n.js","js/pitch.js","js/exercises.js",
  "js/lessons.js","js/curriculum.js","js/lms.js","js/notation.js","js/piano.js","js/fall.js","js/midi.js",
  "js/player.js","js/practice.js","js/progress.js","js/app.js"].forEach(load);   /* app.js must load without DOM */
 
@@ -256,6 +256,22 @@ ok("LH rests appear on the bass staff",count(demoHT,/class="rest/g)>count(demo,/
     PLEx.allKeys(ex).forEach(k=>["rh","lh","ht"].forEach(h=>{
       ok("no clipped coords "+ex+" "+k+" "+h,!/="-/.test(svgFor(k,h,null,ex)));
     })));
+}
+
+/* ---- i18n: Spanish locale parity (language-parity rule) ---- */
+{
+  const missing=Object.keys(I18N_EN).filter(k=>!(k in I18N_ES));
+  ok("es locale: every en key translated"+(missing.length?" — missing: "+missing.join(", "):""),
+     missing.length===0);
+  const extra=Object.keys(I18N_ES).filter(k=>!(k in I18N_EN));
+  ok("es locale: no orphan keys"+(extra.length?" — extra: "+extra.join(", "):""),
+     extra.length===0);
+  /* every {var} placeholder used in en must survive in es (and vice versa) */
+  const vars=s=>((s.match(/\{[a-z]+\}/g))||[]).sort().join(",");
+  const varMismatch=Object.keys(I18N_EN).filter(k=>k in I18N_ES&&vars(I18N_EN[k])!==vars(I18N_ES[k]));
+  ok("es locale: {var} placeholders match"+(varMismatch.length?" — differ: "+varMismatch.join(", "):""),
+     varMismatch.length===0);
+  ok("i18n: en fallback when a key is missing",PLI18N.t("no.such.key")==="no.such.key");
 }
 
 /* keyboard range rule: complete black-key groups (start C, end E or B) */

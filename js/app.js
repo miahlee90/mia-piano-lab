@@ -298,7 +298,9 @@
   function boot(){
     document.title=PL_CONFIG.APP_NAME;
     $("#appName").textContent=PL_CONFIG.APP_NAME;
+    document.documentElement.lang=PLI18N.lang();
     PLI18N.apply();
+    PLI18N.mountSwitcher();
 
     /* lesson framing — all text/data from lessons.js + locales, none hardcoded */
     const exSel=$("#selEx"), lsSel=$("#selLesson");
@@ -333,7 +335,7 @@
       fillKeys(); fillHands(); applyTempoBounds(); renderTeacherKeys(); rebuild();
     }
     lsSel.innerHTML=PLLessons.units().map(u=>
-      `<optgroup label="Unit ${u.unit} — ${t(u.nameKey)}">`+
+      `<optgroup label="${t("unit.label",{u:u.unit})} — ${t(u.nameKey)}">`+
       PLLessons.list().filter(l=>l.unit===u.unit).map(l=>
         `<option value="${l.id}">${l.label} — ${t(l.titleKey)}</option>`).join("")+
       `</optgroup>`).join("");

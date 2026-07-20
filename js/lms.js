@@ -75,15 +75,15 @@ const PLTrack=(()=>{
       chip.id="plSyncChip";
       chip.style.cssText="position:fixed;left:10px;bottom:10px;z-index:9999;font:600 12px/1 system-ui,sans-serif;"+
         "padding:7px 12px;border-radius:9999px;box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;color:#fff";
-      chip.title="Signed in as "+s.name+" — tap for My Progress";
+      chip.title=t("sync.signedIn",{n:s.name});
       chip.onclick=()=>{ location.href="student.html"; };
       document.body.appendChild(chip);
     }
     const pending=get(LSQ,[]).length;
     if(pending){ chip.style.background="#b45309";
-      chip.textContent="⟳ "+s.name+" — progress not yet synced ("+pending+")"; }
+      chip.textContent=t("sync.pending",{n:s.name,p:pending}); }
     else { chip.style.background="#166534";
-      chip.textContent="✓ "+s.name+" — progress saved"; }
+      chip.textContent=t("sync.saved",{n:s.name}); }
   }
 
   /* ---------- auth ---------- */
@@ -98,7 +98,7 @@ const PLTrack=(()=>{
   function logout(callServer=true){
     const s=session();
     const pending=get(LSQ,[]).length;
-    if(pending&&callServer&&!confirm(pending+" result(s) are not yet synced and will upload next time this student signs in on THIS device. Sign out anyway?")) return false;
+    if(pending&&callServer&&!confirm(t("sync.confirmOut",{p:pending}))) return false;
     if(s&&callServer&&enabled){ rpc("student_logout",{p_token:s.token}).catch(()=>{}); }
     localStorage.removeItem(LSS);
     paint();

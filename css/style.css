@@ -45,6 +45,11 @@ b,strong{font-weight:600}
 .hdr-link{margin-left:auto;color:#fff;font-size:13.5px;font-weight:700;
   background:rgba(255,255,255,.13);padding:6px 16px;border-radius:9999px;text-decoration:none}
 .hdr-link:hover{background:rgba(255,255,255,.24);text-decoration:none}
+/* language selector (mounted in the header by i18n.js — same look as Aural Lab) */
+.lang-sel{font:600 13px/1.2 Inter,"Noto Sans KR","Malgun Gothic",sans-serif;color:#fff;
+  background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.35);
+  border-radius:9999px;padding:6px 12px;cursor:pointer}
+.lang-sel option{color:var(--ink)}
 .midi-chip{font-size:12.5px;background:rgba(10,12,46,.5);color:#fff;
   padding:5px 14px;border-radius:9999px;font-feature-settings:"tnum"}
 .pl-main{max-width:1180px;margin:0 auto;padding:14px 20px 60px}

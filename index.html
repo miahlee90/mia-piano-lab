@@ -56,6 +56,14 @@ footer{text-align:center;padding:4px 16px 28px;color:var(--muted);font-size:14px
 footer a{color:var(--primary);font-weight:600}
 @media(max-width:560px){ .hero h1{font-size:1.55rem} .hero{min-height:0} }
 
+/* language selector — rides small at the end of the hero button row (moved
+   there by the inline script below; same pill look as the lab pages) */
+.lang-sel{font:600 13px/1.2 Inter,"Noto Sans KR","Malgun Gothic",sans-serif;color:#fff;
+  background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.35);
+  border-radius:9999px;padding:6px 12px;cursor:pointer}
+.lang-sel option{color:var(--ink)}
+.hero .btns .lang-sel{font-size:12.5px;padding:7px 12px;margin-left:2px}
+
 /* landing polish — shared front-door system across the three labs */
 .hero{min-height:50vh;padding:60px 20px 68px}
 .hero h1{font-size:2.4rem}
@@ -97,16 +105,16 @@ footer{padding:26px 16px 44px}
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body>
-<div class="hero">
+<div class="hero pl-header">
   <div class="inner">
     <div class="eyebrow">🏠 <a href="https://miahlee90.github.io/" style="color:rgba(255,255,255,.9);text-decoration:none" title="Mia Music Studio home">Mia Music Studio</a> › Piano Lab</div>
     <h1>🎹 Piano Lab</h1>
-    <p class="tagline"><span class="w1">Learn.</span> <span class="w2">Practice.</span> <span class="w3">Test.</span></p>
-    <p>Master piano technique by playing — with Mia, your guide. Five-finger patterns, scales, chords, inversions and arpeggios in all keys, with a Synthesia-style waterfall and a MIDI keyboard that hears every note you play.</p>
+    <p class="tagline" data-i18n-html="landing.tagline"><span class="w1">Learn.</span> <span class="w2">Practice.</span> <span class="w3">Test.</span></p>
+    <p data-i18n="landing.lead">Master piano technique by playing — with Mia, your guide. Five-finger patterns, scales, chords, inversions and arpeggios in all keys, with a Synthesia-style waterfall and a MIDI keyboard that hears every note you play.</p>
     <div class="btns">
-      <a href="app.html">▶ Start Practicing</a>
-      <a class="ghost" href="lessons.html">All Lessons</a>
-      <a class="ghost" href="student.html">My Progress</a>
+      <a href="app.html" data-i18n="landing.start">▶ Start Practicing</a>
+      <a class="ghost" href="lessons.html" data-i18n="toc.title">All Lessons</a>
+      <a class="ghost" href="student.html" data-i18n="prog.myProgress">My Progress</a>
     </div>
   </div>
   <svg class="mia-hero" viewBox="10 8 100 126" aria-hidden="true"><g>
@@ -134,18 +142,31 @@ footer{padding:26px 16px 44px}
 </div>
 <main>
   <div class="how">
-    <div class="card"><div class="ico">👀</div><h2>Learn</h2><p>Watch and listen first — the score and keys light up while Mia plays it for you.</p></div>
-    <div class="card"><div class="ico">🎹</div><h2>Practice</h2><p>You play, the app reacts — green means correct, and it patiently waits for you.</p></div>
-    <div class="card"><div class="ico">⏱</div><h2>Test</h2><p>A count-in, then play in tempo with fewer hints — your accuracy is recorded.</p></div>
+    <div class="card"><div class="ico">👀</div><h2 data-i18n="landing.card.learn.t">Learn</h2><p data-i18n="landing.card.learn.b">Watch and listen first — the score and keys light up while Mia plays it for you.</p></div>
+    <div class="card"><div class="ico">🎹</div><h2 data-i18n="landing.card.practice.t">Practice</h2><p data-i18n="landing.card.practice.b">You play, the app reacts — green means correct, and it patiently waits for you.</p></div>
+    <div class="card"><div class="ico">⏱</div><h2 data-i18n="landing.card.test.t">Test</h2><p data-i18n="landing.card.test.b">A count-in, then play in tempo with fewer hints — your accuracy is recorded.</p></div>
   </div>
   <div class="card wide">
-    <h2>Best with a MIDI keyboard</h2>
-    <p>Connect a digital piano by USB and open the site in Chrome or Edge — every note you play is checked in real time. No keyboard? You can still learn with the on-screen piano.</p>
+    <h2 data-i18n="landing.midi.t">Best with a MIDI keyboard</h2>
+    <p data-i18n="landing.midi.b">Connect a digital piano by USB and open the site in Chrome or Edge — every note you play is checked in real time. No keyboard? You can still learn with the on-screen piano.</p>
   </div>
 </main>
 <footer>
-  <a href="student.html">Student sign-in</a> &nbsp;·&nbsp;
-  <a href="teacher.html">Instructor sign-in</a>
+  <a href="student.html" data-i18n="footer.student">Student sign-in</a> &nbsp;·&nbsp;
+  <a href="teacher.html" data-i18n="footer.teacher">Instructor sign-in</a>
 </footer>
+<script src="locales/en.js?v=064"></script>
+<script src="locales/es.js?v=064"></script>
+<script src="js/i18n.js?v=064"></script>
+<script>
+document.documentElement.lang=PLI18N.lang();
+PLI18N.apply();
+/* mount the language selector, then tuck it into the hero button row */
+PLI18N.mountSwitcher();
+(function(){
+  var s=document.getElementById("langSel"), b=document.querySelector(".hero .btns");
+  if(s&&b) b.appendChild(s);
+})();
+</script>
 </body>
 </html>

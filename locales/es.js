@@ -4,6 +4,14 @@
    keys so far; when Spanish ships, the remaining keys mirror locales/en.js.
    Terminology per D:\1Claude\music-terminology-glossary.md. */
 const I18N_ES={
+  "howto.title":"📖 Cómo usar esta página",
+  "howto.s1t":"1 · Aprende —",
+  "howto.s1b":"primero mira y escucha. Pulsa ▶ Reproducir para oír todo el ejercicio, o avanza nota por nota con ⏮ ◀ ▶|. Sigue la partitura, las notas que caen y las teclas iluminadas con sus números de dedo.",
+  "howto.s2t":"2 · Practica —",
+  "howto.s2b":"cambia a Práctica y pulsa Comenzar. Toca las notas iluminadas en tu piano — la aplicación escucha y te espera, así que tómate tu tiempo. Al tocar las notas correctas avanza; las incorrectas parpadean en rojo y simplemente vuelves a intentarlo.",
+  "howto.s3t":"3 · Evalúa —",
+  "howto.s3b":"cuando te sientas listo, cambia a Prueba y pulsa Comenzar. Tras un compás de conteo, toca todo el ejercicio a tempo y sin ayudas. Tu precisión se guarda en Mi Progreso para ti y tu profesor.",
+  "howto.tips":"Consejos: ajusta un Tempo cómodo, activa el Metrónomo y elige la Tonalidad y las Manos arriba. Funciona mejor con un piano MIDI por USB en Chrome o Edge — ¿sin teclado? Haz clic o toca las teclas en pantalla. Repite Aprende → Practica → Evalúa en cada tonalidad que asigne tu profesor.",
   "unit.9":"Patrones de acompañamiento",
   "ex.accBlock24Lh":"Acordes en bloque · 2/4 · Mano izquierda",
   "ex.accBlock34Lh":"Acordes en bloque · 3/4 · Mano izquierda",

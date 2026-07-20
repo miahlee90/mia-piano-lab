@@ -3,6 +3,14 @@
    No user-facing text should live in components — add strings here. */
 const I18N_EN={
   "app.subtitle":"Interactive piano technique practice",
+  "howto.title":"📖 How to use this page",
+  "howto.s1t":"1 · Learn —",
+  "howto.s1b":"watch and listen first. Press ▶ Play to hear the whole exercise, or step through it one note at a time with ⏮ ◀ ▶|. Follow the score, the falling notes, and the highlighted keys with their finger numbers.",
+  "howto.s2t":"2 · Practice —",
+  "howto.s2b":"switch to Practice and press Start. Play the highlighted notes on your piano — the app listens and waits for you, so take your time. When you play the right notes it moves on; wrong notes flash red and you simply try again.",
+  "howto.s3t":"3 · Test —",
+  "howto.s3b":"when you feel ready, switch to Test and press Start. After a one-measure count-in, play the whole exercise in tempo without hints. Your accuracy is saved to My Progress for you and your instructor.",
+  "howto.tips":"Tips: set a comfortable Tempo, turn on the Metronome, and choose your Key and Hands above. Best with a USB MIDI piano in Chrome or Edge — no keyboard? Click or tap the on-screen keys. Repeat Learn → Practice → Test in every key your instructor assigns.",
   "ex.ffMajor":"Major Five-Finger Pattern",
   "ex.ffMinor":"Minor Five-Finger Pattern",
   "ex.ffBroken":"Pattern + Broken Triad",

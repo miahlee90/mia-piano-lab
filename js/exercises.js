@@ -648,9 +648,11 @@ const PLEx=(()=>{
     const ARP_LH={I:["C3","E3","G3","C4","G3","E3"],
                   IV:["C3","F3","A3","C4","A3","F3"],
                   V7:["B2","F3","G3","B3","G3","E3"]};
-    const ARP_FL=[5,4,2,1,2,4];
+    /* fingering: instructor-specified 2026-07-20 — IV and V7 measures use
+       5-3-2-1-2-3; I measures keep 5-4-2-1-2-4 */
+    const ARP_FL={I:[5,4,2,1,2,4],IV:[5,3,2,1,2,3],V7:[5,3,2,1,2,3]};
     mk("acc-arp-68-lh","ex.accArp68Lh",[6,8],["lh"],3,ROM.flatMap(r=>
-      ARP_LH[r].map((sp,k)=>st("8",[],[sp],[],[ARP_FL[k]],k===0?r:null))));
+      ARP_LH[r].map((sp,k)=>st("8",[],[sp],[],[ARP_FL[r][k]],k===0?r:null))));
     /* ---- both-hands masters ---- */
     const blockBH=d=>ROM.map(r=>st(d,RHC[r].n.slice(),[BASS[r]],RHC[r].f.slice(),[5],r));
     mk("acc-block-44-bh","ex.accBlock44Bh",[4,4],["ht"],2,blockBH("w"));

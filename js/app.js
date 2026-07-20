@@ -7,7 +7,8 @@
   const st={ ex:"ff-major", key:"C", hand:"rh", mode:"learn",
              tempo:72, loop:false, metronome:false, sound:true,
              showFing:true, fingerEdit:false, fall:true, tolMs:180,
-             guide:false };   /* practice: pre-highlight the next key (off —
+             guide:false, subdiv:false };   /* subdiv: 6/8 metronome/count-in
+                                               ticks all six eighths */   /* practice: pre-highlight the next key (off —
                                  instructor: react to what is played) */
   let lesson=null, score=null, notation=null, piano=null, cur=-1, countTimer=null;
 
@@ -43,8 +44,9 @@
     applyFingerGuide();
     PLFall.attach(piano.canvas,piano.keyRect);
     PLFall.load(fallEvents(),()=>PLPlayer.beatPos());
-    PLPlayer.load({ steps:score.steps, timeTop:score.time[0], pickup:score.pickup,
+    PLPlayer.load({ steps:score.steps, time:score.time, pickup:score.pickup,
       tempo:()=>st.tempo, loop:()=>st.loop, metronome:()=>st.metronome,
+      subdiv:()=>st.subdiv,
       onStep:playerStep, onState:transport, onEnd:()=>{ if(cur>=0) notation.setStepState(cur,"done"); } });
     cur=-1;
     fb(t(st.mode==="learn"?"fb.learnHint":st.mode==="practice"?"fb.practiceHint":"fb.testHint"));
@@ -181,14 +183,19 @@
       }
     });
     /* one full measure of count-in before EVERY practice/test session
-       (instructor) — follows the exercise's time signature */
+       (instructor) — follows the exercise's time signature. 6/8 counts two
+       pulses (or all six eighths with the subdivision option); 4/4 gets a
+       soft secondary tick on beat 3, matching the metronome. */
     fb(t("fb.countIn"));
-    const spb=60000/st.tempo, beats=score.time[0];
+    const spb=60000/st.tempo, mq=PLNotation.measureQuarters(score.time),
+          comp=PLNotation.isCompound(score.time);
+    const unit=comp?(st.subdiv?.5:1.5):1, n=Math.round(mq/unit);
     let b=0;
     (function count(){
-      PLAudio.tick(b===0);
-      if(++b<beats) countTimer=setTimeout(count,spb);
-      else countTimer=setTimeout(begin,spb);
+      const pos=b*unit;
+      PLAudio.tick(pos===0?true:(comp?pos%1.5===0:(mq===4&&pos===2))?"soft":false);
+      if(++b<n) countTimer=setTimeout(count,unit*spb);
+      else countTimer=setTimeout(begin,unit*spb);
     })();
     updateControls();
   }
@@ -251,6 +258,8 @@
     $("#chkLoop").disabled=!learn;
     $("#chkFall").disabled=!learn;
     $("#tolWrap").style.display=st.mode==="test"?"":"none";
+    /* 6/8 subdivision option only makes sense for compound-meter exercises */
+    $("#subdivWrap").style.display=(score&&PLNotation.isCompound(score.time))?"":"none";
     /* the next-key guide toggle only applies to Practice */
     $("#guideWrap").style.display=st.mode==="practice"?"":"none";
     /* test mode: the keyboard disappears — score reading only */
@@ -321,7 +330,7 @@
       exSel.innerHTML=L.exercises.map(id=>`<option value="${id}">${t(PLEx.MASTERS[id].titleKey)}</option>`).join("");
       /* one-exercise lessons don't need the Exercise selector */
       $("#exWrap").style.display=L.exercises.length>1?"":"none";
-      fillKeys(); applyTempoBounds(); renderTeacherKeys(); rebuild();
+      fillKeys(); fillHands(); applyTempoBounds(); renderTeacherKeys(); rebuild();
     }
     lsSel.innerHTML=PLLessons.units().map(u=>
       `<optgroup label="Unit ${u.unit} — ${t(u.nameKey)}">`+
@@ -329,11 +338,21 @@
         `<option value="${l.id}">${l.label} — ${t(l.titleKey)}</option>`).join("")+
       `</optgroup>`).join("");
     lsSel.onchange=()=>applyLesson(PLLessons.get(lsSel.value));
-    exSel.onchange=()=>{ st.ex=exSel.value; fillKeys(); applyTempoBounds(); renderTeacherKeys(); rebuild(); };
+    exSel.onchange=()=>{ st.ex=exSel.value; fillKeys(); fillHands(); applyTempoBounds(); renderTeacherKeys(); rebuild(); };
     function fillKeys(){
       const M=PLEx.MASTERS[st.ex], keys=PLEx.keysFor(st.ex);
       if(!keys.includes(st.key)) st.key=keys[0];
       $("#selKey").innerHTML=keys.map(k=>`<option value="${k}" ${k===st.key?"selected":""}>${keyName(k,M.mode)}</option>`).join("");
+    }
+    /* hands allowed per master (optional `hands` field) — masters without it
+       offer all three; the current hand snaps to the first allowed one */
+    function fillHands(){
+      const allowed=PLEx.MASTERS[st.ex].hands||["rh","lh","ht"];
+      if(!allowed.includes(st.hand)) st.hand=allowed[0];
+      seg($("#segHand"),
+          [{v:"rh",label:t("hand.rh.short")},{v:"lh",label:t("hand.lh.short")},
+           {v:"ht",label:t("hand.ht.short")}].filter(x=>allowed.includes(x.v)),
+          ()=>st.hand,v=>st.hand=v);
     }
     function applyTempoBounds(){
       const T=PLEx.MASTERS[st.ex].tempo, el=$("#tempo");
@@ -343,8 +362,6 @@
     fillKeysRef=fillKeys;
     $("#selKey").onchange=e=>{ st.key=e.target.value; rebuild(); };
 
-    seg($("#segHand"),[{v:"rh",label:t("hand.rh.short")},{v:"lh",label:t("hand.lh.short")},{v:"ht",label:t("hand.ht.short")}],
-        ()=>st.hand,v=>st.hand=v);
     seg($("#segMode"),[{v:"learn",label:t("mode.learn")},{v:"practice",label:t("mode.practice")},{v:"test",label:t("mode.test")}],
         ()=>st.mode,v=>st.mode=v);
 
@@ -357,6 +374,7 @@
     $("#chkFing").onchange=e=>{ st.showFing=e.target.checked; rebuild(); };
     $("#chkFall").onchange=e=>{ st.fall=e.target.checked; updateControls(); if(!st.fall) PLFall.stop(); };
     $("#chkGuide").onchange=e=>st.guide=e.target.checked;
+    $("#chkSubdiv").onchange=e=>st.subdiv=e.target.checked;
     $("#chkFingEdit").onchange=e=>{ st.fingerEdit=e.target.checked;
       if(st.fingerEdit) fb(t("fb.fingerEditHint"));
       rebuild(); };

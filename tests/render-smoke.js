@@ -177,7 +177,7 @@ ok("broken study: 15 dots on the 5 blocked chords",count(bb,/class="dot"/g)===15
 ok("curriculum: one item per lesson",PL_CURRICULUM.pages.length===PLLessons.list().length);
 ok("curriculum: item ids are 1..N in order",
    PL_CURRICULUM.pages.every((p,i)=>p.item===i+1));
-ok("curriculum: 8 units",PL_CURRICULUM.units.length===8);
+ok("curriculum: 9 units",PL_CURRICULUM.units.length===9);
 ok("curriculum: exercise maps to its lesson's item",
    PL_CURRICULUM.itemForExercise("ff-major")===PL_CURRICULUM.itemForLesson("l1-1"));
 ok("curriculum: every exercise resolves to an item",
@@ -232,6 +232,31 @@ ok("demo not clipped",!/="-/.test(demo));
 const demoHT=svgFor("C","ht",null,"engine-demo");
 ok("demo grand staff renders",count(demoHT,/class="nstep"/g)===12&&demoHT.includes("brace"));
 ok("LH rests appear on the bass staff",count(demoHT,/class="rest/g)>count(demo,/class="rest/g));
+
+/* ---- Unit 9: accompaniment patterns (incl. 6/8 compound meter) ---- */
+{
+  const arp=svgFor("C","lh",null,"acc-arp-68-lh");
+  ok("6/8: 30 steps",count(arp,/class="nstep"/g)===30);
+  ok("6/8: 4 mid barlines + thin final",count(arp,/class="barline"/g)===5);
+  ok("6/8: eighths beamed in two groups of three per bar (10 beams)",
+     count(arp,/class="beam"/g)===10);
+  ok("6/8: no stray flags",count(arp,/class="flag"/g)===0);
+  ok("6/8: time signature shows 6 over 8",/>6</.test(arp)&&/>8</.test(arp));
+  const b24=svgFor("C","ht",null,"acc-broken-24-bh");
+  ok("2/4 BH: 5 tie arcs on the held bass",count(b24,/class="tie"/g)===5);
+  ok("2/4 BH: rests where the LH is silent",count(b24,/class="rest/g)>0);
+  const blk24=svgFor("C","ht",null,"acc-block-24-bh");
+  ok("2/4 block: half-note measures, 4 mid barlines + thin final",
+     count(blk24,/class="barline"/g)===4+1+1);   /* +1 grand-staff connector */
+  ["acc-block-44-lh","acc-block-24-lh","acc-block-34-lh","acc-broken-44-lh",
+   "acc-broken-24-lh","acc-broken-34-lh","acc-alberti-44-lh","acc-alberti-24-lh",
+   "acc-waltz-34-lh","acc-arp-68-lh","acc-block-44-bh","acc-block-34-bh",
+   "acc-block-24-bh","acc-broken-44-bh","acc-broken-24-bh","acc-alberti-24-bh",
+   "acc-alberti-44-bh","acc-waltz-34-bh","acc-arp-68-bh"].forEach(ex=>
+    PLEx.allKeys(ex).forEach(k=>["rh","lh","ht"].forEach(h=>{
+      ok("no clipped coords "+ex+" "+k+" "+h,!/="-/.test(svgFor(k,h,null,ex)));
+    })));
+}
 
 /* keyboard range rule: complete black-key groups (start C, end E or B) */
 {

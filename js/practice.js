@@ -10,13 +10,16 @@ const PLSession=(()=>{
   const downs=new Set();
   let stepTimes=[], startBeats=[], totalBeats=0;
 
-  function targets(i){
+  /* tie continuations (rhC/lhC from expand) are already held from the
+     previous step: they are not required again and never counted wrong */
+  function collect(i,cont){
     const set=new Set();
     const st=S.score.steps[i];
-    if(S.hand!=="lh") st.rh.forEach(sp=>set.add(PLPitch.midi(sp)));
-    if(S.hand!=="rh") st.lh.forEach(sp=>set.add(PLPitch.midi(sp)));
+    if(S.hand!=="lh") st.rh.forEach((sp,k)=>{ if(!!(st.rhC&&st.rhC[k])===cont) set.add(PLPitch.midi(sp)); });
+    if(S.hand!=="rh") st.lh.forEach((sp,k)=>{ if(!!(st.lhC&&st.lhC[k])===cont) set.add(PLPitch.midi(sp)); });
     return set;
   }
+  function targets(i){ return collect(i,false); }
   function targetCount(){
     let n=0;
     for(let i=0;i<S.score.steps.length;i++) n+=targets(i).size;
@@ -53,7 +56,10 @@ const PLSession=(()=>{
     if(!down){ downs.delete(midi); return; }
     downs.add(midi);
     const exp=targets(idx);
-    if(!exp.has(midi)){ wrong++; S.onNote(midi,false); return; }
+    if(!exp.has(midi)){
+      if(collect(idx,true).has(midi)) return;   /* re-struck tied note: neutral */
+      wrong++; S.onNote(midi,false); return;
+    }
     S.onNote(midi,true);
     for(const m of exp) if(!downs.has(m)) return;   /* chord: wait for the full group */
     stepTimes[idx]=performance.now();

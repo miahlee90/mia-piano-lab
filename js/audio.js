@@ -67,13 +67,16 @@ const PLAudio=(()=>{
     if(a.o3) a.o3.stop(t+.3);
   }
   function blip(m,ms,vel){ noteOn(m,vel); setTimeout(()=>noteOff(m),Math.max(150,(ms||300)*.85)); }
-  function tick(accent){
+  function tick(level){
     if(!on) return;
     ensure();
-    /* clearly audible woodblock-ish click (triangle = extra harmonics) */
+    /* clearly audible woodblock-ish click (triangle = extra harmonics).
+       level: true = accent (beat 1) · "soft" = secondary accent (4/4 beat 3,
+       6/8 pulse 2) · falsy = plain tick */
+    const acc=level===true, soft=level==="soft";
     const t=ctx.currentTime, o=ctx.createOscillator(), g=ctx.createGain();
-    o.type="triangle"; o.frequency.value=accent?2093:1568;
-    g.gain.setValueAtTime(accent?.6:.45,t);
+    o.type="triangle"; o.frequency.value=acc?2093:soft?1760:1568;
+    g.gain.setValueAtTime(acc?.6:soft?.52:.45,t);
     g.gain.exponentialRampToValueAtTime(.001,t+.07);
     o.connect(g); g.connect(master); o.start(t); o.stop(t+.08);
   }

@@ -604,6 +604,97 @@ const PLEx=(()=>{
     };
   })();
 
+  /* Unit 9 — accompaniment patterns. Step data transcribed from the teacher's
+     MusicXML (reference/accomp-patterns-source.mxl, brief in
+     reference/accomp-implementation-brief.md) — do NOT "correct" pitches,
+     order, octaves or rhythm from theory. Every master = I | IV | I | V7 | I
+     in C, transposed at runtime like every other master. Fingering is
+     app-default (source had none) — teacher-editable per key. */
+  (function(){
+    const ROM=["I","IV","I","V7","I"];
+    /* LH close chords / RH keyboard voicings / LH single basses (per brief) */
+    const LHC={I:{n:["C3","E3","G3"],f:[5,3,1]},
+               IV:{n:["C3","F3","A3"],f:[5,2,1]},
+               V7:{n:["B2","F3","G3"],f:[5,2,1]}};
+    const RHC={I:{n:["E4","G4","C5"],f:[1,2,5]},
+               IV:{n:["F4","A4","C5"],f:[1,3,5]},
+               V7:{n:["F4","G4","B4"],f:[1,2,4]}};
+    const BASS={I:"C3",IV:"F3",V7:"G3"};
+    const st=(d,rh,lh,fr,fl,roman)=>({d,rh,lh,fr,fl,roman:roman||null});
+    function mk(id,titleKey,time,hands,diff,steps){
+      MASTERS[id]={id,category:"accomp",mode:"major",masterTonic:"C",
+        titleKey,time,octaves:1,difficulty:diff,enabled:true,hands,
+        tempo:{default:80,min:40,max:112},
+        register:{rh:{shiftDownFrom:9},lh:{shiftDownFrom:9}},steps};
+    }
+    /* ---- LH-only masters (rh:[] on every step) ---- */
+    const blockLH=d=>ROM.map(r=>st(d,[],LHC[r].n.slice(),[],LHC[r].f.slice(),r));
+    mk("acc-block-44-lh","ex.accBlock44Lh",[4,4],["lh"],2,blockLH("w"));
+    mk("acc-block-24-lh","ex.accBlock24Lh",[2,4],["lh"],2,blockLH("h"));
+    mk("acc-block-34-lh","ex.accBlock34Lh",[3,4],["lh"],2,blockLH("h."));
+    const brkLH=(d,ord)=>ROM.flatMap(r=>ord.map((ix,k)=>
+      st(d,[],[LHC[r].n[ix]],[],[LHC[r].f[ix]],k===0?r:null)));
+    mk("acc-broken-44-lh","ex.accBroken44Lh",[4,4],["lh"],2,brkLH("q",[0,1,2,1]));
+    mk("acc-broken-24-lh","ex.accBroken24Lh",[2,4],["lh"],2,brkLH("8",[0,1,2,1]));
+    mk("acc-broken-34-lh","ex.accBroken34Lh",[3,4],["lh"],2,brkLH("q",[0,1,2]));
+    mk("acc-alberti-44-lh","ex.accAlberti44Lh",[4,4],["lh"],3,brkLH("q",[0,2,1,2]));
+    mk("acc-alberti-24-lh","ex.accAlberti24Lh",[2,4],["lh"],3,brkLH("8",[0,2,1,2]));
+    mk("acc-waltz-34-lh","ex.accWaltz34Lh",[3,4],["lh"],2,ROM.flatMap(r=>[
+      st("q",[],[LHC[r].n[0]],[],[LHC[r].f[0]],r),
+      st("q",[],LHC[r].n.slice(1),[],LHC[r].f.slice(1)),
+      st("q",[],LHC[r].n.slice(1),[],LHC[r].f.slice(1))]));
+    /* 6/8 arpeggiated — source m69 (V7 measure) really ends G3,E3; E3 is not
+       a V7 chord tone but it IS what the teacher wrote (flagged for review) */
+    const ARP_LH={I:["C3","E3","G3","C4","G3","E3"],
+                  IV:["C3","F3","A3","C4","A3","F3"],
+                  V7:["B2","F3","G3","B3","G3","E3"]};
+    const ARP_FL=[5,4,2,1,2,4];
+    mk("acc-arp-68-lh","ex.accArp68Lh",[6,8],["lh"],3,ROM.flatMap(r=>
+      ARP_LH[r].map((sp,k)=>st("8",[],[sp],[],[ARP_FL[k]],k===0?r:null))));
+    /* ---- both-hands masters ---- */
+    const blockBH=d=>ROM.map(r=>st(d,RHC[r].n.slice(),[BASS[r]],RHC[r].f.slice(),[5],r));
+    mk("acc-block-44-bh","ex.accBlock44Bh",[4,4],["ht"],2,blockBH("w"));
+    mk("acc-block-34-bh","ex.accBlock34Bh",[3,4],["ht"],2,blockBH("h."));
+    /* source m96-100 has NO left hand — preserved as written (flagged) */
+    mk("acc-block-24-bh","ex.accBlock24Bh",[2,4],["ht"],2,ROM.map(r=>
+      st("h",RHC[r].n.slice(),[],RHC[r].f.slice(),[],r)));
+    /* source notates LH beats 3-4 as one half rest; the common quarter grid
+       shows two quarter rests — sound and rhythm identical (flagged) */
+    mk("acc-broken-44-bh","ex.accBroken44Bh",[4,4],["ht"],2,ROM.flatMap(r=>
+      [st("q",[],[BASS[r]],[],[5],r)].concat(
+        RHC[r].n.map((sp,k)=>st("q",[sp],[],[RHC[r].f[k]],[])))));
+    /* LH quarter under RH eighths → two tied eighths on the common grid
+       (sounds identical, tie drawn — flagged) */
+    mk("acc-broken-24-bh","ex.accBroken24Bh",[2,4],["ht"],3,ROM.flatMap(r=>{
+      const c=RHC[r],b=BASS[r];return [
+        st("8",[],[b+"~"],[],[5],r),
+        st("8",[c.n[0]],[b],[c.f[0]],[5]),
+        st("8",[c.n[1]],[],[c.f[1]],[]),
+        st("8",[c.n[2]],[],[c.f[2]],[])];}));
+    mk("acc-alberti-24-bh","ex.accAlberti24Bh",[2,4],["ht"],3,ROM.flatMap(r=>{
+      const c=RHC[r],b=BASS[r];return [
+        st("8",[c.n[0]],[b+"~"],[c.f[0]],[5],r),
+        st("8",[c.n[2]],[b],[c.f[2]],[5]),
+        st("8",[c.n[1]],[],[c.f[1]],[]),
+        st("8",[c.n[2]],[],[c.f[2]],[])];}));
+    /* source m91-95: RH alberti study, NO left hand — preserved (flagged) */
+    mk("acc-alberti-44-bh","ex.accAlberti44Bh",[4,4],["ht"],3,ROM.flatMap(r=>
+      [0,2,1,2].map((ix,k)=>st("q",[RHC[r].n[ix]],[],[RHC[r].f[ix]],[],k===0?r:null))));
+    mk("acc-waltz-34-bh","ex.accWaltz34Bh",[3,4],["ht"],2,ROM.flatMap(r=>[
+      st("q",[],[BASS[r]],[],[5],r),
+      st("q",RHC[r].n.slice(),[],RHC[r].f.slice(),[]),
+      st("q",RHC[r].n.slice(),[],RHC[r].f.slice(),[])]));
+    /* LH dotted quarter under RH eighths → three tied eighths (flagged) */
+    mk("acc-arp-68-bh","ex.accArp68Bh",[6,8],["ht"],3,ROM.flatMap(r=>{
+      const c=RHC[r],b=BASS[r];return [
+        st("8",[],[b+"~"],[],[5],r),
+        st("8",[c.n[0]],[b+"~"],[c.f[0]],[5]),
+        st("8",[c.n[1]],[b],[c.f[1]],[5]),
+        st("8",[c.n[2]],[],[c.f[2]],[]),
+        st("8",[c.n[1]],[],[c.f[1]],[]),
+        st("8",[c.n[0]],[],[c.f[0]],[])];}));
+  })();
+
   /* STANDARD per-key major-scale fingering (Hanon/ABRSM table) — ascending
      one octave, 8 values per hand. Scales NEVER copy fingering from the
      transposed master; expand() applies this table (then instructor local
@@ -742,6 +833,14 @@ const PLEx=(()=>{
     "mode-aeolian":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"],
     "mode-locrian":["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"]
   };
+  /* Unit 9 accompaniment masters — the standard 13-major progression order */
+  ["acc-block-44-lh","acc-block-24-lh","acc-block-34-lh","acc-broken-44-lh",
+   "acc-broken-24-lh","acc-broken-34-lh","acc-alberti-44-lh","acc-alberti-24-lh",
+   "acc-waltz-34-lh","acc-arp-68-lh","acc-block-44-bh","acc-block-34-bh",
+   "acc-block-24-bh","acc-broken-44-bh","acc-broken-24-bh","acc-alberti-24-bh",
+   "acc-alberti-44-bh","acc-waltz-34-bh","acc-arp-68-bh"].forEach(id=>{
+    KEYS_ENABLED[id]=["C","G","F","D","Bb","A","Eb","E","Ab","B","Db","F#","Gb"];
+  });
 
   /* teacher key enable/disable (per exercise), stored on this device.
      keysFor() returns the progression order minus teacher-disabled keys. */
@@ -807,6 +906,14 @@ const PLEx=(()=>{
       rhT:ties(s.rh), lhT:ties(s.lh),
       fr:(s.fr||[]).slice(), fl:(s.fl||[]).slice()
     }));
+    /* continuation flags: note k of step i is a CONTINUATION when step i-1
+       ties the same spelling — such notes are never re-sounded, re-required
+       in grading, or re-drawn in the waterfall (notation still draws ties) */
+    steps.forEach((s,i)=>{
+      const p=steps[i-1];
+      s.rhC=s.rh.map(sp=>!!p&&p.rh.some((ps,j)=>p.rhT[j]&&ps===sp));
+      s.lhC=s.lh.map(sp=>!!p&&p.lh.some((ps,j)=>p.lhT[j]&&ps===sp));
+    });
     /* scales: per-key STANDARD fingering from the table (never transposed) */
     const FTBL=M.mode==="minor"?MINOR_SCALE_FINGERINGS:SCALE_FINGERINGS;
     if(M.scaleFingering&&FTBL[tonic]){

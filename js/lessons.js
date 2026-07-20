@@ -14,7 +14,8 @@ const PLLessons=(()=>{
     {unit:5, nameKey:"unit.5"},         /* Minor Scales (three forms) */
     {unit:6, nameKey:"unit.6"},         /* Arpeggios */
     {unit:7, nameKey:"unit.7"},         /* Inversions */
-    {unit:8, nameKey:"unit.8"}          /* More Scales */
+    {unit:8, nameKey:"unit.8"},         /* More Scales */
+    {unit:9, nameKey:"unit.9"}          /* Accompaniment Patterns */
   ];
   const LESSONS=[
     {
@@ -198,6 +199,51 @@ const PLLessons=(()=>{
       descKey:"lesson.l8n5.desc",
       formula:["W","W","H","W","W","W","H"], showDegrees:false,
       formulaNoteKey:"lesson.l8.ionian"
+    },
+    /* Unit 9 — accompaniment patterns (teacher MusicXML source; APPEND ONLY:
+       LMS item ids are 1-based positions in this list) */
+    {
+      id:"l9-1", unit:9, label:"9.1",
+      exercises:["acc-block-24-lh","acc-block-34-lh","acc-block-44-lh",
+                 "acc-block-24-bh","acc-block-34-bh","acc-block-44-bh"],
+      titleKey:"lesson.l9n1.title", goalKey:"lesson.l9n1.goal",
+      descKey:"lesson.l9.desc",
+      formula:["I","IV","I","V7","I"], showDegrees:false,
+      formulaNoteKey:"lesson.l9.tip"
+    },
+    {
+      id:"l9-2", unit:9, label:"9.2",
+      exercises:["acc-broken-24-lh","acc-broken-34-lh","acc-broken-44-lh",
+                 "acc-broken-24-bh","acc-broken-44-bh"],
+      titleKey:"lesson.l9n2.title", goalKey:"lesson.l9n2.goal",
+      descKey:"lesson.l9.desc",
+      formula:["I","IV","I","V7","I"], showDegrees:false,
+      formulaNoteKey:"lesson.l9.tip"
+    },
+    {
+      id:"l9-3", unit:9, label:"9.3",
+      exercises:["acc-alberti-24-lh","acc-alberti-44-lh",
+                 "acc-alberti-24-bh","acc-alberti-44-bh"],
+      titleKey:"lesson.l9n3.title", goalKey:"lesson.l9n3.goal",
+      descKey:"lesson.l9.desc",
+      formula:["I","IV","I","V7","I"], showDegrees:false,
+      formulaNoteKey:"lesson.l9.tip"
+    },
+    {
+      id:"l9-4", unit:9, label:"9.4",
+      exercises:["acc-waltz-34-lh","acc-waltz-34-bh"],
+      titleKey:"lesson.l9n4.title", goalKey:"lesson.l9n4.goal",
+      descKey:"lesson.l9.desc",
+      formula:["I","IV","I","V7","I"], showDegrees:false,
+      formulaNoteKey:"lesson.l9.tip"
+    },
+    {
+      id:"l9-5", unit:9, label:"9.5",
+      exercises:["acc-arp-68-lh","acc-arp-68-bh"],
+      titleKey:"lesson.l9n5.title", goalKey:"lesson.l9n5.goal",
+      descKey:"lesson.l9.desc",
+      formula:["I","IV","I","V7","I"], showDegrees:false,
+      formulaNoteKey:"lesson.l9n5.tip"
     }
   ];
   return { list:()=>LESSONS,

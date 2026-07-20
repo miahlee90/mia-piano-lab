@@ -230,10 +230,11 @@ eq("demo transposes with ties intact",PLEx.expand("engine-demo","D").steps[9].rh
 const PLLessons=require("../js/lessons.js");
 eq("lesson labels",PLLessons.list().map(l=>l.label),
    ["1.1","1.2","2.1","2.2","2.3","2.4","3.1","3.2","4.1","4.2","5.1","5.2",
-    "6.1","6.2","7.1","7.2","8.1","8.2","8.3","8.4","8.5"]);
+    "6.1","6.2","7.1","7.2","8.1","8.2","8.3","8.4","8.5",
+    "9.1","9.2","9.3","9.4","9.5"]);
 eq("lesson units",PLLessons.list().map(l=>l.unit),
-   [1,1,2,2,2,2,3,3,4,4,5,5,6,6,7,7,8,8,8,8,8]);
-eq("units defined",PLLessons.units().map(u=>u.unit),[1,2,3,4,5,6,7,8]);
+   [1,1,2,2,2,2,3,3,4,4,5,5,6,6,7,7,8,8,8,8,8,9,9,9,9,9]);
+eq("units defined",PLLessons.units().map(u=>u.unit),[1,2,3,4,5,6,7,8,9]);
 ok("every lesson's exercises exist",
    PLLessons.list().every(l=>l.exercises.every(id=>PLEx.MASTERS[id])));
 
@@ -479,6 +480,115 @@ eq("lydian on G has C#",PLEx.expand("mode-lydian","G").steps[3].rh[0],"C#5");
   for(const k of PLEx.allKeys(ex)) PLEx.expand(ex,k);
 });
 eq("lesson 8.5 offers all seven modes",PLLessonsPeek("l8-5").length,7);
+
+/* ---- Unit 9: accompaniment patterns (teacher MusicXML data) ---- */
+const ACC=["acc-block-44-lh","acc-block-24-lh","acc-block-34-lh",
+  "acc-broken-44-lh","acc-broken-24-lh","acc-broken-34-lh",
+  "acc-alberti-44-lh","acc-alberti-24-lh","acc-waltz-34-lh","acc-arp-68-lh",
+  "acc-block-44-bh","acc-block-34-bh","acc-block-24-bh","acc-broken-44-bh",
+  "acc-broken-24-bh","acc-alberti-24-bh","acc-alberti-44-bh",
+  "acc-waltz-34-bh","acc-arp-68-bh"];
+eq("19 accompaniment masters",ACC.filter(id=>PLEx.MASTERS[id]).length,19);
+ACC.forEach(ex=>{
+  ok(ex+" enabled for 13 keys",PLEx.allKeys(ex).length===13);
+  /* every key must expand without an unspellable transposition */
+  for(const k of PLEx.allKeys(ex)) PLEx.expand(ex,k);
+  ok(ex+" F#/Gb spellings differ",
+     JSON.stringify(PLEx.expand(ex,"F#").steps)!==JSON.stringify(PLEx.expand(ex,"Gb").steps));
+  ok(ex+" F#/Gb same physical keys",
+     JSON.stringify(PLEx.expand(ex,"F#").steps.map(s=>s.rh.concat(s.lh).map(PLPitch.midi)))===
+     JSON.stringify(PLEx.expand(ex,"Gb").steps.map(s=>s.rh.concat(s.lh).map(PLPitch.midi))));
+});
+/* hands restriction field */
+ok("LH-only masters declare hands:['lh']",
+   ACC.filter(id=>id.endsWith("-lh")).every(id=>
+     JSON.stringify(PLEx.MASTERS[id].hands)==='["lh"]'));
+ok("BH masters declare hands:['ht']",
+   ACC.filter(id=>id.endsWith("-bh")).every(id=>
+     JSON.stringify(PLEx.MASTERS[id].hands)==='["ht"]'));
+ok("legacy masters carry no hands field",PLEx.MASTERS["ff-major"].hands===undefined);
+/* block chords: exact source chords, Roman on each measure's first step */
+const B44=PLEx.expand("acc-block-44-lh","C");
+eq("block 44 LH chords",B44.steps.map(s=>s.lh),
+   [["C3","E3","G3"],["C3","F3","A3"],["C3","E3","G3"],["B2","F3","G3"],["C3","E3","G3"]]);
+eq("block 44 romans",B44.steps.map(s=>s.roman),["I","IV","I","V7","I"]);
+eq("block 44 LH fingering",B44.steps.map(s=>s.fl),
+   [[5,3,1],[5,2,1],[5,3,1],[5,2,1],[5,3,1]]);
+ok("LH-only: RH empty on every step",B44.steps.every(s=>s.rh.length===0));
+eq("block 24 durations",PLEx.expand("acc-block-24-lh","C").steps.map(s=>s.d),
+   ["h","h","h","h","h"]);
+eq("block 34 durations",PLEx.expand("acc-block-34-lh","C").steps.map(s=>s.d),
+   ["h.","h.","h.","h.","h."]);
+/* transposition sanity (engine transposes, data stays in C) */
+eq("block 44 V7 in F# keeps E#",PLEx.expand("acc-block-44-lh","F#").steps[3].lh,
+   ["E#3","B3","C#4"]);
+eq("block 44 V7 in Gb keeps Cb",PLEx.expand("acc-block-44-lh","Gb").steps[3].lh,
+   ["F3","Cb4","Db4"]);
+/* broken / alberti orders */
+const BR=PLEx.expand("acc-broken-44-lh","C");
+eq("broken 44 m4 (V7)",BR.steps.slice(12,16).map(s=>s.lh[0]),["B2","F3","G3","F3"]);
+eq("broken 44 m4 fingering",BR.steps.slice(12,16).map(s=>s.fl[0]),[5,2,1,2]);
+eq("broken 34: 15 quarters",PLEx.expand("acc-broken-34-lh","C").steps.length,15);
+const AL=PLEx.expand("acc-alberti-44-lh","C");
+eq("alberti 44 m1",AL.steps.slice(0,4).map(s=>s.lh[0]),["C3","G3","E3","G3"]);
+eq("alberti 44 m2 fingering",AL.steps.slice(4,8).map(s=>s.fl[0]),[5,1,2,1]);
+const WZ=PLEx.expand("acc-waltz-34-lh","C");
+eq("waltz m4: bass then two chords",WZ.steps.slice(9,12).map(s=>s.lh),
+   [["B2"],["F3","G3"],["F3","G3"]]);
+/* 6/8 masters: 30 steps = 5 measures of 3 quarter-beats (compound meter) */
+["acc-arp-68-lh","acc-arp-68-bh"].forEach(ex=>{
+  const E=PLEx.expand(ex,"C");
+  eq(ex+": 30 steps",E.steps.length,30);
+  eq(ex+": 3 quarter-beats per measure",PLNot.measureQuarters(E.time),3);
+  ok(ex+": compound meter",PLNot.isCompound(E.time));
+  eq(ex+": 15 quarter-beats total (5 bars)",
+     E.steps.reduce((a,s)=>a+PLNot.beatsOf(s.d),0),15);
+});
+eq("measureQuarters table",[[4,4],[3,4],[2,4],[6,8]].map(PLNot.measureQuarters),[4,3,2,3]);
+eq("isCompound table",[[4,4],[3,4],[2,4],[6,8]].map(PLNot.isCompound),
+   [false,false,false,true]);
+/* teacher's text preserved verbatim: source m69 (V7 measure) ends G3,E3 */
+const A68=PLEx.expand("acc-arp-68-lh","C");
+eq("arp 6/8 m4 as the teacher wrote it (ends G3,E3)",
+   A68.steps.slice(18,24).map(s=>s.lh[0]),["B2","F3","G3","B3","G3","E3"]);
+eq("arp 6/8 fingering per measure",A68.steps.slice(0,6).map(s=>s.fl[0]),[5,4,2,1,2,4]);
+/* both-hands data */
+const BB44=PLEx.expand("acc-block-44-bh","C");
+eq("block 44 BH: RH voicings over single basses",
+   [BB44.steps.map(s=>s.rh),BB44.steps.map(s=>s.lh)],
+   [[["E4","G4","C5"],["F4","A4","C5"],["E4","G4","C5"],["F4","G4","B4"],["E4","G4","C5"]],
+    [["C3"],["F3"],["C3"],["G3"],["C3"]]]);
+ok("block 24 BH: source has NO left hand (preserved)",
+   PLEx.expand("acc-block-24-bh","C").steps.every(s=>s.lh.length===0));
+ok("alberti 44 BH: source has NO left hand (preserved)",
+   PLEx.expand("acc-alberti-44-bh","C").steps.every(s=>s.lh.length===0));
+eq("alberti 44 BH m4",PLEx.expand("acc-alberti-44-bh","C").steps.slice(12,16).map(s=>s.rh[0]),
+   ["F4","B4","G4","B4"]);
+eq("alberti 24 BH m1 RH",PLEx.expand("acc-alberti-24-bh","C").steps.slice(0,4).map(s=>s.rh[0]),
+   ["E4","C5","G4","C5"]);
+const BB24=PLEx.expand("acc-broken-24-bh","C");
+eq("broken 24 BH: LH quarter = two tied eighths",
+   [BB24.steps[0].lh,BB24.steps[0].lhT,BB24.steps[1].lh,BB24.steps[1].lhT],
+   [["C3"],[true],["C3"],[false]]);
+eq("tie continuation flags computed",
+   [BB24.steps[0].lhC,BB24.steps[1].lhC],[[false],[true]]);
+const BHA=PLEx.expand("acc-arp-68-bh","C");
+eq("arp 6/8 BH: bass held through three eighths (tie chain)",
+   BHA.steps.slice(0,3).map(s=>[s.lh[0],s.lhT[0],s.lhC[0]]),
+   [["C3",true,false],["C3",true,true],["C3",false,true]]);
+eq("arp 6/8 BH m2 RH",BHA.steps.slice(6,12).map(s=>s.rh[0]||null),
+   [null,"F4","A4","C5","A4","F4"]);
+eq("broken 44 BH: LH rests under the RH eighths",
+   PLEx.expand("acc-broken-44-bh","C").steps.slice(0,4).map(s=>[s.lh.length,s.rh.length]),
+   [[1,0],[0,1],[0,1],[0,1]]);
+/* lessons 9.1–9.5 */
+eq("lesson 9.1 exercises",PLLessonsPeek("l9-1"),
+   ["acc-block-24-lh","acc-block-34-lh","acc-block-44-lh",
+    "acc-block-24-bh","acc-block-34-bh","acc-block-44-bh"]);
+eq("lesson 9.2 has no broken-34-bh (missing from source)",PLLessonsPeek("l9-2"),
+   ["acc-broken-24-lh","acc-broken-34-lh","acc-broken-44-lh",
+    "acc-broken-24-bh","acc-broken-44-bh"]);
+eq("lesson 9.5 exercises",PLLessonsPeek("l9-5"),["acc-arp-68-lh","acc-arp-68-bh"]);
 
 /* ---- reference tables from the instructor's chart (future units) ---- */
 ok("harmonic-minor fingering: 13 minor keys",

@@ -8,13 +8,23 @@ const PLPlayer=(()=>{
 
   function load(opts){
     stop();
-    S=opts;   /* {steps,timeTop,pickup,tempo(),loop(),metronome(),onStep(i),onState(s),onEnd()} */
+    S=opts;   /* {steps,time,pickup,tempo(),loop(),metronome(),subdiv()?,onStep(i),onState(s),onEnd()} */
     EV=[]; total=0;
     const starts=[];
     S.steps.forEach(s=>{ starts.push(total); total+=PLNotation.beatsOf(s.d); });
-    const phase=(S.timeTop-(S.pickup||0))%S.timeTop;
-    for(let b=0;b<Math.ceil(total-1e-6);b++)
-      EV.push({t:b,tick:true,accent:((b+phase)%S.timeTop)===0});
+    const time=S.time||[S.timeTop||4,4];
+    const mq=PLNotation.measureQuarters(time), comp=PLNotation.isCompound(time);
+    /* compound meter: tick events on every eighth; whether the off-pulse
+       eighths actually SOUND is decided at fire time (subdiv checkbox).
+       Levels: accent = measure start; soft = secondary (beat 3 in 4/4,
+       pulse 2 in 6/8); normal otherwise. */
+    const unit=comp?.5:1;
+    const phase=(mq-(S.pickup||0))%mq;
+    for(let x=0;x*unit<total-1e-6;x++){
+      const t=x*unit, pm=(t+phase)%mq;
+      EV.push({t,tick:true,pulse:!comp||t%1.5===0,
+        level:pm===0?true:(comp?pm%1.5===0:(mq===4&&pm===2))?"soft":false});
+    }
     starts.forEach((t,i)=>EV.push({t,step:i}));
     EV.push({t:total,end:true});
     EV.sort((a,b)=>a.t-b.t||((a.tick?0:1)-(b.tick?0:1)));   /* tick before note */
@@ -32,7 +42,7 @@ const PLPlayer=(()=>{
       playing=false; evIdx=EV.length; elapsed=0;
       S.onState("stop"); if(S.onEnd) S.onEnd(); return;
     }
-    if(ev.tick){ if(S.metronome()) PLAudio.tick(ev.accent); }
+    if(ev.tick){ if(S.metronome()&&(ev.pulse||(S.subdiv&&S.subdiv()))) PLAudio.tick(ev.level); }
     else S.onStep(ev.step);
     evIdx++; schedule();
   }

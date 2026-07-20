@@ -19,6 +19,11 @@ const PLNotation=(()=>{
   function isDot(d){ return String(d).endsWith("."); }
   function beatsOf(d){ return BEATS[normD(d)]*(isDot(d)?1.5:1); }
   function spacingOf(d){ return SPACING[normD(d)]*(isDot(d)?1.2:1); }
+  /* the whole engine counts in QUARTER beats — time[0] alone is only correct
+     for /4 meters. measureQuarters fixes the denominator blind spot:
+     4/4→4, 3/4→3, 2/4→2, 6/8→3. Compound meter pulses = 1.5 quarter beats. */
+  function measureQuarters(time){ return time[0]*4/time[1]; }
+  function isCompound(time){ return time[1]===8&&time[0]%3===0; }
 
   function baseIdx(clef){ return clef==="bass"?18:30; }
   function midLine(clef){ return clef==="bass"?22:34; }
@@ -92,12 +97,15 @@ const PLNotation=(()=>{
   /* automatic beaming: consecutive 8th/16th notes (per hand) inside the same
      metric beat are beamed; anything else gets a flag. Dotted small values
      fall back to flags. Returns [{idx:[stepIdx…]}] */
-  function beamGroups(steps,hand,pickup,timeTop){
-    const groups=[]; let cur=null, pos=pickup?(timeTop-pickup):0;
+  function beamGroups(steps,hand,pickup,time){
+    /* beam unit: one metric beat — a quarter in simple meter, a dotted
+       quarter (1.5) in compound, so 6/8 beams its eighths in threes */
+    const unit=isCompound(time)?1.5:1, mq=measureQuarters(time);
+    const groups=[]; let cur=null, pos=pickup?(mq-pickup):0;
     steps.forEach((s,i)=>{
       const nd=normD(s.d);
       const eligible=(nd==="8"||nd==="16")&&!isDot(s.d)&&s[hand].length>0;
-      const beat=Math.floor(pos+1e-6);
+      const beat=Math.floor(pos/unit+1e-6);
       if(eligible){
         if(cur&&cur.beat===beat&&cur.last===i-1){ cur.idx.push(i); cur.last=i; }
         else{ cur={beat,idx:[i],last:i}; groups.push(cur); }
@@ -132,7 +140,18 @@ const PLNotation=(()=>{
        tallest chord, above (RH) and below (LH) */
     const nT=Math.max(1,...score.steps.map(s=>s[topHand].length));
     const nB=Math.max(1,...score.steps.map(s=>s[botHand].length));
-    const padTop=Math.max(34,overTop+(showFing&&topHand==="rh"?38+15*(nT-1):26));
+    /* up-stems on low (below-midline) chords can poke above the staff-top
+       padding — reserve exactly the room the tallest stem tip needs
+       (adds nothing when the existing padding already covers it) */
+    let stemNeed=0;
+    score.steps.forEach(s=>{
+      const sps=s[topHand];
+      if(!sps.length||normD(s.d)==="w") return;
+      const ds=sps.map(sp=>PLPitch.dia(sp));
+      if(ds.reduce((a,b)=>a+b,0)/ds.length>=midLine(topHand==="rh"?"treble":"bass")) return;
+      stemNeed=Math.max(stemNeed,(Math.max(...ds)-tBase)*(GAP/2)-0.6*GAP+2);
+    });
+    const padTop=Math.max(34,overTop+(showFing&&topHand==="rh"?38+15*(nT-1):26),stemNeed);
     const geo={};
     if(hand==="ht"){
       const innerT=Math.max(0,tBase-rT.mn)*(GAP/2);
@@ -154,12 +173,13 @@ const PLNotation=(()=>{
 
     /* ---- pass 1: x positions + barlines from the time signature ---- */
     const xs=[], bars=[], measureOf=[];
-    let x=x0, beatAcc=pickup?(score.time[0]-pickup):0, mi=0;
+    const mq=measureQuarters(score.time);
+    let x=x0, beatAcc=pickup?(mq-pickup):0, mi=0;
     score.steps.forEach((s,i)=>{
       xs.push(x+20); measureOf.push(mi);
       x+=spacingOf(s.d);
       beatAcc+=beatsOf(s.d);
-      if(beatAcc>=score.time[0]-1e-6){
+      if(beatAcc>=mq-1e-6){
         if(i<score.steps.length-1){ bars.push(x); x+=16; }
         beatAcc=0; mi++;
       }
@@ -171,7 +191,7 @@ const PLNotation=(()=>{
     const beamed={rh:{},lh:{}}, beamRects=[];
     for(const h of hands){
       const clef=h==="rh"?"treble":"bass", y0=h==="rh"?geo.yT:geo.yB;
-      beamGroups(score.steps,h,pickup,score.time[0]).forEach(g=>{
+      beamGroups(score.steps,h,pickup,score.time).forEach(g=>{
         const dias=g.idx.flatMap(i=>score.steps[i][h].map(sp=>PLPitch.dia(sp)));
         const up=dias.reduce((a,b)=>a+b,0)/dias.length<midLine(clef);
         const sxOff=up?8.5:-8.5;
@@ -332,6 +352,6 @@ const PLNotation=(()=>{
     return {el,steps,count:score.steps.length,setStepState,clearStates};
   }
 
-  return {render,BEATS,beatsOf,normD,isDot};
+  return {render,BEATS,beatsOf,normD,isDot,measureQuarters,isCompound};
 })();
 if(typeof module!=="undefined") module.exports=PLNotation;

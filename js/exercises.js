@@ -648,9 +648,9 @@ const PLEx=(()=>{
     const ARP_LH={I:["C3","E3","G3","C4","G3","E3"],
                   IV:["C3","F3","A3","C4","A3","F3"],
                   V7:["B2","F3","G3","B3","G3","E3"]};
-    /* fingering: instructor-specified 2026-07-20 — IV and V7 measures use
-       5-3-2-1-2-3; I measures keep 5-4-2-1-2-4 */
-    const ARP_FL={I:[5,4,2,1,2,4],IV:[5,3,2,1,2,3],V7:[5,3,2,1,2,3]};
+    /* fingering: instructor-specified 2026-07-20 — 5-3-2-1-2-3 on EVERY
+       measure and key for now (per-measure tweaks may come later) */
+    const ARP_FL={I:[5,3,2,1,2,3],IV:[5,3,2,1,2,3],V7:[5,3,2,1,2,3]};
     mk("acc-arp-68-lh","ex.accArp68Lh",[6,8],["lh"],3,ROM.flatMap(r=>
       ARP_LH[r].map((sp,k)=>st("8",[],[sp],[],[ARP_FL[r][k]],k===0?r:null))));
     /* ---- both-hands masters ---- */

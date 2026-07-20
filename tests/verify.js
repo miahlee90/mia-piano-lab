@@ -551,7 +551,8 @@ eq("isCompound table",[[4,4],[3,4],[2,4],[6,8]].map(PLNot.isCompound),
 const A68=PLEx.expand("acc-arp-68-lh","C");
 eq("arp 6/8 m4 as the teacher wrote it (ends G3,E3)",
    A68.steps.slice(18,24).map(s=>s.lh[0]),["B2","F3","G3","B3","G3","E3"]);
-eq("arp 6/8 fingering per measure",A68.steps.slice(0,6).map(s=>s.fl[0]),[5,4,2,1,2,4]);
+/* instructor 2026-07-20: 5-3-2-1-2-3 on every measure */
+eq("arp 6/8 fingering per measure",A68.steps.slice(0,6).map(s=>s.fl[0]),[5,3,2,1,2,3]);
 /* both-hands data */
 const BB44=PLEx.expand("acc-block-44-bh","C");
 eq("block 44 BH: RH voicings over single basses",

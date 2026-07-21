@@ -5,6 +5,9 @@
    translated. Key names follow the letter convention: "C mayor", "F♯ menor". */
 const I18N_ES={
   "app.subtitle":"Práctica interactiva de técnica pianística",
+  "landing.how.t":"Cómo funciona cada lección",
+  "landing.how.b":"En cada ejercicio: ① Aprende — mira y escucha. ② Practica — pulsa Comenzar y toca; la aplicación te espera. ③ Prueba — un compás de conteo y luego tocas a tempo. Usa el orden que quieras y salta libremente, en cada tonalidad que asigne tu profesor.",
+  "landing.how.note":"Cuando inicias sesión con tus códigos de clase, tus ejercicios completados, tus conteos de práctica y tus resultados de Prueba se informan automáticamente a tu profesor.",
   "howto.title":"📖 Cómo usar esta página",
   "howto.s1t":"1 · Aprende —",
   "howto.s1b":"primero mira y escucha. Pulsa ▶ Reproducir para oír todo el ejercicio, o avanza nota por nota con ⏮ ◀ ▶|. Sigue la partitura, las notas que caen y las teclas iluminadas con sus números de dedo.",

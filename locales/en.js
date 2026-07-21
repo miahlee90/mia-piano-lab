@@ -3,6 +3,9 @@
    No user-facing text should live in components — add strings here. */
 const I18N_EN={
   "app.subtitle":"Interactive piano technique practice",
+  "landing.how.t":"How each lesson works",
+  "landing.how.b":"For every exercise: ① Learn — watch and listen. ② Practice — press Start and play; the app waits for you. ③ Test — one count-in measure, then play in tempo. Use any order and skip freely, in every key your instructor assigns.",
+  "landing.how.note":"When you're signed in with your class codes, your completed exercises, practice counts, and Test results are reported to your instructor automatically.",
   "howto.title":"📖 How to use this page",
   "howto.s1t":"1 · Learn —",
   "howto.s1b":"watch and listen first. Press ▶ Play to hear the whole exercise, or step through it one note at a time with ⏮ ◀ ▶|. Follow the score, the falling notes, and the highlighted keys with their finger numbers.",

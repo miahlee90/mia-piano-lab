@@ -65,8 +65,10 @@ footer a{color:var(--primary);font-weight:600}
 .lang-sel option{color:var(--ink)}
 .hero .btns .lang-sel{font-size:12.5px;padding:7px 12px;margin-left:2px}
 
-/* landing polish — shared front-door system across the three labs */
-.hero{min-height:50vh;padding:60px 20px 68px}
+/* landing polish — shared front-door system across the three labs.
+   Geometry = the HUB hero exactly (only the color changes between pages) */
+.hero{min-height:max(36vh,430px);padding:44px 24px}
+.hero .inner{max-width:1060px}
 .hero h1{font-size:2.4rem}
 .hero .tagline{font-size:1.5rem;font-weight:800;letter-spacing:-.3px;margin:10px 0 14px;color:#fff}
 .hero .tagline .w1{color:var(--gold)}
@@ -75,7 +77,7 @@ footer a{color:var(--primary);font-weight:600}
 .mia-hero{position:absolute;right:6%;bottom:-12px;width:170px;z-index:1;
   filter:drop-shadow(0 8px 18px rgba(0,0,0,.30))}
 @media(max-width:900px){.mia-hero{display:none}}
-main{padding:36px 16px 8px}
+main{max-width:1020px;padding:34px 24px 8px}
 .how{gap:18px;margin-top:0}
 .how .card{position:relative;overflow:hidden;padding:26px 20px 22px;transition:transform .14s,box-shadow .2s}
 .how .card::before{content:"";position:absolute;top:0;left:0;right:0;height:5px}
@@ -96,7 +98,7 @@ main{padding:36px 16px 8px}
 footer{padding:26px 16px 44px}
 /* phones: scale the desktop hero back down (keep LAST in the cascade) */
 @media(max-width:640px){
-  .hero{min-height:0;padding:40px 18px 48px}
+  .hero{min-height:0;padding:48px 20px 56px}
   .hero h1{font-size:1.8rem}
   .hero .tagline{font-size:1.15rem}
   .hero .btns a{padding:12px 22px}

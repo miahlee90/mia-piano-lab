@@ -12,14 +12,19 @@
      symbols are never translated — embedded via {vars} or kept literal. */
 const PLI18N=(()=>{
   const LS="pl-lang";
+  /* LANGUAGE UI SWITCH (instructor 2026-07-20): English-only for school use
+     until the whole studio ships es/ko together. Translations stay in
+     locales/es.js — flip this to true to bring the selector back. */
+  const LANG_UI_ENABLED=false;
   const dicts={
     en:(typeof I18N_EN!=="undefined")?I18N_EN:{},
     es:(typeof I18N_ES!=="undefined")?I18N_ES:{}
   };
   const NAMES={en:"English",es:"Español"};
-  const AVAILABLE=["en","es"];
+  const AVAILABLE=LANG_UI_ENABLED?["en","es"]:["en"];
 
   let lang=(function(){
+    if(!LANG_UI_ENABLED){ try{ localStorage.setItem(LS,"en"); }catch(e){} return "en"; }
     /* A ?lang=xx in the URL wins and is written back to localStorage — this is
        how setLang() reliably applies a switch even when localStorage writes
        silently fail (private mode / quota) or a stale page is bfcache-served.
@@ -62,6 +67,7 @@ const PLI18N=(()=>{
      that support the full student path (never auto-mounted: teacher.html
      stays English-only per studio precedent) */
   function mountSwitcher(){
+    if(!LANG_UI_ENABLED) return;   /* selector hidden until languages launch */
     const host=document.querySelector(".pl-header .inner");
     if(!host||document.getElementById("langSel")) return;
     const sel=document.createElement("select");

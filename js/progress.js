@@ -52,6 +52,9 @@ const PLProgress=(()=>{
     return "none";
   }
   function recent(n){ return all().attempts.slice(-(n||5)).reverse(); }
-  return {record,touch,best,status,lastPracticed,recent,all};
+  /* wipe this device's local progress matrix (used by the Clear button — the
+     "My Progress" table is device-local and is NOT cleared by signing out) */
+  function clear(){ try{ localStorage.removeItem(KEY); }catch(e){} }
+  return {record,touch,best,status,lastPracticed,recent,all,clear};
 })();
 if(typeof module!=="undefined") module.exports=PLProgress;

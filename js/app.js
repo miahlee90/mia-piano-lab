@@ -402,6 +402,9 @@
     $("#btnPrev").onclick=()=>stepManual(-1);
     $("#btnNext").onclick=()=>stepManual(1);
     $("#btnStart").onclick=startSession;
+    $("#btnClearProg").onclick=()=>{
+      if(confirm(t("prog.clearConfirm"))){ PLProgress.clear(); renderProgress(); fb(t("prog.cleared")); }
+    };
 
     document.addEventListener("keydown",e=>{
       if(e.target.closest("input,select,textarea,button,summary")) return;

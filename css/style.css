@@ -223,7 +223,12 @@ b,strong{font-weight:600}
 .mia-bubble b{color:var(--ink)}
 
 /* progress card — full width */
-.prog-card h3{margin:0 0 10px;font-size:1.05rem;font-weight:800;color:var(--brand-dark)}
+.prog-card h3{margin:0;font-size:1.05rem;font-weight:800;color:var(--brand-dark)}
+.prog-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.prog-clear{font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;color:var(--muted);
+  background:#fff;border:1px solid var(--hairline);padding:6px 15px;border-radius:9999px}
+.prog-clear:hover{background:var(--bg);color:var(--wrong);border-color:var(--wrong)}
+.prog-note{margin:0 0 10px;font-size:12.5px;color:var(--muted)}
 .ps{width:100%;border-collapse:collapse;font-size:13.5px;font-feature-settings:"tnum"}
 .ps th,.ps td{border-bottom:1px solid #f0ead8;padding:8px 10px;text-align:center;color:var(--muted)}
 .ps th{color:var(--ink);font-size:12.5px;text-transform:uppercase;letter-spacing:.06em}

@@ -349,6 +349,8 @@ const I18N_ES={
   "sync.signedIn":"Sesión iniciada como {n} — toca para ver Mi progreso",
   "sync.pending":"⟳ {n} — progreso aún no sincronizado ({p})",
   "sync.saved":"✓ {n} — progreso guardado",
+  "sync.signIn":"Iniciar sesión",
+  "sync.signOut":"Cerrar sesión",
   "sync.confirmOut":"{p} resultado(s) sin sincronizar; se subirán la próxima vez que este estudiante entre en ESTE dispositivo. ¿Cerrar sesión de todos modos?"
 };
 if(typeof module!=="undefined") module.exports=I18N_ES;

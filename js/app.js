@@ -315,6 +315,7 @@
     document.documentElement.lang=PLI18N.lang();
     PLI18N.apply();
     PLI18N.mountSwitcher();
+    PLTrack.mountAuth(".pl-header .inner");   /* header identity + Sign out */
 
     /* lesson framing — all text/data from lessons.js + locales, none hardcoded */
     const exSel=$("#selEx"), lsSel=$("#selLesson");

@@ -46,6 +46,14 @@ b,strong{font-weight:600}
 .hdr-link{margin-left:auto;color:#fff;font-size:13.5px;font-weight:700;
   background:rgba(255,255,255,.13);padding:6px 16px;border-radius:9999px;text-decoration:none}
 .hdr-link:hover{background:rgba(255,255,255,.24);text-decoration:none}
+/* header identity + Sign out (shared-device essential) */
+.hdr-auth{display:inline-flex;align-items:center;gap:10px}
+.hdr-user{color:rgba(255,255,255,.92);font-size:13px;font-weight:700;white-space:nowrap;
+  max-width:180px;overflow:hidden;text-overflow:ellipsis}
+.hdr-signout{font:inherit;font-size:13.5px;font-weight:800;cursor:pointer;color:#1c1e54;
+  background:#ffd166;border:0;padding:7px 18px;border-radius:9999px;
+  box-shadow:0 4px 12px rgba(255,209,102,.35)}
+.hdr-signout:hover{background:#ffc247}
 /* language selector (mounted in the header by i18n.js — same look as Aural Lab) */
 .lang-sel{font:600 13px/1.2 Inter,"Noto Sans KR","Malgun Gothic",sans-serif;color:#fff;
   background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.35);

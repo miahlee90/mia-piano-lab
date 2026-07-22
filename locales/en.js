@@ -347,6 +347,8 @@ const I18N_EN={
   "sync.signedIn":"Signed in as {n} — tap for My Progress",
   "sync.pending":"⟳ {n} — progress not yet synced ({p})",
   "sync.saved":"✓ {n} — progress saved",
+  "sync.signIn":"Sign in",
+  "sync.signOut":"Sign out",
   "sync.confirmOut":"{p} result(s) are not yet synced and will upload next time this student signs in on THIS device. Sign out anyway?"
 };
 if(typeof module!=="undefined") module.exports=I18N_EN;

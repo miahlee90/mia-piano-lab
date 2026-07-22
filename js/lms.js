@@ -64,10 +64,36 @@ const PLTrack=(()=>{
     set(LSQ,q); paint(); flush();
   }
 
+  /* ---------- header identity + Sign out (essential on shared school devices:
+     a signed-in student must be able to log out from any screen, not hunt for
+     it) — mountAuth() drops a "👤 Name  [Sign out]" control into a header; the
+     gold Sign-out pill is the most prominent control there. ---------- */
+  let authHost=null;
+  function esc(x){ return String(x==null?"":x).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+  function renderAuth(){
+    if(!authHost) return;
+    if(!enabled){ authHost.innerHTML=""; return; }
+    const s=session();
+    if(!s){ authHost.innerHTML=`<a class="hdr-link" href="student.html">${t("sync.signIn")}</a>`; return; }
+    authHost.innerHTML=
+      `<span class="hdr-user">👤 ${esc(s.name)}</span>`+
+      `<button type="button" class="hdr-signout">${t("sync.signOut")}</button>`;
+    const b=authHost.querySelector(".hdr-signout");
+    if(b) b.onclick=()=>{ if(logout()) location.href="index.html"; };
+  }
+  function mountAuth(hostSel){
+    const host=(typeof hostSel==="string")?document.querySelector(hostSel):hostSel;
+    if(!host) return;
+    authHost=host.querySelector(".hdr-auth");
+    if(!authHost){ authHost=document.createElement("span"); authHost.className="hdr-auth"; host.appendChild(authHost); }
+    renderAuth();
+  }
+
   /* ---------- status chip (practice screen, signed-in students only) ---------- */
   let chip=null;
   function paint(){
     if(!enabled||!document.body) return;
+    renderAuth();                 /* keep the header Sign-out in sync */
     const s=session();
     if(!s){ if(chip){chip.remove();chip=null;} return; }
     if(!chip){
@@ -127,6 +153,7 @@ const PLTrack=(()=>{
     setInterval(flush,45000);
   }
   return {enabled,login,logout,session,progress,practice,quiz,flush,rpc,COURSE,
+          mountAuth,
           _pending:()=>get(LSQ,[]).length};
 })();
 if(typeof module!=="undefined") module.exports=PLTrack;

@@ -201,6 +201,20 @@
   }
   function endSession(){ clearTimeout(countTimer); PLSession.abort(); }
 
+  /* Tablet rotation / window resize: re-fit the touch keyboard to the new
+     width — but never mid-performance (playing or an active practice/test
+     run keeps its keyboard; the next rebuild picks the new size up). */
+  let lastW=window.innerWidth, resizeT=null;
+  window.addEventListener("resize",()=>{
+    clearTimeout(resizeT);
+    resizeT=setTimeout(()=>{
+      if(Math.abs(window.innerWidth-lastW)<40) return;
+      lastW=window.innerWidth;
+      if(PLPlayer.isPlaying()||PLSession.isActive()) return;
+      rebuild();
+    },400);
+  });
+
   /* ---------- input routing (MIDI + clicks) ---------- */
   function onInput(midi,down,vel){
     if(down) PLAudio.noteOn(midi,vel||90); else PLAudio.noteOff(midi);

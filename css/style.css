@@ -173,7 +173,11 @@ b,strong{font-weight:600}
 .pl-kbd-inner{position:relative;margin:0 auto}
 .pl-fall{display:block;width:100%;height:170px}
 .pl-keys{position:relative;height:212px}
-.pk{position:absolute;top:0;cursor:pointer}
+.pk{position:absolute;top:0;cursor:pointer;
+  /* touch play: no scroll/zoom gestures on the keys, no tap highlight,
+     no long-press text selection or callout */
+  touch-action:none;-webkit-tap-highlight-color:transparent;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .pk-w{height:100%;background:#fff;border:1px solid #cfc4a6;border-top:0;border-radius:0 0 5px 5px}
 .pk-b{height:61%;background:#232748;border:1px solid #101228;border-radius:0 0 4px 4px;z-index:2}
 .pk-lbl{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:10.5px;color:#9aa6b8;pointer-events:none}

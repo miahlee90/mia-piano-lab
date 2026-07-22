@@ -1,8 +1,11 @@
 /* Piano Lab — interactive on-screen keyboard. Displays target / correct /
    wrong / completed states and distinguishes RH vs LH targets by color.
-   Clickable for testing and for students without MIDI (not a substitute for a
-   real keyboard — see the setup notice). The visible range always starts on C
-   and ends on E or B, so the 2-and-3 black-key groups are never cut mid-group. */
+   Fully TOUCH-PLAYABLE (iPad / Galaxy Tab / touch monitors): every finger is
+   an independent pointer, so chords work; pointer capture holds a note even
+   if the fingertip drifts; touch-action:none keeps the page from scrolling
+   while playing. Also clickable with a mouse. The visible range always starts
+   on C and ends on E or B, so the 2-and-3 black-key groups are never cut
+   mid-group. */
 const PLPiano=(()=>{
   const WHITE_PC=[0,2,4,5,7,9,11];
   const NAMES=["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
@@ -14,9 +17,13 @@ const PLPiano=(()=>{
     while(lo%12!==0) lo--;                       /* start on C */
     while(hi%12!==4&&hi%12!==11) hi++;           /* end on E or B */
     const whites=[]; for(let m=lo;m<=hi;m++) if(WHITE_PC.includes(m%12)) whites.push(m);
-    /* FIXED key size — every exercise and hand shows keys at the same scale
-       (wider ranges scroll horizontally instead of shrinking the keys) */
-    const KW=60, BW=Math.round(KW*.6);
+    /* TOUCH-SIZED keys (instructor 2026-07-20): fit the whole range to the
+       container when possible, but clamp the white-key width to a fingertip-
+       comfortable 46–72px — never too narrow to hit, never comically wide.
+       Ranges that can't fit at 46px scroll horizontally instead. */
+    const avail=(container.clientWidth||container.getBoundingClientRect().width||900)-2;
+    const KW=Math.max(46,Math.min(72,Math.floor(avail/whites.length)));
+    const BW=Math.round(KW*.6);
     const frag=[];
     whites.forEach((m,i)=>{
       const label=(m%12===0)?("C"+(Math.floor(m/12)-1)):"";
@@ -34,9 +41,13 @@ const PLPiano=(()=>{
       `<canvas class="pl-fall" width="${innerW}" height="170"></canvas>`+
       `<div class="pl-keys">${frag.join("")}</div></div></div>`;
     const keys={};
+    /* long-press on touch must never open a context menu mid-performance */
+    container.querySelector(".pl-keys").addEventListener("contextmenu",e=>e.preventDefault());
     container.querySelectorAll(".pk").forEach(k=>{
       keys[+k.dataset.midi]=k;
-      k.addEventListener("pointerdown",e=>{ e.preventDefault(); k.setPointerCapture(e.pointerId); opts.onKey(+k.dataset.midi,true); });
+      k.addEventListener("pointerdown",e=>{ e.preventDefault();
+        try{ k.setPointerCapture(e.pointerId); }catch(err){} /* capture is best-effort — the note must sound regardless */
+        opts.onKey(+k.dataset.midi,true); });
       k.addEventListener("pointerup",  e=>{ opts.onKey(+k.dataset.midi,false); });
       k.addEventListener("pointercancel",()=>opts.onKey(+k.dataset.midi,false));
     });

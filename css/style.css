@@ -305,7 +305,10 @@ body.pl-fill .pl-keys{height:clamp(150px,44vh,300px)}
 /* utility buttons in fill mode: bigger, clearly tappable (instructor: the
    settings gear was too small) — ✕ = primary, ⚙ = solid gold so it stands out */
 body.pl-fill #btnFull,
-body.pl-fill #btnFillCog{min-width:56px;min-height:48px;font-size:24px}
+body.pl-fill #btnFillCog{min-width:58px;min-height:52px;
+  display:inline-flex;align-items:center;justify-content:center;line-height:1;padding:0}
+body.pl-fill #btnFull{font-size:28px}
+body.pl-fill #btnFillCog{font-size:34px}   /* gear reads bigger than the ✕ */
 body.pl-fill #btnFull{background:var(--primary);color:#fff;border-color:var(--primary)}
 body.pl-fill #btnFillCog{background:var(--accent);color:#fff;border:none}
 body.pl-fill #btnFillCog:hover{background:var(--accent-dark);box-shadow:0 4px 14px rgba(232,163,61,.4)}

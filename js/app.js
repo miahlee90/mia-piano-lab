@@ -406,6 +406,39 @@
       if(confirm(t("prog.clearConfirm"))){ PLProgress.clear(); renderProgress(); fb(t("prog.cleared")); }
     };
 
+    /* ---------- full-screen practice (⛶) + in-fill settings (⚙) ----------
+       Fill is CSS-only (body.pl-fill) so it works on every device incl. iPhone;
+       we also try the real Fullscreen API as a bonus. The keyboard grows via
+       CSS; on toggle we re-fit its WIDTH by rebuilding — but only when idle, so
+       a playback/practice run in progress keeps its keyboard. */
+    function refitKbd(){ if(!PLPlayer.isPlaying()&&!PLSession.isActive()) rebuild(); }
+    function setFull(on){
+      document.body.classList.toggle("pl-fill",on);
+      if(!on) document.body.classList.remove("pl-settings");
+      const b=$("#btnFull");
+      b.textContent=on?"✕":"⛶"; b.title=t(on?"ui.exitFullscreen":"ui.fullscreen");
+      const d=document, el=d.documentElement;
+      try{
+        if(on){ const rq=el.requestFullscreen||el.webkitRequestFullscreen;
+          if(rq){ const p=rq.call(el); if(p&&p.catch) p.catch(()=>{}); } }
+        else { const ex=d.exitFullscreen||d.webkitExitFullscreen;
+          if(ex&&(d.fullscreenElement||d.webkitFullscreenElement)){ const p=ex.call(d); if(p&&p.catch) p.catch(()=>{}); } }
+      }catch(e){}
+      refitKbd();
+    }
+    $("#btnFull").onclick=()=>setFull(!document.body.classList.contains("pl-fill"));
+    $("#btnFillCog").onclick=()=>document.body.classList.toggle("pl-settings");
+    /* click the dimmed backdrop (outside the settings card) to close settings */
+    document.addEventListener("click",e=>{
+      if(document.body.classList.contains("pl-settings")
+         && !e.target.closest(".pl-controls") && !e.target.closest("#btnFillCog"))
+        document.body.classList.remove("pl-settings");
+    });
+    /* leaving real fullscreen (Esc) drops the fill layout too */
+    document.addEventListener("fullscreenchange",()=>{
+      if(!document.fullscreenElement && document.body.classList.contains("pl-fill")) setFull(false);
+    });
+
     document.addEventListener("keydown",e=>{
       if(e.target.closest("input,select,textarea,button,summary")) return;
       if(e.code==="Space"){ e.preventDefault(); $("#btnPlay").click(); }

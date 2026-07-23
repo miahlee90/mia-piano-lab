@@ -273,3 +273,47 @@ b,strong{font-weight:600}
   .pl-keys{height:160px}
   .pl-fall{height:130px}
 }
+
+/* ===== Full-screen practice (⛶ button) — instructor 2026-07-23.
+   Hide the setup chrome and give the score + keyboard the whole screen.
+   CSS-only fill so it works on every device incl. iPhone (no Fullscreen API
+   needed); the button also tries the real Fullscreen API as a bonus. The
+   keyboard grows vertically on its own because the white keys are height:100%
+   of .pl-keys. The waterfall canvas is hidden in fill mode (kept in normal
+   view) so the layout fits any screen without canvas math. ===== */
+.fill-only{display:none}
+body.pl-fill .fill-only{display:inline-flex}
+body.pl-fill{overflow:hidden}
+body.pl-fill .pl-header,
+body.pl-fill .lesson-head,
+body.pl-fill .pl-setup,
+body.pl-fill .pl-controls,
+body.pl-fill .prog-card,
+body.pl-fill .ex-title{display:none}
+body.pl-fill .pl-main{position:fixed;inset:0;z-index:50;max-width:none;margin:0;
+  padding:6px 12px calc(6px + env(safe-area-inset-bottom));background:var(--bg);
+  display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
+body.pl-fill #score{flex:0 1 auto;min-height:0;max-height:38vh;margin:0}
+body.pl-fill .play-strip{flex:none;margin:6px 0}
+body.pl-fill .mia-strip{flex:none;margin:4px 0 0}
+body.pl-fill .mia-strip .mia-avatar{width:40px;height:48px}
+body.pl-fill .mia-bubble{padding:7px 12px;font-size:13px}
+body.pl-fill .kbd-wrap{flex:1 1 auto;min-height:0;margin:6px 0 0;display:flex;align-items:center}
+body.pl-fill .kbd-wrap .pl-kbd{width:100%}
+body.pl-fill .pl-fall{display:none}
+body.pl-fill .pl-keys{height:clamp(150px,44vh,300px)}
+/* utility buttons in fill mode: bigger, clearly tappable (instructor: the
+   settings gear was too small) — ✕ = primary, ⚙ = solid gold so it stands out */
+body.pl-fill #btnFull,
+body.pl-fill #btnFillCog{min-width:56px;min-height:48px;font-size:24px}
+body.pl-fill #btnFull{background:var(--primary);color:#fff;border-color:var(--primary)}
+body.pl-fill #btnFillCog{background:var(--accent);color:#fff;border:none}
+body.pl-fill #btnFillCog:hover{background:var(--accent-dark);box-shadow:0 4px 14px rgba(232,163,61,.4)}
+
+/* ⚙ opens the controls card as a modal over the fill view */
+body.pl-fill.pl-settings::before{content:"";position:fixed;inset:0;z-index:59;
+  background:rgba(13,37,61,.42)}
+body.pl-fill.pl-settings .pl-controls{display:flex;position:fixed;z-index:60;
+  left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,92vw);
+  max-height:86vh;overflow:auto;background:var(--card);border:1px solid var(--hairline);
+  border-radius:16px;box-shadow:var(--shadow-2);padding:18px}

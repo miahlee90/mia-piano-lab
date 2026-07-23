@@ -325,5 +325,12 @@ body.pl-fill.pl-settings::before{content:"";position:fixed;inset:0;z-index:59;
   background:rgba(13,37,61,.42)}
 body.pl-fill.pl-settings .pl-controls{display:flex;position:fixed;z-index:60;
   left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,92vw);
-  max-height:86vh;overflow:auto;background:var(--card);border:1px solid var(--hairline);
-  border-radius:16px;box-shadow:var(--shadow-2);padding:18px}
+  max-height:86vh;overflow-y:auto;overflow-x:hidden;background:var(--card);
+  border:1px solid var(--hairline);border-radius:16px;box-shadow:var(--shadow-2);padding:18px}
+/* stack the controls vertically in the modal so nothing overflows sideways —
+   Lesson / Key / Exercise each on its own full-width row, sliders + checkboxes
+   pack from the left and wrap (instructor: reach every key without exiting) */
+body.pl-fill.pl-settings .ctl-row-3col{display:flex;flex-direction:column;gap:12px;align-items:stretch}
+body.pl-fill.pl-settings .ctl-row-3col select{flex:1;min-width:0}
+body.pl-fill.pl-settings .ctl-row-3col label{font-size:14px;font-weight:600;color:var(--ink)}
+body.pl-fill.pl-settings .ctl-row{justify-content:flex-start;gap:12px 18px}

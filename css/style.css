@@ -112,11 +112,11 @@ b,strong{font-weight:600}
    keyboard, centered on one line */
 .play-strip{display:flex;align-items:center;justify-content:center;gap:20px;
   flex-wrap:wrap;margin:14px 0 0}
-.transport button{font:inherit;font-weight:700;cursor:pointer;border:1px solid var(--hairline);
+.transport button,.util-btn{font:inherit;font-weight:700;cursor:pointer;border:1px solid var(--hairline);
   border-radius:9999px;background:#fff;color:var(--primary);min-width:46px;min-height:42px;
   font-size:17px;transition:transform .12s,box-shadow .2s}
-.transport button:hover{background:var(--bg);box-shadow:var(--shadow)}
-.transport button:active{transform:scale(.97)}
+.transport button:hover,.util-btn:hover{background:var(--bg);box-shadow:var(--shadow)}
+.transport button:active,.util-btn:active{transform:scale(.97)}
 .transport button.big{min-width:64px;font-size:19px;color:#fff;border:none;
   background:linear-gradient(135deg,#1c1e54,#2e2b8c)}
 .transport button.big:hover{background:linear-gradient(135deg,#23265f,#3a37a8);
@@ -309,6 +309,13 @@ body.pl-fill #btnFillCog{min-width:58px;min-height:52px;
   display:inline-flex;align-items:center;justify-content:center;line-height:1;padding:0}
 body.pl-fill #btnFull{font-size:28px}
 body.pl-fill #btnFillCog{font-size:34px}   /* gear reads bigger than the ✕ */
+/* the pair FLOATS at the fixed top-right corner (out of the play-strip flow so
+   the transport row never wraps and the keyboard keeps full height): ⛶ in the
+   corner, ⚙ just before it */
+body.pl-fill #btnFull,
+body.pl-fill #btnFillCog{position:fixed;top:8px;z-index:55;box-shadow:0 3px 10px rgba(13,37,61,.25)}
+body.pl-fill #btnFull{right:10px}
+body.pl-fill #btnFillCog{right:78px}
 body.pl-fill #btnFull{background:var(--primary);color:#fff;border-color:var(--primary)}
 body.pl-fill #btnFillCog{background:var(--accent);color:#fff;border:none}
 body.pl-fill #btnFillCog:hover{background:var(--accent-dark);box-shadow:0 4px 14px rgba(232,163,61,.4)}

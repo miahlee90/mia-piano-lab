@@ -320,9 +320,16 @@ body.pl-fill #btnFull{background:var(--primary);color:#fff;border-color:var(--pr
 body.pl-fill #btnFillCog{background:var(--accent);color:#fff;border:none}
 body.pl-fill #btnFillCog:hover{background:var(--accent-dark);box-shadow:0 4px 14px rgba(232,163,61,.4)}
 
-/* ⚙ opens the controls card as a modal over the fill view */
-body.pl-fill.pl-settings::before{content:"";position:fixed;inset:0;z-index:59;
+/* ⚙ opens the controls card as a modal over the fill view.
+   The dim backdrop MUST live on .pl-main, not body: .pl-main is a fixed
+   stacking context (z-index:50), so a body-level backdrop (z-index:59) would
+   render ABOVE .pl-main and cover the modal inside it — the bug where the
+   settings showed only a gray, unclickable screen. */
+body.pl-fill.pl-settings .pl-main::before{content:"";position:fixed;inset:0;z-index:59;
   background:rgba(13,37,61,.42)}
+/* keep the corner ⛶/⚙ tappable above the modal (⚙ closes it, ✕ exits) */
+body.pl-fill.pl-settings #btnFull,
+body.pl-fill.pl-settings #btnFillCog{z-index:62}
 body.pl-fill.pl-settings .pl-controls{display:flex;position:fixed;z-index:60;
   left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,92vw);
   max-height:86vh;overflow-y:auto;overflow-x:hidden;background:var(--card);
